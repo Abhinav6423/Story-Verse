@@ -8,6 +8,8 @@ export const loginUser = async (email, password) => {
                 password
             }, { withCredentials: true })
 
+        console.log(import.meta.env.VITE_BACKEND_URL)
+
         return {
             success: true,
             message: "User logged in successfully",
