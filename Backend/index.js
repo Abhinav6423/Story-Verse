@@ -16,7 +16,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://story-verse-lac.vercel.app/" // 👈 replace with your real Vercel domain
+    "https://story-verse-lac.vercel.app" // 👈 replace with your real Vercel domain
 ];
 
 app.use(cors({
