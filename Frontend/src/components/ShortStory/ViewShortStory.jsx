@@ -30,6 +30,9 @@ const ViewShortStory = () => {
     }, [storyId]);
 
 
+
+    if (loading) return <Loader />
+
     return (
         <div className="min-h-screen bg-[#141414] text-gray-200">
 

@@ -1,35 +1,15 @@
+import { Loader } from "lucide-react";
 import React from "react";
 
-const Loader = ({ cardClass = "" }) => {
+const Loading = () => {
   return (
-    <div
-      className={`w-full rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden animate-pulse ${cardClass}`}
-    >
-      {/* Cover Image */}
-      <div className="h-44 w-full bg-gray-200" />
-
-      {/* Content */}
-      <div className="p-4 space-y-3">
-        {/* Title */}
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-
-        {/* Description */}
-        <div className="space-y-2">
-          <div className="h-3 bg-gray-200 rounded w-full" />
-          <div className="h-3 bg-gray-200 rounded w-5/6" />
-        </div>
-
-        {/* Author */}
-        <div className="flex items-center gap-3 pt-2">
-          <div className="h-8 w-8 rounded-full bg-gray-200" />
-          <div className="h-3 bg-gray-200 rounded w-24" />
-        </div>
-
-        {/* Button */}
-        <div className="h-9 bg-gray-200 rounded-lg w-full mt-3" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="relative">
+        <div className="h-16 w-16 rounded-full border-4 border-gray-200"></div>
+        <div className="absolute top-0 left-0 h-16 w-16 rounded-full border-4 border-black border-t-transparent animate-spin"></div>
       </div>
     </div>
   );
 };
 
-export default Loader;
+export default Loading;

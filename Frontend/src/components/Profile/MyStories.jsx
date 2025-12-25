@@ -3,6 +3,7 @@ import { getUserCreatedShortStories } from "../../Api-calls/getUserCreatedShortS
 import Navbar from "../../components/Home/Navbar.jsx";
 import MyStoryCard from "./MyStoryCard.jsx";
 import { useQuery } from "@tanstack/react-query";
+import Loader from "../Loader.jsx";
 
 const MyStories = () => {
     const [status, setStatus] = useState("published");
@@ -14,7 +15,7 @@ const MyStories = () => {
         staleTime: 5000,
     });
 
-    if (isLoading) return <div className="p-6 text-gray-600">Loading...</div>;
+    if (isLoading) return <Loader />;
     if (isError) return <div className="p-6 text-red-500">{error.message}</div>;
 
     const stories = data?.data || [];

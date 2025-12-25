@@ -10,5 +10,7 @@ export const listFeedShortStory = async ({ category, title }) => {
     }
   );
 
-  return res.data; // 🔥 return raw backend response
+  console.log(res?.data)
+
+  return res?.data; // 🔥 return raw backend response
 };

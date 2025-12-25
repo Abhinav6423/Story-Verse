@@ -3,6 +3,7 @@ import { useAuth } from "../../context/Authcontext.js";
 import Navbar from "../../components/Home/Navbar.jsx";
 import MyStories from "../../components/Profile/MyStories.jsx";
 import { getUserProfileData } from "../../Api-calls/getUserProfileData.js";
+import Loader from "../../components/Loader.jsx";
 
 const UserProfile = () => {
     const { userData } = useAuth();
@@ -21,7 +22,7 @@ const UserProfile = () => {
         userProfile();
     }, []);
 
-    if (loading) return <div className="p-6">Loading...</div>;
+    if (loading) return <Loader/>
 
     return (
         <div className="min-h-screen bg-[#0f0f0f]">

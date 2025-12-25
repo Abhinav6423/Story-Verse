@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 import { RichTextEditor } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-
+import Loader from "../Loader.jsx";
 const CreatePost = () => {
     const navigate = useNavigate();
 
@@ -20,6 +20,7 @@ const CreatePost = () => {
     const [finalA, setFinalA] = useState("");
     const [status, setStatus] = useState("draft");
     const [story, setStory] = useState("");
+    const [loading, setLoading] = useState(false)
 
     /* ================= EDITOR ================= */
     const editor = useEditor({
@@ -39,6 +40,7 @@ const CreatePost = () => {
         }
 
         try {
+            setLoading(true)
             const result = await createShortStory({
                 title,
                 category: genre,
@@ -58,14 +60,20 @@ const CreatePost = () => {
                 setCoverImg("");
                 setFinalQ("");
                 setFinalA("");
+                setStatus("draft");
+                navigate("/home");
             } else {
                 toast.error(result?.message || "Failed to create story");
             }
         } catch (error) {
             console.error(error);
             toast.error("Something went wrong");
+        } finally {
+            setLoading(false)
         }
     };
+
+    if (loading) return <Loader />
 
     return (
         <div className="min-h-screen bg-[#eef1f6] pb-16">

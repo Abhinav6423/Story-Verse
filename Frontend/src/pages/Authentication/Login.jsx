@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/Authcontext.js";
 import { loginUser } from "../../Api-calls/login.js";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader.jsx";
 const Login = () => {
     const { reloadUserData } = useAuth();
     const navigate = useNavigate();
@@ -35,6 +36,10 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
+    }
+
+    if(loading) {
+        return <Loader />
     }
     return (
         <div

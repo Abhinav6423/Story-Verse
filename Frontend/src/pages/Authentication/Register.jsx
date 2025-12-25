@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../Api-calls/register.js";
 import { useAuth } from "../../context/Authcontext.js";
+import Loader from "../../components/Loader.jsx";
 
 const Register = () => {
     const { reloadUserData } = useAuth();
@@ -49,7 +50,7 @@ const Register = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Loader />;
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4
