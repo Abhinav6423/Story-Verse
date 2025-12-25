@@ -13,39 +13,46 @@ const MyStoryCard = ({ title, image, cardClass, status, category, time }) => {
     return (
         <div
             className={`
-        relative flex-shrink-0
-        w-full
-        aspect-square
-        rounded-3xl
-        overflow-hidden
-        shadow-[0_10px_35px_rgba(0,0,0,0.18)]
-        bg-gray-200
-        cursor-pointer
-        group
-        transition-all
-        duration-300
-        ${cardClass}
-    `}
+    relative flex-shrink-0
+    w-full
+    aspect-square
+    rounded-3xl
+    overflow-hidden
+    bg-[#1a1a1a]
+    cursor-pointer
+    group
+    transition-all duration-300
+    shadow-[0_10px_40px_rgba(0,0,0,0.45)]
+    hover:scale-[1.015]
+    ${cardClass}
+  `}
         >
             {/* Background Image */}
             <img
                 src={image}
                 alt="story"
-                className="w-full h-full object-cover transition duration-700"
+                className="
+      w-full h-full object-cover
+      transition-transform duration-700
+      group-hover:scale-110
+    "
             />
 
-            {/* Fade Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+            {/* Dark Fade Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent" />
 
             {/* CATEGORY BADGE */}
             <span
                 className="
-            absolute top-4 left-4
-            px-3 py-1
-            bg-white text-black text-xs font-medium
-            rounded-full shadow-md
-            backdrop-blur-md
-        "
+      absolute top-4 left-4
+      px-3 py-1
+      bg-black/70
+      text-white text-[11px]
+      font-semibold tracking-wide
+      rounded-full
+      backdrop-blur-md
+      border border-white/10
+    "
             >
                 {category}
             </span>
@@ -53,51 +60,52 @@ const MyStoryCard = ({ title, image, cardClass, status, category, time }) => {
             {/* ACTION BUTTONS */}
             <div
                 className="
-        absolute top-3 right-3
-        flex items-center gap-1
-        bg-white/60 backdrop-blur-md
-        rounded-full
-        p-1
-        shadow-sm
+      absolute top-3 right-3
+      flex items-center gap-1
+      bg-black/70 backdrop-blur-md
+      rounded-full
+      p-1.5
+      border border-white/10
+      opacity-0
+      group-hover:opacity-100
+      transition
     "
             >
                 {/* Edit */}
                 <button
                     className="
-            p-1.5
-            rounded-full
-            hover:bg-gray-100
-            transition
-        "
+        p-2
+        rounded-full
+        hover:bg-white/10
+        transition
+      "
                     title="Edit"
                 >
-                    <Pencil size={14} className="text-gray-700" />
+                    <Pencil size={14} className="text-white" />
                 </button>
 
                 {/* Delete */}
                 <button
                     className="
-            p-1.5
-            rounded-full
-            hover:bg-red-50
-            transition
-        "
+        p-2
+        rounded-full
+        hover:bg-red-500/20
+        transition
+      "
                     title="Delete"
                 >
-                    <Trash2 size={14} className="text-red-600" />
+                    <Trash2 size={14} className="text-red-500" />
                 </button>
             </div>
 
-
-
             {/* Bottom Content */}
-            <div className="absolute bottom-4 left-4 right-4 text-white space-y-1">
-
-                <h3 className="text-sm font-semibold leading-tight">
+            <div className="absolute bottom-4 left-4 right-4 text-white">
+                <h3 className="text-sm sm:text-base font-semibold leading-snug line-clamp-2">
                     {title}
                 </h3>
             </div>
         </div>
+
 
     );
 };

@@ -28,76 +28,89 @@ const ShortStoryCard = ({ story }) => {
     };
 
     return (
-        <div className="
-  bg-white rounded-2xl
-  border border-gray-100
-  shadow-sm hover:shadow-lg transition
-  overflow-hidden
-  group
-  w-full
-">
+        <Link
+            to={`/story/${story?._id}`}
+            className="group block w-full"
+        >
+            <div className="w-full">
 
-            {/* IMAGE */}
-            <div className="relative h-40 w-full overflow-hidden">
-                <img
-                    src={story?.coverImage}
-                    alt="story cover"
-                    className="w-full h-full object-cover
-        group-hover:scale-105 transition-transform duration-500"
-                />
-            </div>
+                {/* THUMBNAIL */}
+                <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
 
-            {/* CONTENT */}
-            <div className="p-3 space-y-2">
-
-                {/* TITLE */}
-                <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
-                    {story?.title}
-                </h3>
-
-                {/* AUTHOR */}
-                <div className="flex items-center gap-2">
                     <img
-                        src={story?.author?.profilePic}
-                        className="w-6 h-6 rounded-full object-cover"
-                        alt="author"
+                        src={story?.coverImage}
+                        alt={story?.title}
+                        className="
+            w-full h-full object-cover
+            transition-transform duration-500
+            group-hover:scale-105
+          "
                     />
-                    <span className="text-xs text-gray-600 font-medium">
-                        {story?.author?.username}
-                    </span>
+
+                    {/* HOVER OVERLAY */}
+                    <div
+                        className="
+            absolute inset-0
+            bg-black/30
+            opacity-0 group-hover:opacity-100
+            transition
+          "
+                    />
+
+                    {/* BADGE (OPTIONAL – VERY YOUTUBE-LIKE) */}
+                    <div className="absolute top-2 left-2">
+                        <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-red-600 text-white">
+                            TRENDING
+                        </span>
+                    </div>
                 </div>
 
-                {/* ACTION ROW */}
-                <div className="flex items-center justify-between pt-2">
+                {/* TEXT CONTENT (BELOW IMAGE) */}
+                <div className="mt-3 space-y-1.5">
 
-                    {/* LIKE */}
-                    <button
-                        onClick={likeStory}
-                        disabled={loading}
-                        className="flex items-center gap-1 text-xs text-gray-500
-          hover:text-gray-800 transition disabled:opacity-50"
+                    {/* TITLE */}
+                    <h3
+                        className="
+            text-[15px] font-semibold leading-snug
+            text-white
+            line-clamp-2
+            group-hover:text-red-500
+            transition
+          "
                     >
-                        <Heart
-                            size={16}
-                            className={isLiked ? "fill-gray-900 text-gray-900" : ""}
-                        />
-                        <span>{likes}</span>
-                    </button>
+                        {story?.title}
+                    </h3>
 
-                    {/* READ */}
-                    <Link to={`/story/${story._id}`}>
-                        <button
-                            className="text-xs font-medium text-gray-700
-          hover:text-gray-900 transition"
-                        >
-                            Read →
-                        </button>
-                    </Link>
+                    {/* META ROW */}
+                    <div className="flex items-center justify-between text-xs text-gray-400">
+
+                        {/* AUTHOR */}
+                        <div className="flex items-center gap-2">
+                            <img
+                                src={story?.author?.profilePic}
+                                alt="author"
+                                className="w-6 h-6 rounded-full object-cover"
+                            />
+                            <span className="font-medium">
+                                {story?.author?.username}
+                            </span>
+                        </div>
+
+                        {/* LIKES */}
+                        <div className="flex items-center gap-1">
+                           
+                            <span className="font-medium">{likes}</span>
+                            <span className="font-medium ">Likes</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Link>
+    )
 
-    );
+
+
+
 };
 
 export default ShortStoryCard;

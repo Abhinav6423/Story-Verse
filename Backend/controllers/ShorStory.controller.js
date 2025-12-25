@@ -494,20 +494,25 @@ const likeShortStory = async (req, res) => {
 
 const listTrendingShortStory = async (req, res) => {
     try {
-        let { page = 1, limit = 10 } = req.query;
+        let { page = 1, limit = 1 } = req.query;
 
         page = parseInt(page, 10);
         limit = parseInt(limit, 10);
 
         if (page < 1) page = 1;
-        if (limit < 1 || limit > 50) limit = 10;
+        if (limit < 1 || limit > 50) limit = 1;
 
         const skip = (page - 1) * limit;
+
+        // ✅ TOTAL documents count (CRITICAL)
+        const totalCount = await ShortStory.countDocuments({
+            status: "published",
+        });
 
         const shortStories = await ShortStory.find({
             status: "published",
         })
-            .sort({ likes: -1 }) // 🔥 trending by likes
+            .sort({ likes: -1 }) // 🔥 trending
             .skip(skip)
             .limit(limit)
             .populate("author", "username profilePic")
@@ -517,9 +522,10 @@ const listTrendingShortStory = async (req, res) => {
             success: true,
             page,
             limit,
-            totalCount: shortStories.length,
+            totalCount,     // ✅ correct
             shortStories,
         });
+
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -527,6 +533,7 @@ const listTrendingShortStory = async (req, res) => {
         });
     }
 };
+
 
 
 

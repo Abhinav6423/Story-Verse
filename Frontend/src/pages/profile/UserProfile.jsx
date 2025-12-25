@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/Authcontext.js";
-import { Star, BookOpen, Book, Flame, Award, Zap } from "lucide-react";
 import Navbar from "../../components/Home/Navbar.jsx";
 import MyStories from "../../components/Profile/MyStories.jsx";
 import { getUserProfileData } from "../../Api-calls/getUserProfileData.js";
@@ -9,11 +8,6 @@ const UserProfile = () => {
     const { userData } = useAuth();
     const [loading, setLoading] = useState(true);
     const [userStats, setUserStats] = useState({});
-
-    const xpPercent =
-        userStats?.xp && userStats?.xpToNextLevel
-            ? (userStats.xp / (userStats.xp + userStats.xpToNextLevel)) * 100
-            : 0;
 
     useEffect(() => {
         const userProfile = async () => {
@@ -30,80 +24,107 @@ const UserProfile = () => {
     if (loading) return <div className="p-6">Loading...</div>;
 
     return (
-        <div className="min-h-screen ">
+        <div className="min-h-screen bg-[#0f0f0f]">
             <Navbar />
 
-            {/* MAIN PROFILE CARD */}
-            <div className="flex justify-center ">
-                <div className="w-full max-w-md  rounded-[28px]  p-6">
+            {/* PAGE WRAPPER */}
+            <div className="flex justify-center px-4 py-6">
+                <div className="w-full max-w-5xl">
 
-                    {/* TOP AVATAR AREA */}
-                    <div className="flex items-center gap-4">
-                        <img
-                            src={userData?.profilePic}
-                            alt="profile"
-                            className="w-20 h-20 rounded-2xl object-cover border"
-                        />
+                    {/* PROFILE CARD */}
+                    <div className="bg-[#121212] rounded-3xl shadow-xl overflow-hidden border border-white/5">
 
-                        <div className="flex-1">
-                            <h2 className="text-lg font-semibold text-gray-900">
+                        {/* COVER */}
+                        <div className="relative h-40 sm:h-52 md:h-72 bg-black">
+                            <img
+                                src={
+                                    userData?.coverPic ||
+                                    "https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa"
+                                }
+                                className="w-full h-full object-cover opacity-90"
+                                alt="cover"
+                            />
+
+                            {/* subtle overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+
+                            {/* PROFILE IMAGE */}
+                            <div className="absolute -bottom-14 left-1/2 -translate-x-1/2">
+                                <img
+                                    src={userData?.profilePic}
+                                    className="
+                  w-28 h-28
+                  rounded-full
+                  object-cover
+                  border-4 border-[#121212]
+                  shadow-lg
+                "
+                                    alt="profile"
+                                />
+                            </div>
+                        </div>
+
+                        {/* PROFILE INFO */}
+                        <div className="pt-20 px-5 sm:px-8 text-center">
+
+                            <h2 className="text-xl sm:text-2xl font-semibold text-white">
                                 {userData?.username}
                             </h2>
 
-                            <p className="text-xs text-gray-500 mt-0.5">
+                            <p className="text-sm text-gray-400 font-medium mt-1">
                                 Story Writer • Reader
                             </p>
 
-                            <div className="mt-2 flex items-center gap-2 text-indigo-600 text-xs font-medium">
-                                <Zap className="w-4 h-4" />
-                                Power Score
+                            {/* STATS */}
+                            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-6">
+                                <StatBox label="Stories" value={userStats?.totalShortStoriesCreated} />
+                                <StatBox label="Reads" value={userStats?.totalShortStoriesRead || 0} />
+                                <StatBox label="Chapters+" value={userStats?.totalChaptersCreated || 0} />
+                                <StatBox label="Chapters-" value={userStats?.totalChaptersRead || 0} />
+                                <StatBox label="Level" value={userStats?.level || 0} />
+                                <StatBox label="XP" value={userStats?.xp || 0} />
                             </div>
                         </div>
-                    </div>
 
-                    {/* XP BAR */}
-                    <div className="mt-5">
-                        <div className="flex justify-between text-xs text-gray-600 mb-1">
-                            <span>Level {userStats?.level}</span>
-                            <span>{userStats?.xp}/{userStats?.xpToNextLevel} XP</span>
+                        {/* CONTENT GRID */}
+                        <div className="px-4 sm:px-6 md:px-8 py-8">
+                            <MyStories />
                         </div>
 
-                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div
-                                className="h-full bg-indigo-500 transition-all"
-                                style={{ width: `${xpPercent}%` }}
-                            />
-                        </div>
                     </div>
-
-                    {/* STATS GRID (LIKE AVATAR APP) */}
-                    <div className="mt-6 grid grid-cols-2 gap-3">
-                        <StatPill icon={<BookOpen size={14} />} label="Stories Created" value={userStats?.totalShortStoriesCreated} />
-                        <StatPill icon={<Book size={14} />} label="Chapters Created" value={userStats?.totalChaptersCreated} />
-                        <StatPill icon={<Flame size={14} />} label="Stories Read" value={userStats?.totalShortStoriesRead} />
-                        <StatPill icon={<Book size={14} />} label="Chapters Read" value={userStats?.totalChaptersRead} />
-                        <StatPill icon={<Award size={14} />} label="Total XP" value={userStats?.xp} />
-                        <StatPill icon={<Star size={14} />} label="Level" value={userStats?.level} />
-                    </div>
-
-                   
                 </div>
             </div>
-
-            <MyStories />
         </div>
     );
+
 };
 
-/* STAT PILL (GAME STYLE) */
-const StatPill = ({ icon, label, value }) => (
-    <div className="flex items-center justify-between bg-gray-100 px-4 py-3 rounded-xl">
-        <div className="flex items-center gap-2 text-gray-600 text-xs font-semibold">
-            {icon}
-            <span>{label}</span>
-        </div>
-        <span className="text-sm font-semibold text-gray-900">{value}</span>
+/* ---------- SUB COMPONENTS ---------- */
+
+const StatBox = ({ label, value }) => (
+    <div
+        className="
+      flex flex-col items-center justify-center
+      rounded-2xl
+      bg-[#1a1a1a]
+      px-4 py-5
+      text-center
+      transition
+      hover:bg-[#1f1f1f]
+    "
+    >
+        <p className="text-2xl sm:text-2xl md:text-3xl font-bold text-white leading-none">
+            {value}
+        </p>
+
+        <p className="mt-2 text-[11px] sm:text-xs uppercase tracking-widest text-gray-400">
+            {label}
+        </p>
     </div>
 );
+
+
+
+
 
 export default UserProfile;

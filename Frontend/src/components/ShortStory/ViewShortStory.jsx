@@ -31,18 +31,19 @@ const ViewShortStory = () => {
 
 
     return (
-        <div className="min-h-screen bg-[#f6f4ef] text-gray-900 ">
+        <div className="min-h-screen bg-[#141414] text-gray-200">
 
             {/* BOOK CONTAINER */}
-            <div className="
-    max-w-4xl mx-auto
-    bg-white
+            <div
+                className="
+        max-w-screen mx-auto
+        bg-[#181818]
+        shadow-[0_20px_60px_rgba(0,0,0,0.6)]
+        overflow-hidden
+      "
+            >
 
-    shadow-[0_20px_60px_rgba(0,0,0,0.12)]
-    overflow-hidden
-  ">
-
-                {/* COVER (PART OF BOOK) */}
+                {/* COVER (UNCHANGED) */}
                 <div className="w-full h-72 sm:h-96 overflow-hidden">
                     <img
                         src={story.coverImage}
@@ -51,48 +52,86 @@ const ViewShortStory = () => {
                     />
                 </div>
 
-                {/* BOOK HEADER */}
-                <div className="px-6 sm:px-10 pt-8 text-center">
+                {/* HEADER BLOCK */}
+                <div className="px-6 sm:px-10 pt-10 text-center">
 
-                    <p className="text-xs tracking-widest text-indigo-600 font-semibold uppercase">
+                    {/* CATEGORY */}
+                    <p
+                        className="
+            text-lg
+            tracking-wide
+            uppercase
+            font-semibold
+            text-red-500
+            mb-3
+          "
+                    >
                         {story?.category}
                     </p>
 
-                    <h1 className="mt-3 text-3xl sm:text-4xl font-serif font-bold text-gray-900 leading-snug">
+                    {/* TITLE */}
+                    <h1
+                        className="
+            text-[38px] sm:text-[44px]
+            font-serif
+            font-bold
+            text-white
+            leading-tight
+            tracking-tight
+          "
+                    >
                         {story.title}
                     </h1>
 
                     {/* AUTHOR */}
-                    <div className="flex justify-center items-center mt-4">
+                    <div className="flex justify-center items-center gap-3 mt-6">
                         <img
                             src={story?.author?.profilePic}
-                            className="w-9 h-9 rounded-full border object-cover"
+                            className="w-9 h-9 rounded-full object-cover ring-2 ring-white/10"
                             alt="author"
                         />
-                        <span className="ml-3 text-sm text-gray-600 font-medium">
-                            By {story?.author?.username}
+                        <span className="text-sm text-gray-400 font-medium">
+                            By <span className="text-gray-200">{story?.author?.username}</span>
                         </span>
                     </div>
 
                     {/* DIVIDER */}
-                    <div className="mx-auto mt-6 h-[1px] w-24 bg-gray-300 rounded-full"></div>
+                    <div className="mx-auto mt-8 mb-10 h-px w-20 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+                    {/* INTRO / SUBTITLE */}
+                    {story?.description && (
+                        <p
+                            className="
+              text-[18px]
+              text-gray-400
+              italic
+              max-w-xl
+              font-semibold
+              mx-auto
+              leading-relaxed
+            "
+                        >
+                            {story.description}
+                        </p>
+                    )}
                 </div>
 
-                {/* READING PAGE */}
+                {/* READING AREA (UNCHANGED ALIGNMENT) */}
                 <div
                     className="
-        px-6
-        sm:px-10
-        md:px-16
-        py-10
-        font-serif
-        text-[17px]
-        leading-relaxed
-        text-[#1b1b1b]
-        reader-area
-      "
+          px-6
+          sm:px-10
+          md:px-16
+          py-12
+          font-serif
+          text-[18px]
+          sm:text-[20px]
+          leading-relaxed
+          text-gray-300
+          reader-area
+        "
                     style={{
-                        maxWidth: "680px",
+                        maxWidth: "80vw",
                         margin: "0 auto",
                     }}
                 >
@@ -100,8 +139,9 @@ const ViewShortStory = () => {
                 </div>
             </div>
         </div>
-
     );
+
+
 };
 
 export default ViewShortStory;

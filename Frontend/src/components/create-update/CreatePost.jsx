@@ -159,9 +159,9 @@ const CreatePost = () => {
                         Blog Content
                     </label>
 
-                    <div className="rounded-xl overflow-hidden shadow-sm">
+                    <div className="rounded-xl overflow-hidden ">
                         <RichTextEditor editor={editor}>
-                            <RichTextEditor.Toolbar sticky stickyOffset={20}>
+                            <RichTextEditor.Toolbar sticky >
                                 <RichTextEditor.ControlsGroup>
                                     <RichTextEditor.Bold />
                                     <RichTextEditor.Italic />
@@ -199,12 +199,12 @@ const CreatePost = () => {
                 <button
                     onClick={(e) => handleSave(e)}
                     className="
-            px-6 py-3 rounded-xl text-white font-semibold
-            bg-gradient-to-r from-indigo-500 to-purple-500
+            px-6 py-3 rounded-xl text-slate-200 
+            bg-red-500
             shadow-md hover:opacity-90 transition
           "
                 >
-                    Save Article
+                    <span className="font-semibold tracking-tight">Save Article</span>
                 </button>
             </div>
         </div>
