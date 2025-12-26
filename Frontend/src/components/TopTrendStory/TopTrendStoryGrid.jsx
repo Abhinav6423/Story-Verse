@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+// 🔴 CHANGED: added useQueryClient
 
 import { listTrendingShortStory } from '../../Api-calls/trendingShortStory.js'
 import Loader from '../Loader.jsx'
@@ -13,20 +14,35 @@ function TopTrendStoryGrid() {
     const [isAnimating, setIsAnimating] = useState(false)
     const limit = 1
 
+    /* ================= QUERY CLIENT ================= */
+    const queryClient = useQueryClient()
+    // 🔴 ADDED: needed for prefetching next page
+
     /* ================= DATA ================= */
     const { data, isLoading } = useQuery({
         queryKey: ['trendingShortStory', page, limit],
         queryFn: () => listTrendingShortStory({ page, limit }),
-        keepPreviousData: true,
+        // ❌ REMOVED: keepPreviousData (not needed with animation)
     })
 
     const totalCount = data?.totalCount || 0
     const story = data?.shortStories?.[0]
     const totalPages = Math.ceil(totalCount / limit)
 
-    /* ================= EFFECTS (ALWAYS RUN) ================= */
+    /* ================= PREFETCH NEXT STORY ================= */
     useEffect(() => {
-        // Reset animation after page change
+        if (page < totalPages) {
+            queryClient.prefetchQuery({
+                queryKey: ['trendingShortStory', page + 1, limit],
+                queryFn: () =>
+                    listTrendingShortStory({ page: page + 1, limit }),
+            })
+        }
+    }, [page, totalPages, limit, queryClient])
+    // 🔴 ADDED: preloads next trending poster into cache
+
+    /* ================= EFFECTS ================= */
+    useEffect(() => {
         setIsAnimating(false)
     }, [page])
 
@@ -54,18 +70,18 @@ function TopTrendStoryGrid() {
     return (
         <div className="mt-4 px-4 md:px-6">
 
-            {/* ================= NETFLIX HERO ================= */}
+            {/* ================= HERO ================= */}
             <div
                 key={story._id}
                 className={`
-        relative group
-        h-[380px] sm:h-[450px] md:h-[560px]
-        rounded-2xl overflow-hidden
-        transition-all duration-500 ease-out
-        ${isAnimating
+                    relative group
+                    h-[380px] sm:h-[450px] md:h-[560px]
+                    rounded-2xl overflow-hidden
+                    transition-all duration-500 ease-out
+                    ${isAnimating
                         ? 'opacity-0 translate-y-2'
                         : 'opacity-100 translate-y-0'}
-      `}
+                `}
             >
 
                 {/* Background */}
@@ -75,14 +91,13 @@ function TopTrendStoryGrid() {
                     className="absolute inset-0 w-full h-full object-cover"
                 />
 
-                {/* Netflix dark vignette */}
+                {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
 
-                {/* ================= CONTENT ================= */}
+                {/* Content */}
                 <div className="relative z-10 h-full flex items-center">
                     <div className="max-w-2xl px-6 sm:px-10 md:px-14 space-y-5">
 
-                        {/* META */}
                         <div className="flex items-center gap-3 text-xs text-gray-300">
                             <span className="font-semibold text-green-400">Trending</span>
                             <span>•</span>
@@ -91,65 +106,39 @@ function TopTrendStoryGrid() {
                             <span>HD</span>
                         </div>
 
-                        {/* TITLE */}
-                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white leading-tight">
+                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white">
                             {story.title}
                         </h1>
 
-                        {/* DESCRIPTION */}
                         <p className="text-sm sm:text-base text-gray-300 max-w-xl">
                             {story.description}
                         </p>
 
-                        {/* ACTIONS */}
                         <div className="flex gap-4 pt-3">
-
                             <Link
                                 to={`/story/${story._id}`}
-                                className="
-                bg-red-600 hover:bg-red-700
-                text-white font-semibold
-                px-7 py-3 rounded-md
-                transition
-              "
+                                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-7 py-3 rounded-md"
                             >
                                 Read Now
                             </Link>
 
                             <Link
                                 to={`/story/${story._id}`}
-                                className="
-                bg-white/20 hover:bg-white/30
-                text-white font-semibold
-                px-7 py-3 rounded-md
-                transition
-              "
+                                className="bg-white/20 hover:bg-white/30 text-white font-semibold px-7 py-3 rounded-md"
                             >
                                 More Info
                             </Link>
-
                         </div>
-
                     </div>
                 </div>
 
-                {/* ================= NETFLIX ARROWS ================= */}
+                {/* Arrows */}
                 <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-3 sm:px-6 z-30 pointer-events-none">
 
                     <button
                         onClick={goPrev}
                         disabled={page === 1}
-                        className="
-            pointer-events-auto
-            w-11 h-11
-            rounded-full
-            bg-black/50 hover:bg-black/70
-            flex items-center justify-center
-            opacity-100 sm:opacity-0
-            sm:group-hover:opacity-100
-            transition
-            disabled:opacity-0
-          "
+                        className="pointer-events-auto w-11 h-11 rounded-full bg-black/50 flex items-center justify-center"
                     >
                         <ChevronLeft className="w-6 h-6 text-white" />
                     </button>
@@ -157,27 +146,15 @@ function TopTrendStoryGrid() {
                     <button
                         onClick={goNext}
                         disabled={page === totalPages}
-                        className="
-            pointer-events-auto
-            w-11 h-11
-            rounded-full
-            bg-black/50 hover:bg-black/70
-            flex items-center justify-center
-            opacity-100 sm:opacity-0
-            sm:group-hover:opacity-100
-            transition
-            disabled:opacity-0
-          "
+                        className="pointer-events-auto w-11 h-11 rounded-full bg-black/50 flex items-center justify-center"
                     >
                         <ChevronRight className="w-6 h-6 text-white" />
                     </button>
 
                 </div>
-
             </div>
         </div>
     )
-
 }
 
 export default TopTrendStoryGrid
