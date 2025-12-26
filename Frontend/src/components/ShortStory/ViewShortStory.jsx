@@ -3,6 +3,8 @@ import { OpenFeedShortStory } from "../../Api-calls/OpenFeedShortStory.js";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Loader from "../Loader.jsx";
+import { likeShortStory } from "../../Api-calls/likeShortStory.js"
+import { ThumbsUp } from "lucide-react";
 const ViewShortStory = () => {
 
 
@@ -10,6 +12,22 @@ const ViewShortStory = () => {
     const [loading, setLoading] = useState(true)
     const { storyId } = useParams();
     console.log(storyId)
+    const [liked, setLiked] = useState(false);
+
+
+    const handleLike = async () => {
+        try {
+            const result = await likeShortStory({ storyId: storyId });
+            console.log(result)
+            if (result?.success) {
+                setLiked(true);
+            }
+
+        } catch (error) {
+            console.error("Error liking story:", error);
+        }
+    };
+
 
     const fetchStory = async () => {
         try {
@@ -17,6 +35,7 @@ const ViewShortStory = () => {
             if (result?.success) {
                 console.log(result?.data?.ShortStory)
                 setStory(result?.data?.ShortStory);
+                setLiked(result?.data?.ShortStory?.isLiked);
             }
         } catch (error) {
             console.error("Error fetching story:", error);
@@ -97,6 +116,36 @@ const ViewShortStory = () => {
                             By <span className="text-gray-200">{story?.author?.username}</span>
                         </span>
                     </div>
+
+                    {/* LIKE BUTTON */}
+                    <div className="flex justify-center mt-6">
+                        <button
+                            onClick={handleLike}
+                            disabled={liked}
+                            className={`
+            flex items-center gap-2
+            px-6 py-2.5
+            rounded-full
+            font-semibold
+            transition-all
+            duration-300
+            border
+            ${liked
+                                    ? "bg-red-600 text-white border-red-600 cursor-not-allowed"
+                                    : "bg-transparent text-white border-white/30 hover:bg-red-600 hover:border-red-600"}
+        `}
+                        >
+                            <ThumbsUp
+                                size={20}
+                                className={liked ? "text-white" : "text-red-600"}
+                            />
+
+                            <span>
+                                {liked ? "Liked" : "Like"}
+                            </span>
+                        </button>
+                    </div>
+
 
                     {/* DIVIDER */}
                     <div className="mx-auto mt-8 mb-10 h-px w-20 bg-gradient-to-r from-transparent via-white/20 to-transparent" />

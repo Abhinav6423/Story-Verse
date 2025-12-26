@@ -57,12 +57,7 @@ const ShortStoryCard = ({ story }) => {
           "
                     />
 
-                    {/* BADGE (OPTIONAL – VERY YOUTUBE-LIKE) */}
-                    <div className="absolute top-2 left-2">
-                        <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-red-600 text-white">
-                            TRENDING
-                        </span>
-                    </div>
+                    
                 </div>
 
                 {/* TEXT CONTENT (BELOW IMAGE) */}
@@ -97,7 +92,7 @@ const ShortStoryCard = ({ story }) => {
                         </div>
 
                         {/* LIKES */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 border border-gray-400 px-2 py-1 rounded-full">
                            
                             <span className="font-medium">{likes}</span>
                             <span className="font-medium ">Likes</span>

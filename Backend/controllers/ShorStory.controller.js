@@ -1,6 +1,7 @@
 import ShortStory from "../modals/Shortstory.modal.js"
 import Userstats from "../modals/Userstats.modal.js";
 import Userhistory from "../modals/Userhistory.modal.js";
+import mongoose from "mongoose"
 // creator panel
 const createShortStory = async (req, res) => {
     try {
@@ -354,10 +355,25 @@ const openShortStory = async (req, res) => {
 
         const shortStory = await ShortStory.findById(storyId).populate("author", "username profilePic")
 
+        if (!shortStory || shortStory.status !== "published") {
+            return res.status(404).json({
+                success: false,
+                message: "Short story not found"
+            })
+        }
+
+        const isLiked = shortStory.likedBy?.some(
+            id => id.toString() === userId.toString()
+        );
+
+
 
         return res.status(200).json({
             success: true,
-            ShortStory: shortStory
+            ShortStory: {
+                ...shortStory._doc,
+                isLiked
+            }
         })
 
 
@@ -451,8 +467,6 @@ const likeShortStory = async (req, res) => {
         const { storyId } = req.params;
         const userId = req.user._id;
 
-        console.log(userId)
-
         if (!mongoose.Types.ObjectId.isValid(storyId)) {
             return res.status(400).json({
                 success: false,
@@ -460,29 +474,38 @@ const likeShortStory = async (req, res) => {
             });
         }
 
-        const updatedStory = await ShortStory.findOneAndUpdate(
-            {
-                _id: storyId,
-                likedBy: { $ne: userId }, // 👈 prevents double-like
-            },
-            {
-                $addToSet: { likedBy: userId }, // 👈 no duplicates
-                $inc: { likes: 1 },             // 👈 atomic increment
-            },
-            { new: true }
-        );
+        // Find story first
+        const story = await ShortStory.findById(storyId);
 
-        if (!updatedStory) {
-            return res.status(400).json({
+        if (!story) {
+            return res.status(404).json({
                 success: false,
-                message: "You already liked this short story",
+                message: "Story not found",
             });
         }
+
+        const alreadyLiked = story.likedBy.includes(userId);
+
+        // If already liked → just return current state (NO ERROR)
+        if (alreadyLiked) {
+            return res.status(200).json({
+                success: true,
+                message: "Story already liked",
+                likes: story.likes,
+                isLiked: true,
+            });
+        }
+
+        // Like the story
+        story.likedBy.push(userId);
+        story.likes += 1;
+        await story.save();
 
         return res.status(200).json({
             success: true,
             message: "Story liked successfully",
-            likes: updatedStory.likes,
+            likes: story.likes,
+            isLiked: true,
         });
     } catch (error) {
         return res.status(500).json({
@@ -491,6 +514,7 @@ const likeShortStory = async (req, res) => {
         });
     }
 };
+
 
 const listTrendingShortStory = async (req, res) => {
     try {
@@ -512,7 +536,11 @@ const listTrendingShortStory = async (req, res) => {
         const shortStories = await ShortStory.find({
             status: "published",
         })
-            .sort({ likes: -1 }) // 🔥 trending
+            .sort({
+                likes: -1,
+                createdAt: -1,
+                _id: -1
+            }) // 🔥 trending
             .skip(skip)
             .limit(limit)
             .populate("author", "username profilePic")

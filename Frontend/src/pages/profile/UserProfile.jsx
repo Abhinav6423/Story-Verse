@@ -40,7 +40,7 @@ const UserProfile = () => {
                             <img
                                 src={
                                     userData?.coverPic ||
-                                    "https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa"
+                                    "https://i.pinimg.com/736x/db/b8/dd/dbb8dd9c4dd2247ad9700573aded2b39.jpg"
                                 }
                                 className="w-full h-full object-cover opacity-90"
                                 alt="cover"
