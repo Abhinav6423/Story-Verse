@@ -367,13 +367,20 @@ const openShortStory = async (req, res) => {
             id => id.toString() === userId.toString()
         );
 
+        const addedToGoodReads = await goodReadShortStory.findOne({
+            reader: userId,
+            story: storyId
+        })
+
+        const isGoodRead = addedToGoodReads ? true : false
 
 
         return res.status(200).json({
             success: true,
             ShortStory: {
                 ...shortStory._doc,
-                isLiked
+                isLiked,
+                isGoodRead
             }
         })
 
@@ -575,9 +582,6 @@ const markGoodReadShortStory = async (req, res) => {
         }
 
         const story = await ShortStory.findById(storyId)
-
-
-
         if (!story) {
             return res.status(404).json({
                 success: false,
@@ -592,17 +596,27 @@ const markGoodReadShortStory = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Short story marked as good read"
+            message: "Short story marked as good read",
+            goodRead: true
         })
 
-
     } catch (error) {
+        // 👇 Duplicate key error
+        if (error.code === 11000) {
+            return res.status(400).json({
+                success: false,
+                message: "Short story already marked as good read",
+                goodRead: true
+            })
+        }
+
         return res.status(500).json({
             success: false,
             message: error.message
         })
     }
 }
+
 
 
 

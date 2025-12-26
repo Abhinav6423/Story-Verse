@@ -15,5 +15,8 @@ const goodShortStories = new Schema(
     }, { timestamps: true }
 )
 
+goodShortStories.index({ reader: 1, story: 1 }, { unique: true })
+
+
 const goodReadShortStory = mongoose.model("goodReadShortStory", goodShortStories)
 export default goodReadShortStory

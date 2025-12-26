@@ -14,15 +14,15 @@ const HomeFeed = () => {
             </div>
 
             {/* MAIN CONTENT */}
-            <main className="space-y-16 pb-20">
+            <main className="space-y-9 sm:space-y-1 pb-20 ">
 
                 {/* HERO */}
-                <section>
+                <section className=''>
                     <TopTrendStoryGrid />
                 </section>
 
                 {/* STORY ROWS */}
-                <section className="px-4 md:px-6">
+                <section className="px-4 md:px-6 ">
                     <ShortStoryGrid />
                 </section>
 

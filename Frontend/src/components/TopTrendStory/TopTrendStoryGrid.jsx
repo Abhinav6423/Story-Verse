@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-
+import TopTrendStoryCard from './TopTrendStoryCard.jsx'
 import { listTrendingShortStory } from '../../Api-calls/trendingShortStory.js'
 import Loader from '../Loader.jsx'
 
@@ -83,53 +83,14 @@ function TopTrendStoryGrid() {
         `}
             >
 
-                {/* Background */}
-                <img
-                    src={story.coverImage}
-                    alt={story.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
+
+
+
 
                 {/* Content */}
-                <div className="relative z-10 h-full flex items-center">
-                    <div className="max-w-2xl px-6 sm:px-10 md:px-14 space-y-5">
 
-                        <div className="flex items-center gap-3 text-xs text-gray-300">
-                            <span className="font-semibold text-green-400">Trending</span>
-                            <span>•</span>
-                            <span>{story.category || 'Drama'}</span>
-                            <span>•</span>
-                            <span>HD</span>
-                        </div>
-
-                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white">
-                            {story.title}
-                        </h1>
-
-                        <p className="text-sm sm:text-base text-gray-300 max-w-xl">
-                            {story.description}
-                        </p>
-
-                        <div className="flex gap-4 pt-3">
-                            <Link
-                                to={`/story/${story._id}`}
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-7 py-3 rounded-md"
-                            >
-                                Read Now
-                            </Link>
-
-                            <Link
-                                to={`/story/${story._id}`}
-                                className="bg-white/20 hover:bg-white/30 text-white font-semibold px-7 py-3 rounded-md"
-                            >
-                                More Info
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+                <TopTrendStoryCard story={story} />
 
                 {/* ================= ARROWS ================= */}
                 <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-3 sm:px-6 z-30 pointer-events-none">

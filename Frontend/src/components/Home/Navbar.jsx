@@ -66,37 +66,65 @@ const Navbar = () => {
 
                     {/* LEFT — LOGO */}
                     <Link to="/home" className="flex items-center gap-3">
-                        <span className="text-red-600 text-xl font-extrabold tracking-wide">
-                           STORYFLIX
+                        <span
+                            className="
+            text-red-600
+            text-lg sm:text-xl md:text-2xl
+            font-extrabold
+            tracking-wide
+          "
+                        >
+                            STORYFLIX
                         </span>
                     </Link>
 
                     {/* CENTER — NAV LINKS */}
-                    <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-300">
-
+                    <div
+                        className="
+          hidden md:flex
+          items-center gap-6
+          text-sm md:text-base
+          font-medium
+          text-gray-300
+        "
+                    >
                         <button
                             onClick={() => setContentType("shortStories")}
-                            className={`transition hover:text-white ${contentType === "shortStories" ? "text-white" : ""
-                                }`}
+                            className={`
+            transition
+            hover:text-white
+            ${contentType === "shortStories" ? "text-white" : ""}
+          `}
                         >
                             Short Stories
                         </button>
 
                         <button
                             onClick={() => setContentType("books")}
-                            className={`transition hover:text-white ${contentType === "books" ? "text-white" : ""
-                                }`}
+                            className={`
+            transition
+            hover:text-white
+            ${contentType === "books" ? "text-white" : ""}
+          `}
                         >
                             Books
                         </button>
-
                     </div>
 
                     {/* RIGHT — SEARCH + PROFILE */}
                     <div className="flex items-center gap-4">
 
                         {/* SEARCH */}
-                        <button className="hidden md:flex w-9 h-9 items-center justify-center rounded-full hover:bg-white/10 transition">
+                        <button
+                            className="
+            hidden md:flex
+            w-9 h-9
+            items-center justify-center
+            rounded-full
+            hover:bg-white/10
+            transition
+          "
+                        >
                             <Search size={18} className="text-white" />
                         </button>
 
@@ -104,7 +132,12 @@ const Navbar = () => {
                         <div className="relative" ref={menuRef}>
                             <button
                                 onClick={() => setOpen(!open)}
-                                className="flex items-center gap-2 rounded-full p-1 hover:bg-white/10 transition"
+                                className="
+              flex items-center gap-2
+              rounded-full p-1
+              hover:bg-white/10
+              transition
+            "
                             >
                                 <img
                                     src={profileImg}
@@ -114,14 +147,28 @@ const Navbar = () => {
                             </button>
 
                             {open && (
-                                <div className="absolute right-0 mt-3 w-60 rounded-md bg-[#141414] shadow-xl border border-white/10 overflow-hidden">
-
+                                <div
+                                    className="
+                absolute right-0 mt-3 w-60
+                rounded-md
+                bg-[#141414]
+                shadow-xl
+                border border-white/10
+                overflow-hidden
+              "
+                                >
                                     {/* USER */}
                                     <div className="px-4 py-3">
-                                        <p className="text-sm font-semibold text-white">
+                                        <p
+                                            className="
+                    text-sm md:text-base
+                    font-semibold
+                    text-white
+                  "
+                                        >
                                             {username}
                                         </p>
-                                        <p className="text-xs text-gray-400">
+                                        <p className="text-xs md:text-sm text-gray-400">
                                             Story Writer • Reader
                                         </p>
                                     </div>
@@ -132,14 +179,26 @@ const Navbar = () => {
                                     <div className="py-2">
                                         <Link
                                             to="/profile"
-                                            className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 transition"
+                                            className="
+                    block px-4 py-2
+                    text-sm md:text-base
+                    text-gray-300
+                    hover:bg-white/10
+                    transition
+                  "
                                         >
                                             Profile
                                         </Link>
 
                                         <Link
                                             to="/create"
-                                            className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 transition"
+                                            className="
+                    block px-4 py-2
+                    text-sm md:text-base
+                    text-gray-300
+                    hover:bg-white/10
+                    transition
+                  "
                                         >
                                             Write a Story
                                         </Link>
@@ -150,19 +209,25 @@ const Navbar = () => {
                                     {/* LOGOUT */}
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-white/10 transition"
+                                        className="
+                  w-full text-left
+                  px-4 py-2
+                  text-sm md:text-base
+                  text-red-500
+                  hover:bg-white/10
+                  transition
+                "
                                     >
                                         Logout
                                     </button>
-
                                 </div>
                             )}
                         </div>
                     </div>
-
                 </div>
             </nav>
         </>
+
     )
 
 

@@ -1,64 +1,61 @@
-import { useState } from "react";
-const StoryCard = ({ cardClass, story }) => {
+import { Link } from "react-router-dom";
+
+const StoryCard = ({ story }) => {
     return (
-        <div
-            className={`
-    relative flex-shrink-0
-    w-full sm:w-72 md:w-80
-    h-[360px]
-    rounded-3xl overflow-hidden
-    shadow-[0_12px_40px_rgba(0,0,0,0.2)]
-    bg-gray-200 cursor-pointer group
-    transition-all duration-300
-    ${cardClass}
-  `}
-        >
-            {/* Background Image */}
-            <img
-                src={story?.coverImage}
-                alt="story"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+        <>
 
-            {/* SOFT GRADIENT (BOTTOM ONLY) */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+            <div className="relative h-[380px] sm:h-[420px] md:h-[480px] lg:h-[520px] w-full overflow-hidden rounded-xl group">
 
-            {/* TOP BADGE (like NEWS) */}
-            <span
-                className="
-      absolute top-4 left-4
-      px-3 py-1
-      bg-white/90 text-slate-800
-      text-[11px] font-semibold tracking-wide
-      rounded-full shadow-sm
-      backdrop-blur
-    "
-            >
-                {story?.category}
-            </span>
+                {/* Background Image */}
+                <img
+                    src={story.coverImage}
+                    alt={story.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
 
-            {/* BOTTOM CONTENT */}
-            <div className="absolute bottom-10 left-4 right-4 text-white space-y-2">
+                {/* Dark Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
 
-                {/* META */}
-                <div className="text-[11px] text-white/80 flex items-center gap-2">
-                    <span className="font-medium">John Doe</span>
-                    <span className="w-1 h-1 rounded-full bg-white/60"></span>
-                    <span>
-                        {new Date(story?.createdAt).toLocaleDateString("en-US", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                        })}
-                    </span>
+                {/* CONTENT (BOTTOM ALIGNED) */}
+                <div className="relative z-10 h-full flex flex-col justify-end px-4 sm:px-6 md:px-8 pb-6 sm:pb-8 space-y-3">
+
+                    {/* META */}
+                    <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-300">
+                        <span className="font-semibold text-green-400">Trending</span>
+                        <span className="opacity-70">•</span>
+                        <span>{story.category || "Drama"}</span>
+                    </div>
+
+                    {/* TITLE */}
+                    <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-white leading-snug">
+                        {story.title}
+                    </h2>
+
+                    {/* DESCRIPTION */}
+                    <p className="text-xs sm:text-sm md:text-base text-gray-300 line-clamp-2 max-w-2xl">
+                        {story.description}
+                    </p>
+
+                    {/* ACTION */}
+                    <div className="pt-2">
+                        <Link
+                            to={`/story/${story._id}`}
+                            className="
+              inline-block
+              bg-red-600 hover:bg-red-700
+              text-white font-semibold
+              text-sm sm:text-base
+              px-5 py-2.5 sm:px-6 sm:py-3
+              rounded-md
+              transition-all duration-300
+            "
+                        >
+                            Read Now
+                        </Link>
+                    </div>
                 </div>
-
-                {/* TITLE */}
-                <h3 className="text-2xl font-bold  leading-tight tracking-tight">
-                    {story?.title}
-                </h3>
             </div>
-        </div>
+        </>
 
     );
 };

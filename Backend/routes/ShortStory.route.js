@@ -12,6 +12,7 @@ import {
    userAnswer,
    likeShortStory,
    listTrendingShortStory,
+   markGoodReadShortStory
 } from "../controllers/ShorStory.controller.js";
 
 const router = express.Router();
@@ -44,5 +45,8 @@ router.post("/:storyId/answer", verifyToken, userAnswer);
 
 // like a story
 router.put("/:storyId/like", verifyToken, likeShortStory);
+
+// mark a story as good read
+router.put("/:storyId/goodRead", verifyToken, markGoodReadShortStory);
 
 export default router;
