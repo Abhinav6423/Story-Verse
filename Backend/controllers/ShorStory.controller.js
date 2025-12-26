@@ -1,6 +1,7 @@
 import ShortStory from "../modals/Shortstory.modal.js"
 import Userstats from "../modals/Userstats.modal.js";
 import Userhistory from "../modals/Userhistory.modal.js";
+import goodReadShortStory from "../modals/GoodReadShortStory.modal.js";
 import mongoose from "mongoose"
 // creator panel
 const createShortStory = async (req, res) => {
@@ -562,11 +563,50 @@ const listTrendingShortStory = async (req, res) => {
     }
 };
 
+const markGoodReadShortStory = async (req, res) => {
+    try {
+        const { storyId } = req.params
+
+        if (!storyId) {
+            return res.status(400).json({
+                success: false,
+                message: "storyId is required"
+            })
+        }
+
+        const story = await ShortStory.findById(storyId)
+
+
+
+        if (!story) {
+            return res.status(404).json({
+                success: false,
+                message: "Short story not found"
+            })
+        }
+
+        await goodReadShortStory.create({
+            reader: req.user._id,
+            story: storyId
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: "Short story marked as good read"
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
 
 
 
 
 
 
-
-export { createShortStory, listShortStory, openShortStory, updateShortStory, deleteShortStory, listUserShortStory, openUserShortStory, userAnswer, likeShortStory, listTrendingShortStory } 
+export { createShortStory, listShortStory, openShortStory, updateShortStory, deleteShortStory, listUserShortStory, openUserShortStory, userAnswer, likeShortStory, listTrendingShortStory, markGoodReadShortStory } 
