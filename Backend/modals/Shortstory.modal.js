@@ -49,7 +49,18 @@ const shortStorySchema = new Schema(
         category: {
             type: String,
             required: true
-        }
+        },
+        totalGoodReads: {
+            type: Number,
+            default: 0
+        },
+        GoodReadsBy: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            }
+        ],
+
     }, { timestamps: true }
 )
 

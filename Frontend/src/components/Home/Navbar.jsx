@@ -3,6 +3,8 @@ import { useAuth } from "../../context/Authcontext";
 import { logoutUser } from "../../Api-calls/logout.js";
 import { useNavigate, Link } from "react-router-dom";
 import { Search } from "lucide-react"
+import { Plus, LayoutGrid, User } from "lucide-react";
+
 
 const Navbar = () => {
     const { userData, loading, reloadUserData } = useAuth();
@@ -60,173 +62,77 @@ const Navbar = () => {
 
     return (
         <>
-            {/* ================= NETFLIX NAVBAR ================= */}
-            <nav className="w-full sticky top-0 z-50 bg-black/80 backdrop-blur-md">
-                <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <nav className="w-full sticky top-0 z-50 bg-white border-b border-gray-200">
+                <div className="relative max-w-7xl mx-auto px-6 h-16 flex items-center">
 
                     {/* LEFT — LOGO */}
-                    <Link to="/home" className="flex items-center gap-3">
+                    <Link to="/home" className="flex items-center">
                         <span
                             className="
-            text-red-600
-            text-lg sm:text-xl md:text-2xl
-            font-extrabold
-            tracking-wide
+            font-serif
+            text-2xl
+            font-semibold
+            text-gray-900
+            tracking-tighter
           "
                         >
-                            STORYFLIX
+                            StoryFlix
                         </span>
                     </Link>
 
-                    {/* CENTER — NAV LINKS */}
+                    {/* CENTER — NAV TABS (TRUE CENTER) */}
                     <div
-                        className="
+                        className=" 
+          absolute left-1/2 -translate-x-1/2
           hidden md:flex
           items-center gap-6
-          text-sm md:text-base
+          text-sm
           font-medium
-          text-gray-300
+          text-gray-700
         "
                     >
-                        <button
-                            onClick={() => setContentType("shortStories")}
-                            className={`
-            transition
-            hover:text-white
-            ${contentType === "shortStories" ? "text-white" : ""}
-          `}
-                        >
+                        <button className="hover:text-black transition">
                             Short Stories
                         </button>
 
-                        <button
-                            onClick={() => setContentType("books")}
-                            className={`
-            transition
-            hover:text-white
-            ${contentType === "books" ? "text-white" : ""}
-          `}
-                        >
+                        <button className="hover:text-black transition">
                             Books
                         </button>
                     </div>
 
-                    {/* RIGHT — SEARCH + PROFILE */}
-                    <div className="flex items-center gap-4">
+                    {/* RIGHT — ACTIONS */}
+                    <div className="ml-auto hidden  md:flex items-center gap-7 text-sm font-medium text-gray-700">
 
-                        {/* SEARCH */}
-                        <button
-                            className="
-            hidden md:flex
-            w-9 h-9
-            items-center justify-center
-            rounded-full
-            hover:bg-white/10
-            transition
-          "
-                        >
-                            <Search size={18} className="text-white" />
+                        {/* WRITE STORY */}
+                        <Link to={`/create`}>
+                            <button className=" cursor-pointer flex items-center gap-2 hover:text-black transition">
+                                <span className="w-7 h-7 flex items-center justify-center border border-gray-800 rounded-full">
+                                    <Plus size={14} strokeWidth={2} />
+                                </span>
+                                <span className="hidden sm:inline">Write story</span>
+                            </button>
+                        </Link>
+
+                        {/* BROWSE */}
+                        <button className="flex items-center gap-2 hover:text-black transition">
+                            <LayoutGrid size={18} />
+                            <span className="hidden sm:inline">Browse</span>
                         </button>
 
                         {/* PROFILE */}
-                        <div className="relative" ref={menuRef}>
-                            <button
-                                onClick={() => setOpen(!open)}
-                                className="
-              flex items-center gap-2
-              rounded-full p-1
-              hover:bg-white/10
-              transition
-            "
-                            >
-                                <img
-                                    src={profileImg}
-                                    alt="profile"
-                                    className="w-8 h-8 rounded-full object-cover"
-                                />
+                        <Link to={'/profile'}>
+                            <button className="cursor-pointer flex items-center gap-2 hover:text-black transition">
+                                <User size={18} />
+                                <span className="hidden sm:inline">Profile</span>
                             </button>
+                        </Link>
 
-                            {open && (
-                                <div
-                                    className="
-                absolute right-0 mt-3 w-60
-                rounded-md
-                bg-[#141414]
-                shadow-xl
-                border border-white/10
-                overflow-hidden
-              "
-                                >
-                                    {/* USER */}
-                                    <div className="px-4 py-3">
-                                        <p
-                                            className="
-                    text-sm md:text-base
-                    font-semibold
-                    text-white
-                  "
-                                        >
-                                            {username}
-                                        </p>
-                                        <p className="text-xs md:text-sm text-gray-400">
-                                            Story Writer • Reader
-                                        </p>
-                                    </div>
-
-                                    <div className="border-t border-white/10" />
-
-                                    {/* LINKS */}
-                                    <div className="py-2">
-                                        <Link
-                                            to="/profile"
-                                            className="
-                    block px-4 py-2
-                    text-sm md:text-base
-                    text-gray-300
-                    hover:bg-white/10
-                    transition
-                  "
-                                        >
-                                            Profile
-                                        </Link>
-
-                                        <Link
-                                            to="/create"
-                                            className="
-                    block px-4 py-2
-                    text-sm md:text-base
-                    text-gray-300
-                    hover:bg-white/10
-                    transition
-                  "
-                                        >
-                                            Write a Story
-                                        </Link>
-                                    </div>
-
-                                    <div className="border-t border-white/10" />
-
-                                    {/* LOGOUT */}
-                                    <button
-                                        onClick={handleLogout}
-                                        className="
-                  w-full text-left
-                  px-4 py-2
-                  text-sm md:text-base
-                  text-red-500
-                  hover:bg-white/10
-                  transition
-                "
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            )}
-                        </div>
                     </div>
                 </div>
             </nav>
         </>
+
+
 
     )
 

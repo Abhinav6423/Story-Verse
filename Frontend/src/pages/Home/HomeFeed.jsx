@@ -1,34 +1,37 @@
-import React from 'react'
-import Navbar from '../../components/Home/Navbar.jsx'
-import TopTrendStoryGrid from '../../components/TopTrendStory/TopTrendStoryGrid.jsx'
-import ShortStoryGrid from '../../components/ShortStory/ShortStoryGrid.jsx'
-
+import React from "react";
+import Navbar from "../../components/Home/Navbar.jsx";
+import TopTrendStoryGrid from "../../components/TopTrendStory/TopTrendStoryGrid.jsx";
+import ShortStoryGrid from "../../components/ShortStory/ShortStoryGrid.jsx";
+import HomeGoodReadGrid from "../../components/HomeGoodReads/HomeGoodReadGrid.jsx";
+import MobileBottomNav from "../../components/Home/MobileBottomNav.jsx";
 const HomeFeed = () => {
-    return (
-        <div className="min-h-screen bg-[#141414] text-white">
+  return (
+    <div className="min-h-screen bg-white text-black">
+      {/* TOP NAVBAR */}
+      <div className="relative">
+        <Navbar />
+      </div>
 
-            {/* Top gradient (Netflix style depth) */}
-            <div className="relative">
-                <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent pointer-events-none" />
-                <Navbar />
-            </div>
+      {/* GOOD READS STRIP */}
+      <HomeGoodReadGrid />
 
-            {/* MAIN CONTENT */}
-            <main className="space-y-9 sm:space-y-1 pb-20 ">
+      {/* MAIN CONTENT */}
+      <main className="space-y-9 sm:space-y-1 pb-16 md:pb-0">
+        {/* HERO */}
+        <section>
+          <TopTrendStoryGrid />
+        </section>
 
-                {/* HERO */}
-                <section className=''>
-                    <TopTrendStoryGrid />
-                </section>
+        {/* STORY GRID */}
+        <section className="px-4 md:px-6 mb-5 ">
+          <ShortStoryGrid />
+        </section>
+      </main>
 
-                {/* STORY ROWS */}
-                <section className="px-4 md:px-6 ">
-                    <ShortStoryGrid />
-                </section>
+      {/* MOBILE BOTTOM NAV */}
+      <MobileBottomNav />
+    </div>
+  );
+};
 
-            </main>
-        </div>
-    )
-}
-
-export default HomeFeed
+export default HomeFeed;

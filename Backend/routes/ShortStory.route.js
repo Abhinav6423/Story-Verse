@@ -12,7 +12,8 @@ import {
    userAnswer,
    likeShortStory,
    listTrendingShortStory,
-   markGoodReadShortStory
+   markGoodReadShortStory,
+   listGoodReads
 } from "../controllers/ShorStory.controller.js";
 
 const router = express.Router();
@@ -26,6 +27,7 @@ router.get("/me", verifyToken, listUserShortStory);
 router.get("/me/:storyId", verifyToken, openUserShortStory);
 router.put("/:storyId", verifyToken, updateShortStory);
 router.delete("/:storyId", verifyToken, deleteShortStory);
+router.get("/goodReads", verifyToken, listGoodReads);
 
 /* =========================
    PUBLIC / READER ROUTES

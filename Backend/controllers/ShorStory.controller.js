@@ -230,10 +230,10 @@ const deleteShortStory = async (req, res) => {
     try {
         const { storyId } = req.params;
 
-        if (!storyId) {
+        if (!mongoose.Types.ObjectId.isValid(storyId)) {
             return res.status(400).json({
                 success: false,
-                message: "storyId is required"
+                message: "Invalid storyId"
             });
         }
 
@@ -253,24 +253,29 @@ const deleteShortStory = async (req, res) => {
             });
         }
 
+        // 🧹 CLEANUP RELATED DATA FIRST
+        await Promise.all([   // to perform multiple async operations in parallel and wait for all to finish before moving on
+            goodReadShortStory.deleteMany({ story: storyId }),
+
+        ]);
+
+        // ❌ DELETE STORY
         await ShortStory.findByIdAndDelete(storyId);
 
+        // 🎯 XP UPDATE (only if published)
         if (shortStory.status === "published") {
             const stats = await Userstats.findOneAndUpdate(
                 { userId: req.user._id },
                 { $inc: { xp: -30 } },
                 { new: true }
-            )
+            );
 
-
-            // prevent negative xp 
-
+            // prevent negative xp
             if (stats && stats.xp < 0) {
                 await Userstats.findOneAndUpdate(
                     { userId: req.user._id },
-                    { $set: { xp: 0 } },
-                    { new: true }
-                )
+                    { $set: { xp: 0 } }
+                );
             }
         }
 
@@ -286,7 +291,6 @@ const deleteShortStory = async (req, res) => {
         });
     }
 };
-
 
 
 
@@ -318,6 +322,7 @@ const listShortStory = async (req, res) => {
             isLiked: story.likedBy?.some(
                 (id) => id.toString() === userId.toString()
             ),
+            isGoodRead: story.GoodReadsBy?.some((id) => id.toString() === userId.toString())
         }));
 
         return res.status(200).json({
@@ -478,90 +483,97 @@ const likeShortStory = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(storyId)) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid storyId",
+                message: "Invalid storyId"
             });
         }
 
-        // Find story first
-        const story = await ShortStory.findById(storyId);
+        // Try UNLIKE first (toggle OFF)
+        const unliked = await ShortStory.findOneAndUpdate(
+            {
+                _id: storyId,
+                likedBy: userId
+            },
+            {
+                $pull: { likedBy: userId },
+                $inc: { likes: -1 },
 
-        if (!story) {
-            return res.status(404).json({
-                success: false,
-                message: "Story not found",
-            });
-        }
+            },
+            { new: true }
+        );
 
-        const alreadyLiked = story.likedBy.includes(userId);
-
-        // If already liked → just return current state (NO ERROR)
-        if (alreadyLiked) {
+        // If UNLIKE happened
+        if (unliked) {
             return res.status(200).json({
                 success: true,
-                message: "Story already liked",
-                likes: story.likes,
-                isLiked: true,
+                message: "Story unliked",
+                likes: unliked.likes,
+                isLiked: false
             });
         }
 
-        // Like the story
-        story.likedBy.push(userId);
-        story.likes += 1;
-        await story.save();
+        // Else → LIKE
+        const liked = await ShortStory.findOneAndUpdate(
+            { _id: storyId },
+            {
+                $addToSet: { likedBy: userId },
+                $inc: { likes: 1 }
+            },
+            { new: true }
+        );
+
+        if (!liked) {
+            return res.status(404).json({
+                success: false,
+                message: "Story not found"
+            });
+        }
 
         return res.status(200).json({
             success: true,
-            message: "Story liked successfully",
-            likes: story.likes,
-            isLiked: true,
+            message: "Story liked",
+            likes: liked.likes,
+            isLiked: true
         });
+
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message,
+            message: error.message
         });
     }
 };
 
 
+
 const listTrendingShortStory = async (req, res) => {
     try {
-        let { page = 1, limit = 1 } = req.query;
+        const userId = req.user?._id;
 
-        page = parseInt(page, 10);
-        limit = parseInt(limit, 10);
-
-        if (page < 1) page = 1;
-        if (limit < 1 || limit > 50) limit = 1;
-
-        const skip = (page - 1) * limit;
-
-        // ✅ TOTAL documents count (CRITICAL)
-        const totalCount = await ShortStory.countDocuments({
-            status: "published",
-        });
+        const TOTAL_TRENDING = 10;
 
         const shortStories = await ShortStory.find({
             status: "published",
         })
             .sort({
                 likes: -1,
+                totalGoodReads: -1,
                 createdAt: -1,
-                _id: -1
-            }) // 🔥 trending
-            .skip(skip)
-            .limit(limit)
+            })
+            .limit(TOTAL_TRENDING)
             .populate("author", "username profilePic")
             .lean();
 
+        const storiesWithActions = shortStories.map((story) => ({
+            ...story,
+            isLiked: userId ? story.likedBy?.includes(userId) : false,
+            isGoodRead: userId ? story.GoodReadsBy?.includes(userId) : false,
+        }));
+
         return res.status(200).json({
             success: true,
-            page,
-            limit,
-            totalCount,     // ✅ correct
-            shortStories,
+            totalCount: storiesWithActions.length, // always <= 10
+            shortStories: storiesWithActions,
         });
-
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -570,57 +582,117 @@ const listTrendingShortStory = async (req, res) => {
     }
 };
 
-const markGoodReadShortStory = async (req, res) => {
+
+const listGoodReads = async (req, res) => {
     try {
-        const { storyId } = req.params
+        const userId = req.user._id;
 
-        if (!storyId) {
-            return res.status(400).json({
-                success: false,
-                message: "storyId is required"
+        // Get good-read relations for this user
+        const goodReads = await goodReadShortStory
+            .find({ reader: userId })
+            .populate({
+                path: "story",
+                populate: {
+                    path: "author",
+                    select: "username profilePic"
+                }
             })
-        }
+            .sort({ createdAt: -1 })
+            .lean();
 
-        const story = await ShortStory.findById(storyId)
-        if (!story) {
-            return res.status(404).json({
-                success: false,
-                message: "Short story not found"
-            })
-        }
-
-        await goodReadShortStory.create({
-            reader: req.user._id,
-            story: storyId
-        })
+        // Convert relations → stories
+        const stories = goodReads
+            .filter(gr => gr.story) // safety if story was deleted
+            .map(gr => {
+                const story = gr.story;
+                return {
+                    ...story,
+                    isLiked: story.likedBy?.includes(userId),
+                    isGoodRead: true
+                };
+            });
 
         return res.status(200).json({
             success: true,
-            message: "Short story marked as good read",
-            goodRead: true
-        })
+            count: stories.length,
+            shortStories: stories
+        });
 
     } catch (error) {
-        // 👇 Duplicate key error
-        if (error.code === 11000) {
-            return res.status(400).json({
-                success: false,
-                message: "Short story already marked as good read",
-                goodRead: true
-            })
-        }
-
         return res.status(500).json({
             success: false,
             message: error.message
-        })
+        });
     }
-}
+};
 
 
 
+const markGoodReadShortStory = async (req, res) => {
+    try {
+        const { storyId } = req.params;
+        const userId = req.user._id;
+
+        if (!mongoose.Types.ObjectId.isValid(storyId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid storyId"
+            });
+        }
+
+        // Toggle OFF
+        const removed = await goodReadShortStory.findOneAndDelete({
+            reader: userId,
+            story: storyId
+        });
+
+        if (removed) {
+            const story = await ShortStory.findByIdAndUpdate(
+                storyId,
+                {
+                    $inc: { totalGoodReads: -1 },
+                    $pull: { GoodReadsBy: userId }
+                },
+                { new: true }
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: "Removed from Good Read",
+                goodRead: false,
+                totalGoodReads: story.totalGoodReads
+            });
+        }
+
+        // Toggle ON
+        await goodReadShortStory.create({
+            reader: userId,
+            story: storyId
+        });
+
+        const story = await ShortStory.findByIdAndUpdate(
+            storyId,
+            {
+                $inc: { totalGoodReads: 1 },
+                $addToSet: { GoodReadsBy: userId } // 👈 IMPORTANT
+            },
+            { new: true }
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Marked as Good Read",
+            goodRead: true,
+            totalGoodReads: story.totalGoodReads
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
 
 
-
-
-export { createShortStory, listShortStory, openShortStory, updateShortStory, deleteShortStory, listUserShortStory, openUserShortStory, userAnswer, likeShortStory, listTrendingShortStory, markGoodReadShortStory } 
+export { createShortStory, listShortStory, openShortStory, updateShortStory, deleteShortStory, listUserShortStory, openUserShortStory, userAnswer, likeShortStory, listTrendingShortStory, markGoodReadShortStory, listGoodReads }; 

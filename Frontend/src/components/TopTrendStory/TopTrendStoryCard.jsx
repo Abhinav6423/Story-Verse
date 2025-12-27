@@ -1,63 +1,72 @@
 import { Link } from "react-router-dom";
+import { ThumbsUp } from "lucide-react";
 
 const StoryCard = ({ story }) => {
+
+
     return (
         <>
+            <div className="w-[140px] sm:w-[160px]">
+                {/* POSTER */}
+                <div
+                    className="
+        relative
+        aspect-[2/3]
+        rounded-lg
+        overflow-hidden
+        bg-gray-100
+        shadow-sm
+        hover:shadow-lg
+        transition
+      "
+                >
+                    <img
+                        src={story.coverImage}
+                        alt={story.title}
+                        className="
+          w-full h-full
+          object-cover
+          hover:scale-105
+          transition-transform
+          duration-300
+        "
+                    />
+                </div>
 
-            <div className="relative h-[380px] sm:h-[420px] md:h-[480px] lg:h-[520px] w-full overflow-hidden rounded-xl group">
+                {/* INFO */}
+                <div className="mt-2 space-y-1">
+                    {/* TITLE + LIKES */}
+                    <div className="flex items-center justify-between gap-2">
+                        <h3 className="text-sm sm:text-xs font-semibold text-gray-900 leading-tight">
+                            {story.title?.length > 12
+                                ? story.title.slice(0, 12) + "…"
+                                : story.title}
+                        </h3>
 
-                {/* Background Image */}
-                <img
-                    src={story.coverImage}
-                    alt={story.title}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-
-                {/* Dark Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-
-                {/* CONTENT (BOTTOM ALIGNED) */}
-                <div className="relative z-10 h-full flex flex-col justify-end px-4 sm:px-6 md:px-8 pb-6 sm:pb-8 space-y-3">
-
-                    {/* META */}
-                    <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-300">
-                        <span className="font-semibold text-green-400">Trending</span>
-                        <span className="opacity-70">•</span>
-                        <span>{story.category || "Drama"}</span>
+                        <div className="flex items-center gap-1 text-xs sm:text-[11px] font-medium text-emerald-600 shrink-0">
+                            <ThumbsUp size={14} className="sm:hidden" />
+                            <ThumbsUp size={12} className="hidden sm:block" />
+                            <span>{story.likes || "10k"}</span>
+                        </div>
                     </div>
 
-                    {/* TITLE */}
-                    <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-white leading-snug">
-                        {story.title}
-                    </h2>
-
-                    {/* DESCRIPTION */}
-                    <p className="text-xs sm:text-sm md:text-base text-gray-300 line-clamp-2 max-w-2xl">
-                        {story.description}
-                    </p>
-
-                    {/* ACTION */}
-                    <div className="pt-2">
-                        <Link
-                            to={`/story/${story._id}`}
-                            className="
-              inline-block
-              bg-red-600 hover:bg-red-700
-              text-white font-semibold
-              text-sm sm:text-base
-              px-5 py-2.5 sm:px-6 sm:py-3
-              rounded-md
-              transition-all duration-300
-            "
-                        >
-                            Read Now
-                        </Link>
+                    {/* AUTHOR */}
+                    <div className="flex items-center gap-2 sm:gap-1.5">
+                        <img
+                            src={story.author?.profilePic || "/avatar.png"}
+                            alt={story.author?.username}
+                            className="w-5 h-5 sm:w-4 sm:h-4 rounded-full object-cover"
+                        />
+                        <p className="text-xs sm:text-[11px] text-gray-500 truncate">
+                            {story.author?.username || "Aleen Kizoff"}
+                        </p>
                     </div>
                 </div>
             </div>
         </>
 
     );
+
 };
 
 export default StoryCard;

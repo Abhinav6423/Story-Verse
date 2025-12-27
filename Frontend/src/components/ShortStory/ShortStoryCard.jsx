@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Heart } from "lucide-react";
+import { ThumbsUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { likeShortStory } from "../../Api-calls/likeShortStory.js";
 
@@ -28,79 +28,67 @@ const ShortStoryCard = ({ story }) => {
     };
 
     return (
-        <Link
-            to={`/story/${story?._id}`}
-            className="group block w-full"
-        >
-            <div className="w-full">
-
-                {/* THUMBNAIL */}
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
-
+        <>
+            <div className="w-[140px] sm:w-[160px]">
+                {/* POSTER */}
+                <div
+                    className="
+        relative
+        aspect-[2/3]
+        rounded-lg
+        overflow-hidden
+        bg-gray-100
+        shadow-sm
+        hover:shadow-lg
+        transition
+      "
+                >
                     <img
-                        src={story?.coverImage}
-                        alt={story?.title}
+                        src={story.coverImage}
+                        alt={story.title}
                         className="
-            w-full h-full object-cover
-            transition-transform duration-500
-            group-hover:scale-105
-          "
+          w-full h-full
+          object-cover
+          hover:scale-105
+          transition-transform
+          duration-300
+        "
                     />
-
-                    {/* HOVER OVERLAY */}
-                    <div
-                        className="
-            absolute inset-0
-            bg-black/30
-            opacity-0 group-hover:opacity-100
-            transition
-          "
-                    />
-
-                    
                 </div>
 
-                {/* TEXT CONTENT (BELOW IMAGE) */}
-                <div className="mt-3 space-y-1.5">
+                {/* INFO */}
+                <div className="mt-2 space-y-1">
+                    {/* TITLE + LIKES */}
+                    <div className="flex items-center justify-between gap-2">
+                        <h3 className="text-sm sm:text-xs font-semibold text-gray-900 leading-tight">
+                            {story.title?.length > 12
+                                ? story.title.slice(0, 12) + "…"
+                                : story.title}
+                        </h3>
 
-                    {/* TITLE */}
-                    <h3
-                        className="
-            text-[15px] font-semibold leading-snug
-            text-white
-            line-clamp-2
-            group-hover:text-red-500
-            transition
-          "
-                    >
-                        {story?.title}
-                    </h3>
-
-                    {/* META ROW */}
-                    <div className="flex items-center justify-between text-xs text-gray-400">
-
-                        {/* AUTHOR */}
-                        <div className="flex items-center gap-2">
-                            <img
-                                src={story?.author?.profilePic}
-                                alt="author"
-                                className="w-6 h-6 rounded-full object-cover"
-                            />
-                            <span className="font-medium">
-                                {story?.author?.username}
-                            </span>
+                        <div className="flex items-center gap-1 text-xs sm:text-[11px] font-medium text-emerald-600 shrink-0">
+                            <ThumbsUp size={14} className="sm:hidden" />
+                            <ThumbsUp size={12} className="hidden sm:block" />
+                            <span>{story.likes || "10k"}</span>
                         </div>
+                    </div>
 
-                        {/* LIKES */}
-                        <div className="flex items-center gap-1 border border-gray-400 px-2 py-1 rounded-full">
-                           
-                            <span className="font-medium">{likes}</span>
-                            <span className="font-medium ">Likes</span>
-                        </div>
+                    {/* AUTHOR */}
+                    <div className="flex items-center gap-2 sm:gap-1.5">
+                        <img
+                            src={story.author?.profilePic || "/avatar.png"}
+                            alt={story.author?.username}
+                            className="w-5 h-5 sm:w-4 sm:h-4 rounded-full object-cover"
+                        />
+                        <p className="text-xs sm:text-[11px] text-gray-500 truncate">
+                            {story.author?.username || "Aleen Kizoff"}
+                        </p>
                     </div>
                 </div>
             </div>
-        </Link>
+        </>
+
+
     )
 
 

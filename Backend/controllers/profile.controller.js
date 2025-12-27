@@ -63,4 +63,51 @@ const getUserShortStories = async (req, res) => {
     }
 }
 
-export { getUserProfileData , getUserShortStories }
+const updateProfile = async (req, res) => {
+    try {
+        const { profilePic, username } = req.body
+
+        if (!profilePic || !username) {
+            return res.status(400).json({
+                success: false,
+                message: "profilePic and username are required"
+            })
+        }
+
+        const userId = req.user._id
+
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: "Unauthorized"
+            })
+        }
+
+        const user = await User.findById(userId)
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+        user.profilePic = profilePic
+        user.username = username
+
+        await user.save()
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile updated successfully"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+export { getUserProfileData, getUserShortStories , updateProfile} 

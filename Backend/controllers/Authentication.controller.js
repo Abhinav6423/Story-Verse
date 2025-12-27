@@ -51,6 +51,7 @@ const registerUser = async (req, res) => {
             {
                 userId: user._id,
                 username: user.username,
+                profilePic: user.profilePic
             }
         )
 

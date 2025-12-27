@@ -13,6 +13,10 @@ body {
   scrollbar-width: none; /* Firefox */
 }
 
+body {
+  font-family: "Poppins", sans-serif;
+}
+
 /* =====================================================
    ANIMATIONS
 ===================================================== */
@@ -187,5 +191,3 @@ body {
   line-height: 1.75;
   margin-bottom: 1.25rem;
 }
-
-
