@@ -48,45 +48,48 @@ const ViewShortStory = () => {
 
     /* ---------------- LIKE HANDLER ---------------- */
     const handleLike = async () => {
-        // optimistic UI
-        setLiked(prev => !prev);
-        setLikesCount(prev => (liked ? prev - 1 : prev + 1));
+        const wasLiked = liked; // snapshot state
 
-        // call backend ONLY when liking
-        if (liked) return;
+        // optimistic toggle
+        setLiked(!wasLiked);
+        setLikesCount(prev => (wasLiked ? prev - 1 : prev + 1));
 
         try {
-            await likeShortStory({ storyId });
+            const result = await likeShortStory({ storyId });
+            if (!result?.success) throw new Error();
+
+            toast.success(wasLiked ? "Like removed" : "Story liked ❤️");
         } catch (error) {
-            // rollback on failure
-            setLiked(true);
-            setLikesCount(prev => prev - 1);
-            toast.error("Failed to like story");
+            // rollback
+            setLiked(wasLiked);
+            setLikesCount(prev => (wasLiked ? prev + 1 : prev - 1));
+            toast.error("Action failed");
         }
     };
 
     /* ---------------- GOOD READ HANDLER ---------------- */
     const handleGoodReads = async () => {
-        // optimistic UI
-        setAddedToGoodReads(prev => !prev);
-        setGoodReadsCount(prev =>
-            addedToGoodReads ? prev - 1 : prev + 1
-        );
+        const wasAdded = addedToGoodReads; // snapshot
 
-        // call backend ONLY when adding
-        if (addedToGoodReads) return;
+        // optimistic toggle
+        setAddedToGoodReads(!wasAdded);
+        setGoodReadsCount(prev => (wasAdded ? prev - 1 : prev + 1));
 
         try {
             const result = await addShortStoryToGoodReads({ storyId });
             if (!result?.success) throw new Error();
-            toast.success(result.message);
+
+            toast.success(
+                wasAdded ? "Removed from Good Reads" : "Added to Good Reads 📚"
+            );
         } catch (error) {
             // rollback
-            setAddedToGoodReads(true);
-            setGoodReadsCount(prev => prev - 1);
-            toast.error("Failed to save Good Read");
+            setAddedToGoodReads(wasAdded);
+            setGoodReadsCount(prev => (wasAdded ? prev + 1 : prev - 1));
+            toast.error("Action failed");
         }
     };
+
 
     if (loading) return <Loader />;
 

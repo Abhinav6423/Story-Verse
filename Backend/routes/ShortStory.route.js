@@ -14,7 +14,7 @@ import {
    listTrendingShortStory,
    markGoodReadShortStory,
    listGoodReads,
-   getTopGoodReads
+   getTopGoodReads,
 } from "../controllers/ShorStory.controller.js";
 
 const router = express.Router();
