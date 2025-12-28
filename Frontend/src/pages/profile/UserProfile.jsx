@@ -22,110 +22,113 @@ const UserProfile = () => {
         userProfile();
     }, []);
 
-    if (loading) return <Loader/>
+    if (loading) return <Loader />;
 
     return (
-        <div className="min-h-screen bg-[#0f0f0f]">
+        <div className="min-h-screen bg-white">
             <Navbar />
 
-            {/* PAGE WRAPPER */}
-            <div className="flex justify-center px-4 py-6">
-                <div className="w-full max-w-5xl">
+            {/* COVER */}
+            <div className="relative h-36 sm:h-56 w-full">
+                <img
+                    src={
+                        userData?.coverPic ||
+                        "https://i.pinimg.com/1200x/9e/23/f0/9e23f0e8bacb5f03ad6418a3bdd1727b.jpg"
+                    }
+                    alt="cover"
+                    className="w-full h-full object-cover"
+                />
+            </div>
 
-                    {/* PROFILE CARD */}
-                    <div className="bg-[#121212] rounded-3xl shadow-xl overflow-hidden border border-white/5">
+            {/* PROFILE SECTION */}
+            <div className="px-4 sm:px-10 max-w-7xl mx-auto">
 
-                        {/* COVER */}
-                        <div className="relative h-40 sm:h-52 md:h-72 bg-black">
+                {/* PROFILE ROW */}
+                <div
+                    className="
+        relative -mt-20
+        mx-auto
+        max-w-10xl
+        px-4
+        flex flex-col items-center text-center
+        lg:grid lg:grid-cols-[auto_1fr]
+        lg:items-end lg:text-left
+        lg:gap-30
+        
+    "
+                >
+                    {/* AVATAR + NAME */}
+                    <div className="flex flex-col items-center lg:items-start">
+                        <div className="w-40 h-40 rounded-full border-4 border-white shadow-md">
                             <img
-                                src={
-                                    userData?.coverPic ||
-                                    "https://i.pinimg.com/736x/db/b8/dd/dbb8dd9c4dd2247ad9700573aded2b39.jpg"
-                                }
-                                className="w-full h-full object-cover opacity-90"
-                                alt="cover"
-                            />
-
-                            {/* subtle overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-
-                            {/* PROFILE IMAGE */}
-                            <div className="absolute -bottom-14 left-1/2 -translate-x-1/2">
-                                <img
-                                    src={userData?.profilePic}
-                                    className="
-                  w-28 h-28
-                  rounded-full
-                  object-cover
-                  border-4 border-[#121212]
-                  shadow-lg
-                "
-                                    alt="profile"
-                                />
-                            </div>
+                            src={userData?.profilePic}
+                            alt="profile"
+                            className="w-full h-full object-cover "
+                        />
                         </div>
 
-                        {/* PROFILE INFO */}
-                        <div className="pt-20 px-5 sm:px-8 text-center">
+                        <h1 className="mt-4 text-2xl font-medium text-gray-900">
+                            {userData?.username}
+                        </h1>
 
-                            <h2 className="text-xl sm:text-2xl font-semibold text-white">
-                                {userData?.username}
-                            </h2>
-
-                            <p className="text-sm text-gray-400 font-medium mt-1">
-                                Story Writer • Reader
-                            </p>
-
-                            {/* STATS */}
-                            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-6">
-                                <StatBox label="Stories" value={userStats?.totalShortStoriesCreated} />
-                                <StatBox label="Reads" value={userStats?.totalShortStoriesRead || 0} />
-                                <StatBox label="Chapters+" value={userStats?.totalChaptersCreated || 0} />
-                                <StatBox label="Chapters-" value={userStats?.totalChaptersRead || 0} />
-                                <StatBox label="Level" value={userStats?.level || 0} />
-                                <StatBox label="XP" value={userStats?.xp || 0} />
-                            </div>
-                        </div>
-
-                        {/* CONTENT GRID */}
-                        <div className="px-4 sm:px-6 md:px-8 py-8">
-                            <MyStories />
-                        </div>
-
+                        <p className="text-green-950 font-medium text-sm mt-1">
+                            Story Writer • Reader
+                        </p>
                     </div>
+
+                    {/* STATS */}
+                    <div
+                        className="
+            mt-6
+            grid grid-cols-3 gap-y-6 gap-x-10
+            lg:mt-0
+            lg:flex lg:items-center lg:gap-8
+        "
+                    >
+                        <Stat label="Stories" value={userStats?.totalShortStoriesCreated || 0} />
+                        <Divider />
+                        <Stat label="Reads" value={userStats?.totalShortStoriesRead || 0} />
+                        <Divider />
+                        <Stat label="Chapters+" value={userStats?.totalChaptersCreated || 0} />
+                        <Divider />
+                        <Stat label="Chapters-" value={userStats?.totalChaptersRead || 0} />
+                        <Divider />
+                        <Stat label="Level" value={userStats?.level || 0} />
+                        <Divider />
+                        <Stat label="XP" value={userStats?.xp || 0} />
+                    </div>
+
+                   
+                </div>
+
+                <div className="w-full h-px bg-gray-400 mt-9"></div>
+
+
+                {/* STORIES */}
+                <div className="">
+                    
+                    <MyStories />
                 </div>
             </div>
         </div>
     );
-
 };
 
 /* ---------- SUB COMPONENTS ---------- */
 
-const StatBox = ({ label, value }) => (
-    <div
-        className="
-      flex flex-col items-center justify-center
-      rounded-2xl
-      bg-[#1a1a1a]
-      px-4 py-5
-      text-center
-      transition
-      hover:bg-[#1f1f1f]
-    "
-    >
-        <p className="text-2xl sm:text-2xl md:text-3xl font-bold text-white leading-none">
+const Stat = ({ label, value }) => (
+    <div className="min-w-[80px]  flex flex-col items-center">
+        <p className="text-xl  font-bold text-gray-900">
             {value}
         </p>
-
-        <p className="mt-2 text-[11px] sm:text-xs uppercase tracking-widest text-gray-400">
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-1">
             {label}
         </p>
     </div>
 );
 
-
-
-
+const Divider = () => (
+    <div className="hidden lg:block h-8 w-px bg-gray-300" />
+);
 
 export default UserProfile;

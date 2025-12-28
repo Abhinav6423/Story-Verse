@@ -4,7 +4,7 @@ import Navbar from "../../components/Home/Navbar.jsx";
 import MyStoryCard from "./MyStoryCard.jsx";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../Loader.jsx";
-
+import { BookOpen } from "lucide-react";
 const MyStories = () => {
     const [status, setStatus] = useState("published");
 
@@ -21,75 +21,73 @@ const MyStories = () => {
     const stories = data?.data || [];
 
     return (
-        <div className="min-h-screen bg-[#0f0f0f]">
-            <div className="max-w-6xl mx-auto px-4 py-10">
+        <div className="min-h-screen bg-white">
+            <div className="max-w-7xl mx-auto py-7 sm:py-3">
 
                 {/* ===== HEADER ===== */}
-                <div className="flex flex-col items-center text-center">
-                    <p className="text-sm text-gray-400 mt-1 tracking-wide">
-                        Stories you have written
-                    </p>
+                <div className="flex flex-col sm:flex-row gap-5 items-center justify-between mb-8 sm:mb-12 ">
+
+                    <h2 className="text-xl font-semibold text-green-950">
+                        Your Stories
+                    </h2>
 
                     {/* FILTERS */}
-                    <div
-                        className="
-          mt-5
-          flex items-center gap-2
-          bg-[#1a1a1a]
-          p-1.5
-          rounded-full
-          border border-white/10
-          shadow-md
-        "
-                    >
+                    <div className="flex items-center bg-gray-200 rounded-full p-2.5">
                         <button
                             onClick={() => setStatus("published")}
                             className={`
-            px-4 py-1.5
+            cursor-pointer
+            flex items-center gap-2.5
+            px-5 py-2.5
             rounded-full
             text-sm font-semibold
             transition-all
             ${status === "published"
-                                    ? "bg-white text-black shadow"
-                                    : "text-gray-400 hover:bg-white/10 hover:text-white"}
-          `}
+                                    ? "bg-green-950 text-white shadow-md"
+                                    : "text-gray-600 hover:text-gray-900"}
+        `}
                         >
+                            <BookOpen className="w-5 h-5" />
                             Published
                         </button>
 
                         <button
                             onClick={() => setStatus("draft")}
                             className={`
-            px-4 py-1.5
+            cursor-pointer
+            flex items-center gap-2.5
+            px-5 py-2.5
             rounded-full
             text-sm font-semibold
             transition-all
             ${status === "draft"
-                                    ? "bg-white text-black shadow"
-                                    : "text-gray-400 hover:bg-white/10 hover:text-white"}
-          `}
+                                    ? "bg-green-950 text-white shadow-md"
+                                    : "text-gray-600 hover:text-gray-900"}
+        `}
                         >
+                            <BookOpen className="w-5 h-5" />
                             Draft
                         </button>
                     </div>
+
                 </div>
 
-                {/* ===== STORIES ===== */}
+                {/* ===== STORIES GRID ===== */}
                 {stories.length === 0 ? (
-                    <p className="text-center text-gray-500 mt-24 text-sm">
+                    <p className="text-center text-gray-500 mt-20 text-sm">
                         No {status} stories found.
                     </p>
                 ) : (
                     <div
                         className="
-          mt-10
-          grid
-          grid-cols-2
-          sm:grid-cols-3
-          md:grid-cols-4
-          lg:grid-cols-5
-          gap-6
-        "
+                        grid
+                        grid-cols-2
+                        sm:grid-cols-3
+                        md:grid-cols-4
+                        lg:grid-cols-5
+                        gap-x-6
+                        gap-y-10
+                    "
                     >
                         {stories.map((story) => (
                             <MyStoryCard
@@ -105,9 +103,8 @@ const MyStories = () => {
                 )}
             </div>
         </div>
-
-
     );
+
 };
 
 export default MyStories;
