@@ -48,28 +48,33 @@ const ViewShortStory = () => {
 
     /* ---------------- LIKE HANDLER ---------------- */
     const handleLike = async () => {
-        const wasLiked = liked; // snapshot state
+        const wasLiked = liked;
 
-        // optimistic toggle
+        // 🔥 INSTANT TOAST
+        toast.info(wasLiked ? "Removing like..." : "Liking story...");
+
+        // optimistic UI
         setLiked(!wasLiked);
         setLikesCount(prev => (wasLiked ? prev - 1 : prev + 1));
 
         try {
-            const result = await likeShortStory({ storyId });
-            if (!result?.success) throw new Error();
-
+            await likeShortStory({ storyId });
+            toast.dismiss();
             toast.success(wasLiked ? "Like removed" : "Story liked ❤️");
         } catch (error) {
-            // rollback
+            toast.dismiss();
             setLiked(wasLiked);
             setLikesCount(prev => (wasLiked ? prev + 1 : prev - 1));
             toast.error("Action failed");
         }
     };
 
+
     /* ---------------- GOOD READ HANDLER ---------------- */
     const handleGoodReads = async () => {
         const wasAdded = addedToGoodReads; // snapshot
+
+        toast.info(wasAdded ? "Removing from Good Reads" : "Adding to Good Reads");
 
         // optimistic toggle
         setAddedToGoodReads(!wasAdded);
