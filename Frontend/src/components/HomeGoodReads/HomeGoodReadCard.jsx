@@ -58,7 +58,7 @@ function HomeGoodReadCard({ story, rank }) {
               className="w-5 h-5 rounded-full object-cover"
             />
             <p className="text-xs text-gray-500 font-semibold truncate">
-              {story.author?.username || "Aleen Kizoff"}
+              {story?.author?.username }
             </p>
           </div>
         </div>
@@ -66,7 +66,7 @@ function HomeGoodReadCard({ story, rank }) {
         {/* BOTTOM: GOOD READS */}
         <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600">
           <ThumbsUp size={14} strokeWidth={2} />
-          <span>{story.totalGoodReads || "10k"} Good reads</span>
+          <span>{story?.totalGoodReads } Good reads</span>
         </div>
       </div>
     </div>

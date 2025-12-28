@@ -13,7 +13,8 @@ import {
    likeShortStory,
    listTrendingShortStory,
    markGoodReadShortStory,
-   listGoodReads
+   listGoodReads,
+   getTopGoodReads
 } from "../controllers/ShorStory.controller.js";
 
 const router = express.Router();
@@ -23,32 +24,28 @@ const router = express.Router();
    ========================= */
 
 router.post("/", verifyToken, createShortStory);
+
 router.get("/me", verifyToken, listUserShortStory);
 router.get("/me/:storyId", verifyToken, openUserShortStory);
+
 router.put("/:storyId", verifyToken, updateShortStory);
 router.delete("/:storyId", verifyToken, deleteShortStory);
+
 router.get("/goodReads", verifyToken, listGoodReads);
 
 /* =========================
    PUBLIC / READER ROUTES
    ========================= */
 
-// 🔥 FIXED ROUTE (must be BEFORE :storyId)
+// 🔥 STATIC ROUTES FIRST
 router.get("/trending", verifyToken, listTrendingShortStory);
-
-// list all stories
 router.get("/list", verifyToken, listShortStory);
+router.get("/topGoodReads", verifyToken, getTopGoodReads);
 
-// open a single story
+// 🔥 DYNAMIC ROUTES LAST
 router.get("/:storyId", verifyToken, openShortStory);
-
-// submit answer
 router.post("/:storyId/answer", verifyToken, userAnswer);
-
-// like a story
 router.put("/:storyId/like", verifyToken, likeShortStory);
-
-// mark a story as good read
 router.put("/:storyId/goodRead", verifyToken, markGoodReadShortStory);
 
 export default router;

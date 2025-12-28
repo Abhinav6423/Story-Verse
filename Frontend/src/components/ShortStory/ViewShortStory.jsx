@@ -102,14 +102,16 @@ const ViewShortStory = () => {
                 />
 
                 {/* CATEGORY BADGE */}
-                <span className="
+                <span
+                    className="
           absolute bottom-0 left-1/2
           -translate-x-1/2 translate-y-1/2
           bg-[#1f3d34] text-white
           px-7 py-2 rounded-full
           text-md shadow-lg
           border-4 border-white
-        ">
+        "
+                >
                     {story.category}
                 </span>
             </div>
@@ -118,15 +120,15 @@ const ViewShortStory = () => {
             <div className="max-w-4xl mx-auto px-6 sm:px-10 pt-16">
 
                 {/* HEADER */}
-                <div className="flex flex-col sm:flex-row sm:justify-between gap-10">
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-8">
 
                     {/* TITLE + AUTHOR */}
                     <div>
-                        <h1 className="text-3xl sm:text-4xl font-serif font-medium text-gray-900">
+                        <h1 className="text-3xl text-center sm:text-4xl font-serif font-medium text-gray-900">
                             {story.title}
                         </h1>
 
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">
                             <img
                                 src={story.author?.profilePic}
                                 alt={story.author?.username}
@@ -139,55 +141,71 @@ const ViewShortStory = () => {
                     </div>
 
                     {/* ACTION BUTTONS */}
-                    <div className="flex items-center gap-2">
-
+                    <div
+                        className="
+            flex flex-row
+            items-center
+            justify-center sm:justify-end
+            gap-3
+          "
+                    >
                         {/* LIKE */}
                         <button
                             onClick={handleLike}
-                            className="
-                inline-flex items-center gap-2
-                px-4 py-2 rounded-full
-                border border-black
-                text-sm whitespace-nowrap
-                hover:bg-gray-100
-              "
+                            className={`
+              inline-flex items-center gap-2
+              px-4 py-2
+              rounded-full
+              text-sm
+              border
+              transition
+              ${liked
+                                    ? "bg-black text-white border-black"
+                                    : "bg-white text-black border-black hover:bg-gray-100"}
+            `}
                         >
                             <ThumbsUp
-                                size={16}
-                                stroke="black"
-                                fill={liked ? "black" : "none"}
+                                size={14}
+                                stroke={liked ? "white" : "black"}
+                                fill={liked ? "white" : "none"}
                             />
                             <span className="font-semibold">
                                 {likesCount} Likes
                             </span>
                         </button>
 
-                        {/* GOOD READ */}
+                        {/* GOOD READ (BIGGER) */}
                         <button
                             onClick={handleGoodReads}
-                            className="
-                inline-flex items-center gap-2
-                px-4 py-2 rounded-full
-                border border-emerald-400
-                text-sm whitespace-nowrap
-                text-emerald-600
-                hover:bg-emerald-50
-              "
+                            className={`
+              inline-flex items-center gap-2
+              px-6 py-3
+              rounded-full
+              text-base
+              font-semibold
+              border
+              transition
+              ${addedToGoodReads
+                                    ? "bg-emerald-600 text-white border-emerald-600"
+                                    : "bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50"}
+            `}
                         >
                             <Bookmark
-                                size={16}
+                                size={18}
                                 stroke="currentColor"
                                 fill={addedToGoodReads ? "currentColor" : "none"}
                             />
-                            <span>{goodReadsCount} Good reads</span>
+                            <span>
+                                {goodReadsCount} Good reads
+                            </span>
                         </button>
-
                     </div>
+
                 </div>
 
                 {/* DESCRIPTION */}
                 {story.description && (
-                    <div className="mt-8">
+                    <div className="mt-19 ">
                         <p className="text-sm text-center sm:text-left font-semibold uppercase text-gray-800 mb-2">
                             Description
                         </p>
@@ -214,6 +232,7 @@ const ViewShortStory = () => {
             </div>
         </div>
     );
+
 };
 
 export default ViewShortStory;

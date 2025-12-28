@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import HomeGoodReadCard from "./HomeGoodReadCard";
 import { BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { listTopGoodReadsShortStory } from "../../Api-calls/TopGoodreadsShortStory.js"
+import Loader from "../Loader.jsx";
 
 function HomeGoodReadGrid() {
     const stories = [
@@ -35,6 +39,21 @@ function HomeGoodReadGrid() {
             },
         },
     ];
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["topGoodReadsShortStory"],
+        queryFn: listTopGoodReadsShortStory,
+        staleTime: 1000 * 60 * 5, // 5 minutes
+    });
+
+    console.log(data?.goodreads?.map(gr => gr?.story) || [])
+    const shortStories =
+        data?.goodreads?.map(gr => gr.story) || [];
+
+
+    if (isLoading) return <Loader />
+    if (isError) return alert("Something went wrong")
+
 
     return (
         <section className="relative text-white overflow-hidden">
@@ -113,12 +132,14 @@ function HomeGoodReadGrid() {
             pl-1 md:pl-3
           "
                 >
-                    {stories.map((story, index) => (
-                        <HomeGoodReadCard
-                            key={story._id}
-                            story={story}
-                            rank={index + 1}
-                        />
+                    {shortStories.map((story, index) => (
+                        <Link to={`/story/${story._id}`}>
+                            <HomeGoodReadCard
+                                key={story._id}
+                                story={story}
+                                rank={index + 1}
+                            />
+                        </Link>
                     ))}
                 </div>
             </div>

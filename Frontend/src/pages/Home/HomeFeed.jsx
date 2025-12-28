@@ -28,8 +28,7 @@ const HomeFeed = () => {
         </section>
       </main>
 
-      {/* MOBILE BOTTOM NAV */}
-      <MobileBottomNav />
+      
     </div>
   );
 };

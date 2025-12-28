@@ -11,7 +11,6 @@ const Register = () => {
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [profilePic, setProfilePic] = useState("")
 
     const [loading, setLoading] = useState(false);
     const [isRegistered, setIsRegistered] = useState(false);
@@ -52,104 +51,145 @@ const Register = () => {
 
     if (loading) return <Loader />;
 
+
     return (
-        <div className="min-h-screen flex items-center justify-center px-4
-             bg-[url(https://i.pinimg.com/1200x/a0/50/40/a050401a6437cba929b52f0d5eb1438e.jpg)]
-             bg-cover bg-center">
-            <div className="w-full max-w-md">
+        <div className="h-screen w-full bg-[#0f2a22] flex items-center justify-center">
 
-                {/* Card */}
-                <div className="backdrop-blur-xl bg-white/70 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.25)]
-                    px-10 py-12">
+            {/* MAIN CONTAINER */}
+            <div
+                className="
+        w-full
+        max-w-6xl
+        h-full
+        flex
+        flex-col
+        md:flex-row
+        rounded-2xl
+        overflow-hidden
+        shadow-[0_20px_60px_rgba(0,0,0,0.45)]
+      "
+            >
 
-                    {/* Heading */}
-                    <h2 className="text-2xl font-semibold text-center text-slate-800">
-                        Hello There!
-                    </h2>
-                    <p className="text-sm text-slate-500 text-center mt-1 mb-8">
-                        Welcome to our community
-                    </p>
+                {/* IMAGE SECTION */}
+                <div
+                    className="
+          w-full
+          md:w-1/2
+          h-1/3
+          md:h-full
+        "
+                >
+                    <img
+                        src="https://i.pinimg.com/736x/70/4e/a9/704ea9e793e0e7e27117acfb7dc4d38e.jpg"
+                        alt="Library"
+                        className="w-full h-full object-cover"
+                    />
+                </div>
 
-                    {/* FORM */}
-                    <form className="space-y-5" onSubmit={handleSubmit}>
+                {/* FORM SECTION */}
+                <div
+                    className="
+          w-full
+          md:w-1/2
+          h-2/3
+          md:h-full
+          bg-[#0f2a22]
+          flex
+          items-center
+          justify-center
+          px-4
+        "
+                >
+                    {/* FORM CARD */}
+                    <div className="w-full max-w-md bg-white rounded-2xl px-6 sm:px-8 py-8 shadow-lg">
 
-                        {/* Username */}
-                        <input
-                            type="text"
-                            name="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Enter Username"
-                            className="w-full bg-white rounded-xl px-4 py-3 text-sm
-                     shadow focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                        />
+                        {/* HEADER */}
+                        <h2 className="text-2xl font-semibold text-gray-900">
+                            Create your account
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1 mb-6">
+                            Join a community of readers and writers shaping new worlds.
+                        </p>
 
-                        {/* Email */}
-                        <input
-                            type="email"
-                            name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Email Address"
-                            className="w-full bg-white rounded-xl px-4 py-3 text-sm
-                     shadow focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                        />
+                        {/* FORM */}
+                        <form className="space-y-4" onSubmit={handleSubmit}>
 
-                        {/* Password */}
-                        <div className="relative">
-                            <input
-                                type="password"
-                                name="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Password"
-                                className="w-full bg-white rounded-xl px-4 py-3 text-sm
-                       shadow focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                            />
+                            {/* USERNAME */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Username
+                                </label>
+                                <input
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    placeholder="Enter Username"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm
+                           focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                            </div>
 
-                        </div>
+                            {/* EMAIL */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Email address
+                                </label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Enter email address"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm
+                           focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                            </div>
 
-                        {/* Profile Picture */}
-                        <div className="relative">
-                            <input
-                                type="profilePic"
-                                name="profilePic"
-                                value={profilePic}
-                                onChange={(e) => setProfilePic(e.target.value)}
-                                placeholder="Profile Picture"
-                                className="w-full bg-white rounded-xl px-4 py-3 text-sm
-                       shadow focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                            />
+                            {/* PASSWORD */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Password
+                                </label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Enter password"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm
+                           focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                                <p className="text-xs text-gray-400 mt-1">
+                                    At least 6 characters long
+                                </p>
+                            </div>
 
-                        </div>
-                        {/* Button */}
-                        <button
-                            type="submit"
-                            className="w-full rounded-xl py-3.5 text-sm font-medium tracking-wide
-                     bg-slate-900 text-white
-                     hover:bg-slate-800 transition"
-                        >
-                            Create Account
-                        </button>
+                            {/* BUTTON */}
+                            <button
+                                type="submit"
+                                className="w-full bg-slate-900 text-white rounded-lg py-3
+                         text-sm font-medium hover:bg-slate-800 transition"
+                            >
+                                Create account
+                            </button>
+                        </form>
 
-                    </form>
+                        {/* LOGIN */}
+                        <p className="text-center text-sm text-gray-600 mt-5">
+                            Already have an account?{" "}
+                            <Link to="/" className="text-emerald-600 font-medium hover:underline">
+                                Login
+                            </Link>
+                        </p>
 
-                    {/* Login Redirect */}
-                    <p className="text-center text-sm text-slate-600 mt-6">
-                        Already have an account?{" "}
-                        <Link
-                            to="/"
-                            className="font-medium text-emerald-700 hover:underline"
-                        >
-                            Login
-                        </Link>
-                    </p>
-
+                    </div>
                 </div>
             </div>
         </div>
-
     );
+
+
+
+
+
 };
 
 export default Register;

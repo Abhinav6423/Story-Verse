@@ -9,6 +9,7 @@ import UserProfile from './pages/profile/UserProfile.jsx'
 import CreatePost from './components/create-update/CreatePost.jsx'
 import { ToastContainer } from 'react-toastify';
 import GoodReadsShortStoryGrid from './components/GoodReadsShortStory/GoodReadsShortStoryGrid.jsx'
+import Layout from './pages/Layout/Layout.jsx'
 const App = () => {
   return (
 
@@ -29,11 +30,13 @@ const App = () => {
 
 
         <Route element={<ProtectedRoute />}>
-          <Route path='/home' element={<HomeFeed />} />
-          <Route path='/story/:storyId' element={<ViewShortStory />} />
-          <Route path='/profile' element={<UserProfile />} />
-          <Route path='/create' element={<CreatePost />} />
-          <Route path='/goodReads/ShortStory' element={<GoodReadsShortStoryGrid />} />
+          <Route element={<Layout />}>
+            <Route path='/home' element={<HomeFeed />} />
+            <Route path='/story/:storyId' element={<ViewShortStory />} />
+            <Route path='/profile' element={<UserProfile />} />
+            <Route path='/create' element={<CreatePost />} />
+            <Route path='/goodReads/ShortStory' element={<GoodReadsShortStoryGrid />} />
+          </Route>
         </Route>
       </Routes>
     </>

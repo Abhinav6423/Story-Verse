@@ -38,96 +38,147 @@ const Login = () => {
         }
     }
 
-    if(loading) {
+    if (loading) {
         return <Loader />
     }
     return (
-        <div
-            className="min-h-screen flex items-center justify-center px-4
-             bg-[url(https://i.pinimg.com/1200x/a0/50/40/a050401a6437cba929b52f0d5eb1438e.jpg)]
-             bg-cover bg-center"
-        >
-            <div className="w-full max-w-md">
+        <div className="h-screen w-full bg-[#0f2a22] flex items-center justify-center">
 
-                {/* Card */}
-                <div className="backdrop-blur-xl bg-white/70 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.25)]
-                    px-10 py-12">
+            {/* MAIN CONTAINER */}
+            <div
+                className="
+        w-full
+        max-w-6xl
+        h-full
+        flex
+        flex-col
+        md:flex-row
+        rounded-2xl
+        overflow-hidden
+        shadow-[0_20px_60px_rgba(0,0,0,0.45)]
+      "
+            >
 
-                    {/* Heading */}
-                    <h2 className="text-2xl font-semibold text-center text-slate-800 tracking-tight">
-                        Hello Again
-                    </h2>
-                    <p className="text-sm text-slate-500 text-center mt-2 mb-10">
-                        Welcome back, you’ve been missed
-                    </p>
+                {/* IMAGE SECTION */}
+                <div className="w-full md:w-1/2 h-1/3 md:h-full">
+                    <img
+                        src="https://i.pinimg.com/736x/70/4e/a9/704ea9e793e0e7e27117acfb7dc4d38e.jpg"
+                        alt="Library"
+                        className="w-full h-full object-cover"
+                    />
+                </div>
 
-                    {/* Form */}
-                    <form className="space-y-6" onSubmit={handleSubmit}>
+                {/* FORM SECTION */}
+                <div
+                    className="
+          w-full
+          md:w-1/2
+          h-2/3
+          md:h-full
+          bg-[#0f2a22]
+          flex
+          items-center
+          justify-center
+          px-4
+        "
+                >
+                    {/* LOGIN CARD */}
+                    <div className="w-full max-w-md bg-white rounded-2xl px-6 sm:px-8 py-8 shadow-lg">
 
-                        {/* Email */}
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Email address"
-                            className="w-full rounded-xl px-4 py-3.5 text-sm
-                     bg-white border border-slate-200
-                     focus:outline-none focus:ring-2 focus:ring-slate-800
-                     placeholder-slate-400 transition"
-                        />
+                        {/* HEADER */}
+                        <h2 className="text-2xl font-semibold text-gray-900 text-center">
+                            Hello Again
+                        </h2>
+                        <p className="text-sm text-gray-500 text-center mt-2 mb-8">
+                            Welcome back, you’ve been missed
+                        </p>
 
-                        {/* Password */}
-                        <div className="relative">
+                        {/* FORM */}
+                        <form className="space-y-5" onSubmit={handleSubmit}>
+
+                            {/* EMAIL */}
                             <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Password"
-                                className="w-full rounded-xl px-4 py-3.5 text-sm
-                       bg-white border border-slate-200
-                       focus:outline-none focus:ring-2 focus:ring-slate-800
-                       placeholder-slate-400 transition"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Email address"
+                                className="
+                w-full
+                rounded-lg
+                border border-gray-300
+                px-4 py-2.5
+                text-sm
+                focus:outline-none
+                focus:ring-2 focus:ring-emerald-500
+              "
                             />
-                            <span className="absolute right-4 top-3.5 text-slate-400 text-sm cursor-pointer select-none">
-                                👁
-                            </span>
-                        </div>
 
-                        {/* Forgot */}
-                        <div className="text-right">
-                            <span className="text-xs text-slate-500 hover:text-slate-700 cursor-pointer transition">
-                                Forgot password?
-                            </span>
-                        </div>
+                            {/* PASSWORD */}
+                            <div className="relative">
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Password"
+                                    className="
+                  w-full
+                  rounded-lg
+                  border border-gray-300
+                  px-4 py-2.5
+                  text-sm
+                  focus:outline-none
+                  focus:ring-2 focus:ring-emerald-500
+                "
+                                />
+                                <span className="absolute right-4 top-2.5 text-gray-400 cursor-pointer select-none">
+                                    👁
+                                </span>
+                            </div>
 
-                        {/* Button */}
-                        <button
-                            type="submit"
-                            className="w-full rounded-xl py-3.5 text-sm font-medium tracking-wide
-                     bg-slate-900 text-white
-                     hover:bg-slate-800 transition"
-                        >
-                            Sign In
-                        </button>
+                            {/* FORGOT */}
+                            <div className="text-right">
+                                <span className="text-xs text-gray-500 hover:text-gray-700 cursor-pointer">
+                                    Forgot password?
+                                </span>
+                            </div>
 
-                    </form>
+                            {/* BUTTON */}
+                            <button
+                                type="submit"
+                                className="
+                w-full
+                bg-slate-900
+                text-white
+                rounded-lg
+                py-3
+                text-sm
+                font-medium
+                hover:bg-slate-800
+                transition
+              "
+                            >
+                                Sign In
+                            </button>
 
-                    {/* Signup Redirect */}
-                    <p className="text-center text-sm text-slate-600 mt-6">
-                        Don't have an account?{" "}
-                        <Link
-                            to="/register"
-                            className="font-medium text-emerald-700 hover:underline"
-                        >
-                            Register User
-                        </Link>
-                    </p>
+                        </form>
+
+                        {/* REGISTER LINK */}
+                        <p className="text-center text-sm text-gray-600 mt-6">
+                            Don&apos;t have an account?{" "}
+                            <Link
+                                to="/register"
+                                className="text-emerald-600 font-medium hover:underline"
+                            >
+                                Register User
+                            </Link>
+                        </p>
+
+                    </div>
                 </div>
             </div>
         </div>
-
-
     );
+
 };
 
 export default Login;

@@ -694,5 +694,76 @@ const markGoodReadShortStory = async (req, res) => {
     }
 };
 
+const getTopGoodReads = async (req, res) => {
+    try {
+        const goodreads = await goodReadShortStory.aggregate([
+            {
+                $group: {
+                    _id: "$story",
+                    totalGoodReads: { $sum: 1 }
+                }
+            },
+            { $sort: { totalGoodReads: -1, createdAt: -1 } },
+            { $limit: 3 },
 
-export { createShortStory, listShortStory, openShortStory, updateShortStory, deleteShortStory, listUserShortStory, openUserShortStory, userAnswer, likeShortStory, listTrendingShortStory, markGoodReadShortStory, listGoodReads }; 
+            {
+                $lookup: {
+                    from: "shortstories",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "story"
+                }
+            },
+            { $unwind: "$story" },
+
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "story.author",
+                    foreignField: "_id",
+                    as: "author"
+                }
+            },
+            { $unwind: "$author" },
+
+            {
+                $project: {
+                    totalGoodReads: 1,
+                    story: {
+                        _id: "$story._id",
+                        title: "$story.title",
+                        description: "$story.description",
+                        coverImage: "$story.coverImage",
+                        category: "$story.category",
+                        createdAt: "$story.createdAt",
+                        author: {
+                            _id: "$author._id",
+                            username: "$author.username",
+                            profilePic: "$author.profilePic"
+                        },
+                        totalGoodReads: "$story.totalGoodReads",
+
+                    }
+                }
+            }
+        ]);
+
+        return res.status(200).json({
+            success: true,
+            goodreads
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
+
+
+
+
+
+export { createShortStory, listShortStory, openShortStory, updateShortStory, deleteShortStory, listUserShortStory, openUserShortStory, userAnswer, likeShortStory, listTrendingShortStory, markGoodReadShortStory, listGoodReads, getTopGoodReads }; 
