@@ -1,249 +1,219 @@
-import React from "react";
-import { OpenFeedShortStory } from "../../Api-calls/OpenFeedShortStory.js";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Loader from "../Loader.jsx";
-import { likeShortStory } from "../../Api-calls/likeShortStory.js"
-import { ThumbsUp } from "lucide-react";
-import { Bookmark } from "lucide-react";
-import { addShortStoryToGoodReads } from "../../Api-calls/addShortStoryToGoodReads.js"
-import { toast } from 'react-toastify'
-const ViewShortStory = () => {
+import { ThumbsUp, Bookmark } from "lucide-react";
+import { toast } from "react-toastify";
 
+import Loader from "../Loader.jsx";
+import { OpenFeedShortStory } from "../../Api-calls/OpenFeedShortStory.js";
+import { likeShortStory } from "../../Api-calls/likeShortStory.js";
+import { addShortStoryToGoodReads } from "../../Api-calls/addShortStoryToGoodReads.js";
+
+const ViewShortStory = () => {
+    const { storyId } = useParams();
 
     const [story, setStory] = useState({});
-    const [loading, setLoading] = useState(true)
-    const { storyId } = useParams();
-    console.log(storyId)
+    const [loading, setLoading] = useState(true);
+
+    // UI states
     const [liked, setLiked] = useState(false);
-    const [addedToGoodReads, setAddedToGoodReads] = useState(false)
+    const [likesCount, setLikesCount] = useState(0);
 
+    const [addedToGoodReads, setAddedToGoodReads] = useState(false);
+    const [goodReadsCount, setGoodReadsCount] = useState(0);
 
-    const handleGoodReads = async () => {
-        try {
-            const result = await addShortStoryToGoodReads({ storyId: storyId });
-            console.log(result)
-            if (result?.success) {
-
-                setAddedToGoodReads(true);
-                toast.success(result?.message)
-            }
-            else {
-                toast.error(result?.message)
-            }
-        } catch (error) {
-            console.error("Error liking story:", error);
-            toast.error(error)
-        }
-    }
-
-
-    const handleLike = async () => {
-        try {
-            const result = await likeShortStory({ storyId: storyId });
-            console.log(result)
-            if (result?.success) {
-                setLiked(true);
-            }
-
-        } catch (error) {
-            console.error("Error liking story:", error);
-        }
-    };
-
-
+    /* ---------------- FETCH STORY ---------------- */
     const fetchStory = async () => {
         try {
             const result = await OpenFeedShortStory({ storyId });
+
             if (result?.success) {
-                console.log(result?.data?.ShortStory)
-                setStory(result?.data?.ShortStory);
-                setLiked(result?.data?.ShortStory?.isLiked);
-                setAddedToGoodReads(result?.data?.ShortStory?.isGoodRead)
+                const data = result.data.ShortStory;
+
+                setStory(data);
+                setLiked(data.isLiked);
+                setAddedToGoodReads(data.isGoodRead);
+                setLikesCount(data.likes);
+                setGoodReadsCount(data.totalGoodReads);
             }
         } catch (error) {
             console.error("Error fetching story:", error);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
         fetchStory();
     }, [storyId]);
 
+    /* ---------------- LIKE HANDLER ---------------- */
+    const handleLike = async () => {
+        // optimistic UI
+        setLiked(prev => !prev);
+        setLikesCount(prev => (liked ? prev - 1 : prev + 1));
 
+        // call backend ONLY when liking
+        if (liked) return;
 
-    if (loading) return <Loader />
+        try {
+            await likeShortStory({ storyId });
+        } catch (error) {
+            // rollback on failure
+            setLiked(true);
+            setLikesCount(prev => prev - 1);
+            toast.error("Failed to like story");
+        }
+    };
+
+    /* ---------------- GOOD READ HANDLER ---------------- */
+    const handleGoodReads = async () => {
+        // optimistic UI
+        setAddedToGoodReads(prev => !prev);
+        setGoodReadsCount(prev =>
+            addedToGoodReads ? prev - 1 : prev + 1
+        );
+
+        // call backend ONLY when adding
+        if (addedToGoodReads) return;
+
+        try {
+            const result = await addShortStoryToGoodReads({ storyId });
+            if (!result?.success) throw new Error();
+            toast.success(result.message);
+        } catch (error) {
+            // rollback
+            setAddedToGoodReads(true);
+            setGoodReadsCount(prev => prev - 1);
+            toast.error("Failed to save Good Read");
+        }
+    };
+
+    if (loading) return <Loader />;
 
     return (
-        <div className="min-h-screen bg-[#141414] text-gray-200">
+        <div className="min-h-screen bg-[#f8f9fb] text-gray-800">
 
-            {/* BOOK CONTAINER */}
-            <div
-                className="
-        max-w-screen mx-auto
-        bg-[#181818]
-        shadow-[0_20px_60px_rgba(0,0,0,0.6)]
-        overflow-hidden
-      "
-            >
+            {/* COVER IMAGE */}
+            <div className="relative w-full h-[350px] overflow-visible">
+                <img
+                    src={story.coverImage}
+                    alt="Story Cover"
+                    className="w-full h-full object-cover object-top"
+                />
 
-                {/* COVER (UNCHANGED) */}
-                <div className="w-full h-72 sm:h-96 overflow-hidden">
-                    <img
-                        src={story.coverImage}
-                        alt="Story Cover"
-                        className="w-full h-full object-cover"
-                    />
-                </div>
+                {/* CATEGORY BADGE */}
+                <span className="
+          absolute bottom-0 left-1/2
+          -translate-x-1/2 translate-y-1/2
+          bg-[#1f3d34] text-white
+          px-7 py-2 rounded-full
+          text-md shadow-lg
+          border-4 border-white
+        ">
+                    {story.category}
+                </span>
+            </div>
 
-                {/* HEADER BLOCK */}
-                <div className="px-6 sm:px-10 pt-10 text-center">
+            {/* CONTENT */}
+            <div className="max-w-4xl mx-auto px-6 sm:px-10 pt-16">
 
-                    {/* CATEGORY */}
-                    <p
-                        className="
-            text-lg
-            tracking-wide
-            uppercase
-            font-semibold
-            text-red-500
-            mb-3
-          "
-                    >
-                        {story?.category}
-                    </p>
+                {/* HEADER */}
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-10">
 
-                    {/* TITLE */}
-                    <h1
-                        className="
-            text-[38px] sm:text-[44px]
-            font-serif
-            font-bold
-            text-white
-            leading-tight
-            tracking-tight
-          "
-                    >
-                        {story.title}
-                    </h1>
+                    {/* TITLE + AUTHOR */}
+                    <div>
+                        <h1 className="text-3xl sm:text-4xl font-serif font-medium text-gray-900">
+                            {story.title}
+                        </h1>
 
-                    {/* AUTHOR */}
-                    <div className="flex justify-center items-center gap-3 mt-6">
-                        <img
-                            src={story?.author?.profilePic}
-                            className="w-9 h-9 rounded-full object-cover ring-2 ring-white/10"
-                            alt="author"
-                        />
-                        <span className="text-sm text-gray-400 font-medium">
-                            By <span className="text-gray-200">{story?.author?.username}</span>
-                        </span>
+                        <div className="flex items-center gap-2 mt-2">
+                            <img
+                                src={story.author?.profilePic}
+                                alt={story.author?.username}
+                                className="w-6 h-6 rounded-full object-cover"
+                            />
+                            <p className="text-sm text-gray-500">
+                                {story.author?.username}
+                            </p>
+                        </div>
                     </div>
 
                     {/* ACTION BUTTONS */}
-                    <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
+                    <div className="flex items-center gap-2">
 
-                        {/* LIKE BUTTON */}
+                        {/* LIKE */}
                         <button
                             onClick={handleLike}
-                            disabled={liked}
-                            className={`
-      flex items-center gap-2
-      px-6 py-2.5
-      rounded-full
-      font-semibold
-      transition-all duration-300
-      border
-      ${liked
-                                    ? "bg-red-600 text-white border-red-600 cursor-not-allowed"
-                                    : "bg-transparent text-white border-white/30 hover:bg-red-600 hover:border-red-600"}
-    `}
+                            className="
+                inline-flex items-center gap-2
+                px-4 py-2 rounded-full
+                border border-black
+                text-sm whitespace-nowrap
+                hover:bg-gray-100
+              "
                         >
                             <ThumbsUp
-                                size={18}
-                                className={liked ? "text-white" : "text-red-500"}
+                                size={16}
+                                stroke="black"
+                                fill={liked ? "black" : "none"}
                             />
-                            <span>{liked ? "Liked" : "Like"}</span>
+                            <span className="font-semibold">
+                                {likesCount} Likes
+                            </span>
                         </button>
 
-                        {/* ✅ GOOD READ / SAVE BUTTON (DIFFERENT STYLE) */}
+                        {/* GOOD READ */}
                         <button
                             onClick={handleGoodReads}
-                            disabled={addedToGoodReads}
-                            className={`
-    flex items-center gap-2
-    px-6 py-2.5
-    rounded-full
-    font-semibold
-    transition-all duration-300
-    border
-    ${addedToGoodReads
-                                    ? "bg-emerald-500/15 border-emerald-400 text-emerald-300 hover:bg-emerald-500/25"
-                                    : "bg-sky-400/10 border-sky-400/40 text-sky-300 hover:bg-sky-400/20 hover:border-sky-400"
-                                }
-  `}
-                            title={addedToGoodReads ? "Saved to Good Reads" : "Save to Good Reads"}
+                            className="
+                inline-flex items-center gap-2
+                px-4 py-2 rounded-full
+                border border-emerald-400
+                text-sm whitespace-nowrap
+                text-emerald-600
+                hover:bg-emerald-50
+              "
                         >
                             <Bookmark
-                                size={18}
-                                className={addedToGoodReads ? "text-emerald-400" : "text-sky-400"}
+                                size={16}
+                                stroke="currentColor"
+                                fill={addedToGoodReads ? "currentColor" : "none"}
                             />
-                            <span>{addedToGoodReads ? "Saved" : "Good Read"}</span>
+                            <span>{goodReadsCount} Good reads</span>
                         </button>
 
-
                     </div>
+                </div>
 
-
-
-                    {/* DIVIDER */}
-                    <div className="mx-auto mt-8 mb-10 h-px w-20 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-                    {/* INTRO / SUBTITLE */}
-                    {story?.description && (
-                        <p
-                            className="
-              text-[18px]
-              text-gray-400
-              italic
-              max-w-xl
-              font-semibold
-              mx-auto
-              leading-relaxed
-            "
-                        >
+                {/* DESCRIPTION */}
+                {story.description && (
+                    <div className="mt-8">
+                        <p className="text-sm text-center sm:text-left font-semibold uppercase text-gray-800 mb-2">
+                            Description
+                        </p>
+                        <p className="text-gray-600 text-center sm:text-left font-medium">
                             {story.description}
                         </p>
-                    )}
+                    </div>
+                )}
+
+                <hr className="my-10 border-gray-200" />
+
+                {/* STORY CONTENT */}
+                <div className="prose prose-gray max-w-none font-serif text-[19px] leading-[1.6]">
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: story.story.replace(
+                                "<p>",
+                                `<p class="first-letter:text-6xl first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:leading-none first-letter:text-gray-900">`
+                            ),
+                        }}
+                    />
                 </div>
 
-                {/* READING AREA (UNCHANGED ALIGNMENT) */}
-                <div
-                    className="
-          px-6
-          sm:px-10
-          md:px-16
-          py-12
-          font-serif
-          text-[18px]
-          sm:text-[20px]
-          leading-relaxed
-          text-gray-300
-          reader-area
-        "
-                    style={{
-                        maxWidth: "80vw",
-                        margin: "0 auto",
-                    }}
-                >
-                    <div dangerouslySetInnerHTML={{ __html: story?.story }} />
-                </div>
             </div>
         </div>
     );
-
-
 };
 
 export default ViewShortStory;

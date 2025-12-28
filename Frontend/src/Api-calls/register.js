@@ -1,10 +1,10 @@
 import axios from "axios";
 
-export const registerUser = async ({ username, email, password, profilePic }) => {
+export const registerUser = async ({ username, email, password }) => {
     try {
         const res = await axios.post(
             `${import.meta.env.VITE_BACKEND_URL}/api/auth/register`,
-            { username, email, password, profilePic },
+            { username, email, password },
             { withCredentials: true }
         );
 

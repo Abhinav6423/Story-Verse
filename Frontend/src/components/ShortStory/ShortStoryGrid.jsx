@@ -47,7 +47,7 @@ const ShortStoryGrid = () => {
             <div
                 className="
           grid
-          gap-x-5 gap-y-8
+          gap-x-4 gap-y-8
           grid-cols-2
           sm:grid-cols-3
           md:grid-cols-4
