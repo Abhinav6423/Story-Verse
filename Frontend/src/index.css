@@ -227,3 +227,7 @@ body {
     animation: slideDown 0.25s ease-out forwards;
   }
 }
+
+:root {
+  --mobile-bottom-nav-height: 64px;
+}
