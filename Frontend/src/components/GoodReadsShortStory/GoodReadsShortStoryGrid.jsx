@@ -6,6 +6,7 @@ import { userGoodReadsCollection } from "../../Api-calls/userGoodReadsCollection
 import Loader from "../Loader.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom"
+
 const GoodReadsShortStoryGrid = () => {
     // const stories = [
     //     {
@@ -96,6 +97,9 @@ const GoodReadsShortStoryGrid = () => {
     });
 
     const stories = data?.shortStories || [];
+
+    if (isLoading) return <Loader />
+    if (isError) return <div className="p-6 text-red-500">{isError}</div>
 
     return (
         <section className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#dff7ee] to-white">
