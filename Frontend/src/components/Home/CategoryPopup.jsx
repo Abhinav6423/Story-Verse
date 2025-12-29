@@ -11,20 +11,21 @@ import {
 } from "lucide-react";
 
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 
 
 const CategoryPopup = ({ open, onClose, onSelect }) => {
     const categories = [
-        { name: "Thriller", icon: Sword },
-        { name: "Horror", icon: Skull },
-        { name: "Crime", icon: Search },
-        { name: "Motivation", icon: Brain },
-        { name: "Romance", icon: Heart },
-        { name: "Fantasy", icon: Sparkles },
-        { name: "Adventure", icon: Compass },
-        { name: "Sci-Fi", icon: Rocket },
-        { name: "Action", icon: Sword },
+        { name: "thriller", icon: Sword },
+        { name: "horror", icon: Skull },
+        { name: "crime", icon: Search },
+        { name: "motivation", icon: Brain },
+        { name: "romance", icon: Heart },
+        { name: "fantasy", icon: Sparkles },
+        { name: "adventure", icon: Compass },
+        { name: "sci-fi", icon: Rocket },
+        { name: "action", icon: Sword },
     ];
     useEffect(() => {
         if (open) {
@@ -54,53 +55,61 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
             {/* POPUP */}
             <div
                 className="
-          fixed z-50
-          bottom-0 sm:bottom-auto
-          left-0 sm:left-auto
-          right-0 sm:right-6
-          sm:top-20
-          w-full sm:w-[450px]
-          bg-white
-          rounded-t-3xl sm:rounded-2xl
-          p-3
-          shadow-xl
-          animate-slideUp sm:animate-fadeIn
-        "
+        fixed z-50
+        bottom-0 sm:bottom-auto
+        left-0 sm:left-auto
+        right-0 sm:right-6
+        sm:top-20
+        w-full sm:w-[420px]
+        bg-white
+        rounded-t-3xl sm:rounded-2xl
+        p-4
+        shadow-xl
+        animate-slideUp sm:animate-fadeIn
+      "
             >
-                {/* HEADER */}
-
-
                 {/* CATEGORY GRID */}
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-4">
                     {categories.map((cat) => {
-                        const Icon = cat.icon; // 👈 THIS IS THE FIX
+                        const Icon = cat.icon;
 
                         return (
-                            <button
+                            <Link
                                 key={cat.name}
+                                to={`/category/${cat.name}`}
                                 onClick={() => onSelect(cat.name)}
                                 className="
-          flex flex-col items-center justify-center
-          p-4
-          rounded-xl
-          shadow-sm
-          bg-gray-50
-          hover:bg-emerald-50
-          transition
-        "
+                flex
+                items-center
+                justify-center
+              "
                             >
-                                <Icon size={22} className="mb-1 text-gray-800" />
-                                <span className="text-sm font-medium">
-                                    {cat.name}
-                                </span>
-                            </button>
+                                <div
+                                    className="
+                  w-full
+                  flex flex-col items-center justify-center
+                  gap-1
+                  p-4
+                  rounded-xl
+                  shadow-sm
+                  bg-gray-50
+                  hover:bg-emerald-50
+                  transition
+                "
+                                >
+                                    <Icon size={22} className="text-gray-800" />
+                                    <span className="text-sm font-medium text-center">
+                                        {cat.name}
+                                    </span>
+                                </div>
+                            </Link>
                         );
                     })}
                 </div>
-
             </div>
         </>
     );
+
 };
 
 export default CategoryPopup;
