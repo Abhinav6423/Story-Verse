@@ -25,19 +25,33 @@ const CategoryShortStoryResultsGrid = () => {
       <Navbar />
 
       {/* PAGE WRAPPER */}
-      <div className="min-h-screen bg-gradient-to-b from-[#e9f7f1] to-white">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+      <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#e9f7f1] to-white">
+
+        {/* GREEN LIGHT GLOW */}
+        <div
+          className="
+            pointer-events-none
+            absolute
+            top-[-200px]
+            left-1/2
+            -translate-x-1/2
+            w-[900px]
+            h-[900px]
+            rounded-full
+            bg-[radial-gradient(circle,_rgba(16,185,129,0.25)_0%,_rgba(16,185,129,0.15)_30%,_rgba(16,185,129,0.05)_50%,_transparent_70%)]
+          "
+        />
+
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 relative z-10">
 
           {/* HEADER */}
           <div className="flex flex-col gap-4 mb-8">
             <span className="text-sm text-gray-500">Category</span>
 
-            <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center justify-between">
               <h1 className="text-3xl font-bold text-gray-900">
                 {category?.toUpperCase()}
               </h1>
-
-
             </div>
           </div>
 
@@ -58,8 +72,8 @@ const CategoryShortStoryResultsGrid = () => {
               "
             >
               {stories.map((story) => (
-                <Link to={`/story/${story._id}`}>
-                  <StoryCard key={story._id} story={story} />
+                <Link key={story._id} to={`/story/${story._id}`}>
+                  <StoryCard story={story} />
                 </Link>
               ))}
             </div>

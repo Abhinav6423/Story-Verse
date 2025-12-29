@@ -69,7 +69,7 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
       "
             >
                 {/* CATEGORY GRID */}
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-2">
                     {categories.map((cat) => {
                         const Icon = cat.icon;
 
@@ -78,11 +78,7 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
                                 key={cat.name}
                                 to={`/category/${cat.name}`}
                                 onClick={() => onSelect(cat.name)}
-                                className="
-                flex
-                items-center
-                justify-center
-              "
+                                className="flex items-center justify-center"
                             >
                                 <div
                                     className="
@@ -91,14 +87,15 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
                   gap-1
                   p-4
                   rounded-xl
-                  shadow-sm
-                  bg-gray-50
-                  hover:bg-emerald-50
+                  border
+                  border-emerald-200
+                  bg-emerald-50/40
+                  hover:bg-emerald-100/60
                   transition
                 "
                                 >
-                                    <Icon size={22} className="text-gray-800" />
-                                    <span className="text-sm font-medium text-center">
+                                    <Icon size={22} className="text-emerald-800" />
+                                    <span className="text-sm font-medium text-emerald-900 text-center">
                                         {cat.name}
                                     </span>
                                 </div>
@@ -109,6 +106,7 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
             </div>
         </>
     );
+
 
 };
 
