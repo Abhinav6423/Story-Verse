@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ThumbsUp } from "lucide-react";
+import { ThumbsUp, Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
 import { likeShortStory } from "../../Api-calls/likeShortStory.js";
 
@@ -33,27 +33,46 @@ const ShortStoryCard = ({ story }) => {
                 {/* POSTER */}
                 <div
                     className="
-        relative
-        aspect-[2/3]
-        rounded-xl
-        overflow-hidden
-        bg-gray-100
-        shadow-sm
-        hover:shadow-lg
-        transition
-      "
+          relative
+          aspect-[2/3]
+          rounded-xl
+          overflow-hidden
+          bg-gray-100
+          shadow-sm
+          hover:shadow-lg
+          transition
+        "
                 >
+                    {/* GOOD READ TAG */}
+                    {story?.isGoodRead && (
+                        <div
+                            className="
+              absolute
+              top-2
+              right-2
+              z-10
+              bg-emerald-600
+              text-white
+              p-1.5
+              rounded-md
+              shadow
+            "
+                        >
+                            <Bookmark size={14} fill="currentColor" />
+                        </div>
+                    )}
+
                     <img
                         src={story.coverImage}
                         alt={story.title}
                         className="
-          w-full
-          h-full
-          object-cover
-          hover:scale-105
-          transition-transform
-          duration-300
-        "
+            w-full
+            h-full
+            object-cover
+            hover:scale-105
+            transition-transform
+            duration-300
+          "
                     />
                 </div>
 
@@ -67,14 +86,14 @@ const ShortStoryCard = ({ story }) => {
 
                         <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 shrink-0">
                             <ThumbsUp size={14} />
-                            <span>{story?.likes }</span>
+                            <span>{story?.likes}</span>
                         </div>
                     </div>
 
                     {/* AUTHOR */}
                     <div className="flex items-center gap-2">
                         <img
-                            src={story?.author?.profilePic }
+                            src={story?.author?.profilePic}
                             alt={story.author?.username}
                             className="w-5 h-5 rounded-full object-cover"
                         />
@@ -85,10 +104,8 @@ const ShortStoryCard = ({ story }) => {
                 </div>
             </div>
         </>
+    );
 
-
-
-    )
 
 
 

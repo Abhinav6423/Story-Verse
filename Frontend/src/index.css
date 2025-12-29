@@ -191,3 +191,39 @@ body {
   line-height: 1.75;
   margin-bottom: 1.25rem;
 }
+
+/* MOBILE: slide from bottom */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* DESKTOP: slide from top */
+@keyframes slideDown {
+  from {
+    transform: translateY(-24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Default = mobile */
+.animate-popup {
+  animation: slideUp 0.35s ease-out forwards;
+}
+
+/* Desktop override */
+@media (min-width: 640px) {
+  .animate-popup {
+    animation: slideDown 0.25s ease-out forwards;
+  }
+}

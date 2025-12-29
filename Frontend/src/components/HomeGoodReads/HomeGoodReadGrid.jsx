@@ -103,7 +103,7 @@ function HomeGoodReadGrid() {
           md:px-10 md:py-8
           flex flex-col
           md:flex-row
-          gap-6
+          gap-6 sm:gap-26
           md:items-center
         "
             >
@@ -125,23 +125,36 @@ function HomeGoodReadGrid() {
                 {/* RIGHT CARDS */}
                 <div
                     className="
-            flex gap-4
-            overflow-x-auto
-            scrollbar-hide
-            py-2
-            pl-1 md:pl-3
-          "
+    flex gap-4
+    w-full
+    overflow-x-auto
+    md:overflow-visible
+    scrollbar-hide
+    py-2
+    px-4 md:px-0
+  "
                 >
                     {shortStories.map((story, index) => (
-                        <Link to={`/story/${story._id}`}>
+                        <Link
+                            key={story._id}
+                            to={`/story/${story._id}`}
+                            className="
+        
+      "
+                        >
                             <HomeGoodReadCard
-                                key={story._id}
                                 story={story}
                                 rank={index + 1}
                             />
                         </Link>
                     ))}
+
+                    {/* 👇 SCROLL END SPACER (CRITICAL) */}
+                    <div className="flex-none w-4 md:hidden" />
                 </div>
+
+
+
             </div>
         </section>
     );

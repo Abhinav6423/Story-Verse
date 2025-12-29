@@ -56,16 +56,16 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
             <div
                 className="
         fixed z-50
-        bottom-0 sm:bottom-auto
-        left-0 sm:left-auto
-        right-0 sm:right-6
-        sm:top-20
-        w-full sm:w-[420px]
-        bg-white
-        rounded-t-3xl sm:rounded-2xl
-        p-4
-        shadow-xl
-        animate-slideUp sm:animate-fadeIn
+    bottom-0 sm:bottom-auto
+    left-0 sm:left-auto
+    right-0 sm:right-6
+    sm:top-20
+    w-full sm:w-[420px]
+    bg-white
+    rounded-t-3xl sm:rounded-2xl
+    p-4
+    shadow-xl
+    animate-popup
       "
             >
                 {/* CATEGORY GRID */}
@@ -106,6 +106,8 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
             </div>
         </>
     );
+
+
 
 
 };

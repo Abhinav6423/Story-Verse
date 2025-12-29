@@ -565,8 +565,10 @@ const listTrendingShortStory = async (req, res) => {
 
         const storiesWithActions = shortStories.map((story) => ({
             ...story,
-            isLiked: userId ? story.likedBy?.includes(userId) : false,
-            isGoodRead: userId ? story.GoodReadsBy?.includes(userId) : false,
+            isLiked: story.likedBy?.some(
+                (id) => id.toString() === userId.toString()
+            ),
+            isGoodRead: story.GoodReadsBy?.some((id) => id.toString() === userId.toString())
         }));
 
         return res.status(200).json({

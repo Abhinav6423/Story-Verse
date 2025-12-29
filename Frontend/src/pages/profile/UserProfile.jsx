@@ -4,11 +4,30 @@ import Navbar from "../../components/Home/Navbar.jsx";
 import MyStories from "../../components/Profile/MyStories.jsx";
 import { getUserProfileData } from "../../Api-calls/getUserProfileData.js";
 import Loader from "../../components/Loader.jsx";
+import { LogOut } from "lucide-react"
+import { toast } from 'react-toastify'
+import { logoutUser } from "../../Api-calls/logout.js";
+import { useNavigate } from "react-router-dom";
+
 
 const UserProfile = () => {
     const { userData } = useAuth();
     const [loading, setLoading] = useState(true);
     const [userStats, setUserStats] = useState({});
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            const result = await logoutUser();
+            if (result?.success) {
+                toast.success(result?.message);
+                navigate("/");
+            }
+        } catch (error) {
+            console.error("Logout error:", error);
+            toast.error(error?.response?.data);
+        }
+    }
 
     useEffect(() => {
         const userProfile = async () => {
@@ -61,10 +80,10 @@ const UserProfile = () => {
                     <div className="flex flex-col items-center lg:items-start">
                         <div className="w-40 h-40 rounded-full border-4 border-white shadow-md">
                             <img
-                            src={userData?.profilePic}
-                            alt="profile"
-                            className="w-full h-full object-cover "
-                        />
+                                src={userData?.profilePic}
+                                alt="profile"
+                                className="w-full h-full object-cover "
+                            />
                         </div>
 
                         <h1 className="mt-4 text-2xl font-medium text-gray-900">
@@ -98,7 +117,7 @@ const UserProfile = () => {
                         <Stat label="XP" value={userStats?.xp || 0} />
                     </div>
 
-                   
+
                 </div>
 
                 <div className="w-full h-px bg-gray-400 mt-9"></div>
@@ -106,9 +125,40 @@ const UserProfile = () => {
 
                 {/* STORIES */}
                 <div className="">
-                    
+
                     <MyStories />
                 </div>
+
+                {/* LOGOUT SECTION */}
+                <div className="my-10 flex items-center justify-center gap-4">
+                    {/* LEFT LINE */}
+                    <div className="flex-1 h-px bg-gray-300" />
+
+                    {/* LOGOUT BUTTON */}
+                    <button
+                        onClick={handleLogout}
+                        className="
+      flex items-center gap-2
+      px-6 py-2
+      rounded-full
+      border border-red-400
+      text-red-500
+      text-sm font-medium
+      bg-red-100
+      hover:bg-red-200
+      cursor-pointer
+      transition
+      whitespace-nowrap
+    "
+                    >
+                        <span className="rotate-180 "><LogOut size={20} /></span>
+                        <span className="font-semibold">Log out</span>
+                    </button>
+
+                    {/* RIGHT LINE */}
+                    <div className="flex-1 h-px bg-gray-300" />
+                </div>
+
             </div>
         </div>
     );
