@@ -6,7 +6,7 @@ import { getUserProfileData } from "../../Api-calls/getUserProfileData.js";
 import Loader from "../../components/Loader.jsx";
 import { LogOut } from "lucide-react"
 import { toast } from 'react-toastify'
-import { logoutUser } from "../../Api-calls/logout.js";
+
 import { useNavigate } from "react-router-dom";
 
 
@@ -44,27 +44,28 @@ const UserProfile = () => {
     if (loading) return <Loader />;
 
     return (
-        <div className="min-h-screen bg-white">
-            <Navbar />
+        <>
+            <div className="min-h-screen bg-white">
+                <Navbar />
 
-            {/* COVER */}
-            <div className="relative h-36 sm:h-56 w-full">
-                <img
-                    src={
-                        userData?.coverPic ||
-                        "https://i.pinimg.com/1200x/9e/23/f0/9e23f0e8bacb5f03ad6418a3bdd1727b.jpg"
-                    }
-                    alt="cover"
-                    className="w-full h-full object-cover"
-                />
-            </div>
+                {/* COVER */}
+                <div className="relative h-36 sm:h-56 w-full">
+                    <img
+                        src={
+                            userData?.coverPic ||
+                            "https://i.pinimg.com/1200x/9e/23/f0/9e23f0e8bacb5f03ad6418a3bdd1727b.jpg"
+                        }
+                        alt="cover"
+                        className="w-full h-full object-cover"
+                    />
+                </div>
 
-            {/* PROFILE SECTION */}
-            <div className="px-4 sm:px-10 max-w-7xl mx-auto">
+                {/* PROFILE SECTION */}
+                <div className="px-4 sm:px-10 max-w-7xl mx-auto ">
 
-                {/* PROFILE ROW */}
-                <div
-                    className="
+                    {/* PROFILE ROW */}
+                    <div
+                        className="
         relative -mt-20
         mx-auto
         max-w-10xl
@@ -75,92 +76,71 @@ const UserProfile = () => {
         lg:gap-30
         
     "
-                >
-                    {/* AVATAR + NAME */}
-                    <div className="flex flex-col items-center lg:items-start">
-                        <div className="w-40 h-40 rounded-full border-4 border-white shadow-md">
-                            <img
-                                src={userData?.profilePic}
-                                alt="profile"
-                                className="w-full h-full object-cover "
-                            />
+                    >
+                        {/* AVATAR + NAME */}
+                        <div className="flex flex-col items-center lg:items-start">
+                            <div className="w-40 h-40 rounded-full border-4 border-white shadow-md">
+                                <img
+                                    src={userData?.profilePic}
+                                    alt="profile"
+                                    className="w-full h-full object-cover "
+                                />
+                            </div>
+
+                            <h1 className="mt-4 text-2xl font-medium text-gray-900">
+                                {userData?.username}
+                            </h1>
+
+                            <p className="text-green-950 font-medium text-sm mt-1">
+                                Story Writer • Reader
+                            </p>
                         </div>
 
-                        <h1 className="mt-4 text-2xl font-medium text-gray-900">
-                            {userData?.username}
-                        </h1>
-
-                        <p className="text-green-950 font-medium text-sm mt-1">
-                            Story Writer • Reader
-                        </p>
-                    </div>
-
-                    {/* STATS */}
-                    <div
-                        className="
+                        {/* STATS */}
+                        <div
+                            className="
             mt-6
             grid grid-cols-3 gap-y-6 gap-x-10
             lg:mt-0
             lg:flex lg:items-center lg:gap-8
         "
-                    >
-                        <Stat label="Stories" value={userStats?.totalShortStoriesCreated || 0} />
-                        <Divider />
-                        <Stat label="Reads" value={userStats?.totalShortStoriesRead || 0} />
-                        <Divider />
-                        <Stat label="Chapters+" value={userStats?.totalChaptersCreated || 0} />
-                        <Divider />
-                        <Stat label="Chapters-" value={userStats?.totalChaptersRead || 0} />
-                        <Divider />
-                        <Stat label="Level" value={userStats?.level || 0} />
-                        <Divider />
-                        <Stat label="XP" value={userStats?.xp || 0} />
+                        >
+                            <Stat label="Stories" value={userStats?.totalShortStoriesCreated || 0} />
+                            <Divider />
+                            <Stat label="Reads" value={userStats?.totalShortStoriesRead || 0} />
+                            <Divider />
+                            <Stat label="Chapters+" value={userStats?.totalChaptersCreated || 0} />
+                            <Divider />
+                            <Stat label="Chapters-" value={userStats?.totalChaptersRead || 0} />
+                            <Divider />
+                            <Stat label="Level" value={userStats?.level || 0} />
+                            <Divider />
+                            <Stat label="XP" value={userStats?.xp || 0} />
+                        </div>
+
+
+                    </div>
+
+                    <div className="w-full h-px bg-gray-400 mt-9"></div>
+
+
+                    {/* STORIES */}
+                    <div className="">
+
+                        <MyStories />
                     </div>
 
 
-                </div>
-
-                <div className="w-full h-px bg-gray-400 mt-9"></div>
 
 
-                {/* STORIES */}
-                <div className="">
 
-                    <MyStories />
-                </div>
-
-                {/* LOGOUT SECTION */}
-                <div className="my-10 flex items-center justify-center gap-4">
-                    {/* LEFT LINE */}
-                    <div className="flex-1 h-px bg-gray-300" />
-
-                    {/* LOGOUT BUTTON */}
-                    <button
-                        onClick={handleLogout}
-                        className="
-      flex items-center gap-2
-      px-6 py-2
-      rounded-full
-      border border-red-400
-      text-red-500
-      text-sm font-medium
-      bg-red-100
-      hover:bg-red-200
-      cursor-pointer
-      transition
-      whitespace-nowrap
-    "
-                    >
-                        <span className="rotate-180 "><LogOut size={20} /></span>
-                        <span className="font-semibold">Log out</span>
-                    </button>
-
-                    {/* RIGHT LINE */}
-                    <div className="flex-1 h-px bg-gray-300" />
                 </div>
 
             </div>
-        </div>
+
+
+        </>
+
     );
 };
 

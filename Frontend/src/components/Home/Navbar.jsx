@@ -1,39 +1,64 @@
-import React, { useState, useEffect } from "react";
-import { useAuth } from "../../context/Authcontext";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Menu, Plus, LayoutGrid, User } from "lucide-react";
+import CategoryPopup from "./CategoryPopup";
 import { logoutUser } from "../../Api-calls/logout.js";
-import { useNavigate, Link } from "react-router-dom";
-import { Plus, LayoutGrid, User, Menu } from "lucide-react";
-
-import CategoryPopup from "./CategoryPopup.jsx";
-
+import { LogOut } from "lucide-react"
+import {toast} from 'react-toastify'
 const Navbar = () => {
-    const { userData, loading, reloadUserData } = useAuth();
-    const navigate = useNavigate();
-
-    const [loggedOut, setLoggedOut] = useState(false);
-    const [showBrowse, setShowBrowse] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [showBrowse, setShowBrowse] = useState(false);
 
-    if (loading) return <div>Loading...</div>;
+    const profileMenuRef = useRef(null);
+    const mobileMenuRef = useRef(null);
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    /* ================= CLICK OUTSIDE HANDLER ================= */
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (
+                showProfileMenu &&
+                profileMenuRef.current &&
+                !profileMenuRef.current.contains(e.target)
+            ) {
+                setShowProfileMenu(false);
+            }
+
+            if (
+                showMobileMenu &&
+                mobileMenuRef.current &&
+                !mobileMenuRef.current.contains(e.target)
+            ) {
+                setShowMobileMenu(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () =>
+            document.removeEventListener("mousedown", handleClickOutside);
+    }, [showProfileMenu, showMobileMenu]);
+
+    /* ================= CLOSE ON ROUTE CHANGE ================= */
+    useEffect(() => {
+        setShowProfileMenu(false);
+        setShowMobileMenu(false);
+    }, [location.pathname]);
 
     const handleLogout = async () => {
         try {
             const result = await logoutUser();
             if (result?.success) {
-                setLoggedOut(true);
+                toast.success(result?.message);
+                navigate("/");
             }
         } catch (error) {
             console.error("Logout error:", error);
+            toast.error(error?.response?.data);
         }
-    };
-
-    useEffect(() => {
-        if (loggedOut) {
-            navigate("/");
-            reloadUserData();
-        }
-    }, [loggedOut, navigate, reloadUserData]);
+    }
 
     return (
         <>
@@ -42,7 +67,10 @@ const Navbar = () => {
                 <div className="relative max-w-7xl mx-auto px-6 h-16 flex items-center">
 
                     {/* LOGO */}
-                    <Link to="/home" className="font-serif text-2xl font-semibold text-gray-900 tracking-tighter">
+                    <Link
+                        to="/home"
+                        className="font-serif text-2xl font-semibold text-gray-900 tracking-tighter"
+                    >
                         StoryFlix
                     </Link>
 
@@ -55,7 +83,10 @@ const Navbar = () => {
                     {/* RIGHT ACTIONS (DESKTOP) */}
                     <div className="ml-auto hidden md:flex items-center gap-7 text-sm font-medium text-gray-700">
 
-                        <Link to="/create" className="flex items-center gap-2 hover:text-black">
+                        <Link
+                            to="/create"
+                            className="flex items-center gap-2 hover:text-black"
+                        >
                             <span className="w-7 h-7 flex items-center justify-center border border-gray-800 rounded-full">
                                 <Plus size={14} />
                             </span>
@@ -71,9 +102,11 @@ const Navbar = () => {
                         </button>
 
                         {/* PROFILE DROPDOWN */}
-                        <div className="relative">
+                        <div className="relative" ref={profileMenuRef}>
                             <button
-                                onClick={() => setShowProfileMenu((p) => !p)}
+                                onClick={() =>
+                                    setShowProfileMenu((p) => !p)
+                                }
                                 className="flex items-center gap-2 hover:text-black"
                             >
                                 <User size={18} />
@@ -81,28 +114,42 @@ const Navbar = () => {
                             </button>
 
                             {showProfileMenu && (
-                                <div className="absolute -right-15 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
+                                <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
                                     <Link
                                         to="/profile"
                                         className="block px-4 py-2 text-sm hover:bg-gray-100"
-                                        onClick={() => setShowProfileMenu(false)}
                                     >
                                         View Profile
                                     </Link>
                                     <Link
                                         to="/goodReads/ShortStory"
                                         className="block px-4 py-2 text-sm hover:bg-gray-100"
-                                        onClick={() => setShowProfileMenu(false)}
                                     >
                                         View Good Reads
                                     </Link>
                                     <Link
                                         to=""
                                         className="block px-4 py-2 text-sm hover:bg-gray-100"
-                                        onClick={() => setShowProfileMenu(false)}
                                     >
                                         View History
                                     </Link>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="
+        w-full
+        px-4 py-2
+        text-sm
+        text-left
+        font-medium
+        text-red-600
+        hover:bg-gray-100
+        flex items-center gap-2
+    "
+                                    >
+                                        <LogOut size={16} />
+                                        Logout
+                                    </button>
+
 
                                 </div>
                             )}
@@ -122,37 +169,63 @@ const Navbar = () => {
             {/* ================= MOBILE MENU ================= */}
             {showMobileMenu && (
                 <>
-                    <div
-                        onClick={() => setShowMobileMenu(false)}
-                        className="fixed inset-0 bg-black/40 z-40"
-                    />
+                    {/* BACKDROP */}
+                    <div className="fixed inset-0 bg-black/40 z-40" />
 
-                    <div className="fixed bottom-12 left-0 right-0 z-50 bg-white rounded-t-2xl p-4 animate-popup">
+                    {/* TOP DROPDOWN */}
+                    <div
+                        ref={mobileMenuRef}
+                        className="
+                            fixed top-16 left-0 right-0 z-50
+                            bg-white
+                            border-b border-gray-200
+                            shadow-lg
+                            animate-slide-down
+                        "
+                    >
                         <Link
                             to="/profile"
-                            className="block py-3 border-b text-sm font-medium"
-                            onClick={() => setShowMobileMenu(false)}
+                            className="block px-6 py-4 border-b text-sm font-medium hover:bg-gray-50"
                         >
                             View Profile
                         </Link>
+
                         <Link
                             to="/goodReads/ShortStory"
-                            className="block py-3 border-b text-sm font-medium"
-                            onClick={() => setShowMobileMenu(false)}
+                            className="block px-6 py-4 border-b text-sm font-medium hover:bg-gray-50"
                         >
                             View Good Reads
                         </Link>
+
                         <Link
                             to=""
-                            className="block py-3 text-sm font-medium"
-                            onClick={() => setShowMobileMenu(false)}
+                            className="block px-6 py-4 text-sm font-medium hover:bg-gray-50 border-b"
                         >
                             View History
                         </Link>
 
+                        <button
+                            onClick={handleLogout}
+                            className="
+        w-full
+        px-6 py-4
+        text-sm 
+        font-medium
+        text-red-600
+        hover:bg-gray-50
+        flex items-center gap-1
+    "
+                        >
+                            <LogOut size={18} />
+                            <span className="text-sm">LogOut</span>
+                        </button>
+
+
+
                     </div>
                 </>
-            )}
+            )
+            }
 
             {/* ================= CATEGORY POPUP ================= */}
             <CategoryPopup

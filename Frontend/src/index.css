@@ -204,10 +204,9 @@ body {
   }
 }
 
-/* DESKTOP: slide from top */
 @keyframes slideDown {
   from {
-    transform: translateY(-24px);
+    transform: translateY(-100%);
     opacity: 0;
   }
   to {
@@ -215,6 +214,11 @@ body {
     opacity: 1;
   }
 }
+
+.animate-slide-down {
+  animation: slideDown 0.25s ease-out;
+}
+
 
 /* Default = mobile */
 .animate-popup {
