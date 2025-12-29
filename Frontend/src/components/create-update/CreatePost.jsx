@@ -9,6 +9,7 @@ import { RichTextEditor } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Loader from "../Loader.jsx";
+import { categories } from "../../utils/Categories.jsx";
 const CreatePost = () => {
     const navigate = useNavigate();
 
@@ -114,14 +115,16 @@ const CreatePost = () => {
                         onChange={(e) => setGenre(e.target.value)}
                         className="field-input"
                     >
-                        <option value="">Choose genre...</option>
-                        <option value="thriller">Thriller</option>
-                        <option value="horror">Horror</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Lifestyle">Lifestyle</option>
-                        <option value="Documentation">Documentation</option>
+                        <option disabled value="">Select Genre</option>
+
+                        {categories.map((cat) => (
+                            <option key={cat.name} value={cat.name}>
+                                {cat.name}
+                            </option>
+                        ))}
                     </select>
                 </Field>
+
 
                 {/* Description */}
                 <Field label="Short Description">

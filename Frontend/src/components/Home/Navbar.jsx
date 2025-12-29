@@ -81,7 +81,7 @@ const Navbar = () => {
                             </button>
 
                             {showProfileMenu && (
-                                <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
+                                <div className="absolute -right-15 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
                                     <Link
                                         to="/profile"
                                         className="block px-4 py-2 text-sm hover:bg-gray-100"

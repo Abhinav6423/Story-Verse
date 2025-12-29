@@ -12,21 +12,11 @@ import {
 
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import {categories} from "../../utils/Categories.jsx"
 
 
 const CategoryPopup = ({ open, onClose, onSelect }) => {
-    const categories = [
-        { name: "thriller", icon: Sword },
-        { name: "horror", icon: Skull },
-        { name: "crime", icon: Search },
-        { name: "motivation", icon: Brain },
-        { name: "romance", icon: Heart },
-        { name: "fantasy", icon: Sparkles },
-        { name: "adventure", icon: Compass },
-        { name: "sci-fi", icon: Rocket },
-        { name: "action", icon: Sword },
-    ];
+   
     useEffect(() => {
         if (open) {
             document.body.style.overflow = "hidden";
