@@ -341,62 +341,75 @@ const listShortStory = async (req, res) => {
 
 const openShortStory = async (req, res) => {
     try {
-        const { storyId } = req.params
+        const { storyId } = req.params;
 
         if (!storyId) {
             return res.status(400).json({
                 success: false,
-                message: "storyId is required"
-            })
+                message: "storyId is required",
+            });
         }
 
-        const userId = req.user._id
+        const userId = req.user._id;
 
         if (!userId) {
-            return res.status(400).json({
+            return res.status(401).json({
                 success: false,
-                message: "Unauthorized"
-            })
+                message: "Unauthorized",
+            });
         }
 
-        const shortStory = await ShortStory.findById(storyId).populate("author", "username profilePic")
+        const shortStory = await ShortStory.findById(storyId)
+            .populate("author", "username profilePic");
 
         if (!shortStory || shortStory.status !== "published") {
             return res.status(404).json({
                 success: false,
-                message: "Short story not found"
-            })
+                message: "Short story not found",
+            });
         }
 
+        /* ================= LIKE STATUS ================= */
         const isLiked = shortStory.likedBy?.some(
             id => id.toString() === userId.toString()
         );
 
+        /* ================= GOOD READ STATUS ================= */
         const addedToGoodReads = await goodReadShortStory.findOne({
             reader: userId,
-            story: storyId
-        })
+            story: storyId,
+        });
 
-        const isGoodRead = addedToGoodReads ? true : false
+        const isGoodRead = !!addedToGoodReads;
 
+        /* ================= QUESTION ANSWER STATUS (🔥 KEY FIX) ================= */
+        const alreadyAnswered = await Userhistory.findOne({
+            reader: userId,
+            contentId: storyId,
+            contentType: "shortStory",
+        });
 
+        const isQuestionAnswered = !!alreadyAnswered;
+
+        /* ================= RESPONSE ================= */
         return res.status(200).json({
             success: true,
             ShortStory: {
                 ...shortStory._doc,
                 isLiked,
-                isGoodRead
-            }
-        })
-
+                isGoodRead,
+                isQuestionAnswered, // 🔥 FRONTEND NEEDS THIS
+            },
+        });
 
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message
-        })
+            message: error.message,
+        });
     }
-}
+};
+
 
 const userAnswer = async (req, res) => {
     try {
@@ -404,10 +417,10 @@ const userAnswer = async (req, res) => {
         const { answer } = req.body;
         const userId = req.user._id;
 
-        if (!storyId || !answer) {
+        if (!storyId) {
             return res.status(400).json({
                 success: false,
-                message: "storyId and answer are required"
+                message: "storyId is required",
             });
         }
 
@@ -416,39 +429,49 @@ const userAnswer = async (req, res) => {
         if (!shortStory || shortStory.status !== "published") {
             return res.status(404).json({
                 success: false,
-                message: "Short story not found"
+                message: "Short story not found",
             });
         }
 
-        // Normalize answers
+        /* ================= CHECK IF ALREADY ANSWERED ================= */
+        const alreadyAnswered = await Userhistory.findOne({
+            reader: userId,
+            contentId: storyId,
+            contentType: "shortStory",
+        });
+
+        if (alreadyAnswered) {
+            return res.status(200).json({
+                success: true,
+                correctlyAnswered: true,
+                message: "You already answered this question",
+            });
+        }
+
+        /* ================= VALIDATE ANSWER ================= */
+        if (!answer || !answer.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "Answer is required",
+            });
+        }
+
         const correctAnswer = shortStory.finalAnswer.trim().toLowerCase();
         const userAnswer = answer.trim().toLowerCase();
 
         if (correctAnswer !== userAnswer) {
             return res.status(403).json({
                 success: false,
-                message: "Wrong answer"
+                correctlyAnswered: false,
+                message: "Wrong answer",
             });
         }
 
-        // Prevent XP farming
-        const alreadyAnswered = await Userhistory.findOne({
-            userId,
-            storyId
-        });
-
-        if (alreadyAnswered) {
-            return res.status(400).json({
-                success: false,
-                message: "You already completed this story"
-            });
-        }
-
-        // Record completion
+        /* ================= RECORD SUCCESS ================= */
         await Userhistory.create({
             reader: userId,
             contentId: storyId,
-            contentType: "shortStory"
+            contentType: "shortStory",
         });
 
         await Userstats.findOneAndUpdate(
@@ -456,20 +479,22 @@ const userAnswer = async (req, res) => {
             {
                 $inc: {
                     xp: 20,
-                    totalShortStoriesRead: 1
-                }
-            }
+                    totalShortStoriesRead: 1,
+                },
+            },
+            { upsert: true }
         );
 
         return res.status(200).json({
             success: true,
-            message: "Correct answer! XP awarded 🎉"
+            correctlyAnswered: true,
+            message: "Correct answer! XP awarded 🎉",
         });
 
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 };

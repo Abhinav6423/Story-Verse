@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ThumbsUp, Bookmark } from "lucide-react";
 import { toast } from "react-toastify";
+import { MessageSquare, X } from "lucide-react";
+
 
 import Loader from "../Loader.jsx";
 import { OpenFeedShortStory } from "../../Api-calls/OpenFeedShortStory.js";
 import { likeShortStory } from "../../Api-calls/likeShortStory.js";
 import { addShortStoryToGoodReads } from "../../Api-calls/addShortStoryToGoodReads.js";
+import { answerQuestionShortStory } from "../../Api-calls/answerQuestionShortStory.js"
 
 const ViewShortStory = () => {
     const { storyId } = useParams();
@@ -20,6 +23,9 @@ const ViewShortStory = () => {
 
     const [addedToGoodReads, setAddedToGoodReads] = useState(false);
     const [goodReadsCount, setGoodReadsCount] = useState(0);
+    const [questionPopup, setQuestionPopup] = useState(false)
+    const [answer, setAnswer] = useState("")
+    const [alreadyAnswered, setAlreadyAnswered] = useState(false)
 
     /* ---------------- FETCH STORY ---------------- */
     const fetchStory = async () => {
@@ -34,6 +40,7 @@ const ViewShortStory = () => {
                 setAddedToGoodReads(data.isGoodRead);
                 setLikesCount(data.likes);
                 setGoodReadsCount(data.totalGoodReads);
+                setAlreadyAnswered(data.isQuestionAnswered === true);
             }
         } catch (error) {
             console.error("Error fetching story:", error);
@@ -94,6 +101,42 @@ const ViewShortStory = () => {
             toast.error("Action failed");
         }
     };
+
+    // freezes screen 
+    useEffect(() => {
+        if (questionPopup) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [questionPopup]);
+
+    const handleAnswerSubmit = async () => {
+        if (!answer.trim()) {
+            toast.error("Answer cannot be empty");
+            return;
+        }
+
+        const result = await answerQuestionShortStory({ storyId, answer });
+
+        if (result.success) {
+            toast.success(result.message);
+
+            setAlreadyAnswered(true)
+
+            setAnswer("");
+            setQuestionPopup(false);
+        } else {
+            toast.error(result.message);
+        }
+    };
+
+
+
 
 
     if (loading) return <Loader />;
@@ -207,6 +250,31 @@ const ViewShortStory = () => {
                                 {goodReadsCount} Good Reads
                             </span>
                         </button>
+                        {/* Question Button */}
+                        <button
+                            disabled={alreadyAnswered}
+                            onClick={() => {
+                                if (!alreadyAnswered) setQuestionPopup(true);
+                            }}
+                            className={`
+    inline-flex items-center justify-center
+    w-10 h-10 rounded-full
+    border transition
+    ${alreadyAnswered
+                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                    : "border-gray-300 hover:bg-gray-100"
+                                }
+  `}
+                            title={
+                                alreadyAnswered
+                                    ? "You already answered this question"
+                                    : "Answer Question"
+                            }
+                        >
+                            <MessageSquare size={18} />
+                        </button>
+
+
                     </div>
 
                 </div>
@@ -226,7 +294,7 @@ const ViewShortStory = () => {
                 <hr className="my-10 border-gray-200" />
 
                 {/* STORY CONTENT */}
-                <div className="prose prose-gray max-w-none font-serif text-[19px] leading-[1.6]">
+                <div className="prose prose-gray max-w-none font-serif text-[19px] leading-[1.6] ">
                     <div
                         dangerouslySetInnerHTML={{
                             __html: story.story.replace(
@@ -237,7 +305,159 @@ const ViewShortStory = () => {
                     />
                 </div>
 
+                <div className="w-full max-w-4xl bg-[#0f2a22]  p-5 shadow-lg mt-6 ">
+
+                    {/* HEADER */}
+                    <div className="flex items-center gap-2 mb-3">
+                        <div
+                            className="w-6 h-6 flex items-center justify-center rounded-full bg-white text-emarald-600 text-lg font-bold">
+                            ?
+                        </div>
+                        <h3 className="text-sm font-semibold text-white">
+                            Final Question
+                        </h3>
+                    </div>
+
+                    {/* QUESTION */}
+                    <p className="text-sm text-white mb-4 leading-relaxed">
+                        {story.finalQuestion}
+                    </p>
+
+
+
+                    {/* INFO BAR */}
+                    <div className="mt-3 bg-emerald-900/80 border border-emerald-700 rounded-lg px-4 py-2">
+                        <p className="text-xs text-emerald-200">
+                            On correct answer, you will receive 20XP & on incorrect answer, you will receive 0XP.
+                        </p>
+                    </div>
+
+                    {/* BUTTON */}
+                    <button
+                        disabled={alreadyAnswered}
+                        onClick={() => {
+                            if (!alreadyAnswered) setQuestionPopup(true);
+                        }}
+                        className={`
+        mt-4
+        w-full
+        text-sm
+        font-semibold
+        py-1.5
+        rounded-3xl
+        transition
+        ${alreadyAnswered
+                                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                                : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                            }
+    `}
+                    >
+                        {alreadyAnswered ? "Already Answered" : "Get Started"}
+                    </button>
+
+                </div>
+
+
             </div>
+            {questionPopup && (
+                <>
+                    {/* BACKDROP */}
+                    <div
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+                        onClick={() => setQuestionPopup(false)}
+                    />
+
+                    {/* MODAL */}
+                    <div className="fixed inset-0 z-50 flex items-center justify-center px-6 ">
+                        <div className="w-full max-w-sm bg-[#0f2a22] rounded-2xl shadow-2xl px-5 py-12 relative">
+
+                            {/* CLOSE */}
+                            <button
+                                onClick={() => setQuestionPopup(false)}
+                                className="absolute top-3 right-3 text-gray-400 hover:text-white"
+                            >
+                                <X size={18} />
+                            </button>
+
+                            {/* HEADER */}
+                            <div className="flex items-center gap-2 mb-6">
+                                <div className="w-7 h-7 flex items-center justify-center  bg-emerald-600 text-white text-sm font-bold">
+                                    ?
+                                </div>
+                                <h3 className="text-white font-semibold">
+                                    Final Question
+                                </h3>
+                            </div>
+
+                            {/* QUESTION */}
+                            <p className="text-sm text-white font-semibold mb-1">
+                                {story.finalQuestion}
+                            </p>
+
+                            {/* INPUT */}
+                            <input
+                                type="text"
+                                value={answer}
+                                onChange={(e) => setAnswer(e.target.value)}
+                                placeholder="Type your answer here"
+                                className="
+                        w-full
+                        bg-[#133a2f]
+                        text-white
+                        placeholder:text-emerald-300
+                        border border-emerald-700
+                        rounded-xl
+                        px-4
+                        py-3
+                        text-sm
+                        outline-none
+                        focus:ring-2
+                        focus:ring-emerald-500
+                    "
+                            />
+
+                            {/* HELPER TEXT */}
+                            <p
+                                className="
+        mt-3
+        px-4
+        py-2
+        rounded-lg
+        text-xs
+        text-emerald-100
+        bg-emerald-900/80
+        border
+        border-emerald-700
+    "
+                            >
+                                On correct answer, you will receive 50XP & on incorrect answer, you will receive 0XP.
+                            </p>
+
+
+                            {/* SUBMIT */}
+                            <button
+                                onClick={handleAnswerSubmit}
+                                className="
+                        mt-5
+                        w-full
+                        py-2
+                        rounded-xl
+                        bg-emerald-600
+                        text-white
+                        font-semibold
+                        hover:bg-emerald-700
+                        transition
+                    "
+                            >
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
+
+
+
         </div>
     );
 
