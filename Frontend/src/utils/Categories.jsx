@@ -15,51 +15,51 @@ import {
 
 export const categories = [
     {
-        name: "Action",
+        name: "action",
         icon: Flame,
     },
     {
-        name: "Adventure",
+        name: "adventure",
         icon: Compass,
     },
     {
-        name: "Comedy",
+        name: "comedy",
         icon: Laugh,
     },
     {
-        name: "Drama",
+        name: "drama",
         icon: Theater,
     },
     {
-        name: "Fantasy",
+        name: "fantasy",
         icon: Wand2,
     },
     {
-        name: "Horror",
+        name: "horror",
         icon: Skull,
     },
     {
-        name: "Romance",
+        name: "romance",
         icon: Heart,
     },
     {
-        name: "Sci-Fi",
+        name: "sci-Fi",
         icon: Rocket,
     },
     {
-        name: "Mystery",
+        name: "mystery",
         icon: Ghost,
     },
     {
-        name: "Thriller",
+        name: "thriller",
         icon: Shield,
     },
     {
-        name: "Non-Fiction",
+        name: "non-fiction",
         icon: BookOpen,
     },
     {
-        name: "Psychology",
+        name: "psychology",
         icon: Brain,
     },
 ];

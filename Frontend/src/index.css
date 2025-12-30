@@ -9,8 +9,8 @@ body::-webkit-scrollbar {
 
 html,
 body {
-  -ms-overflow-style: none; /* IE & Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 body {
@@ -18,66 +18,7 @@ body {
 }
 
 /* =====================================================
-   ANIMATIONS
-===================================================== */
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.15s ease-out;
-}
-
-@keyframes fadeIn2 {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeIn2 {
-  animation: fadeIn2 0.22s ease-out;
-}
-
-/* =====================================================
-   SCROLLBAR (HIDE)
-===================================================== */
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* =====================================================
-   DROPDOWN ITEMS (NETFLIX DARK)
-===================================================== */
-
-.dropdown-item {
-  @apply w-full text-left px-4 py-2 text-sm text-gray-300 transition;
-}
-
-.dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-/* =====================================================
-   INPUTS (DARK)
+   INPUTS
 ===================================================== */
 
 .field-input {
@@ -87,9 +28,8 @@ body {
   font-size: 14px;
   outline: none;
   background: #eaeaea;
-  color: #7b7b7b;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: border-color 0.2s;
+  color: #374151;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .field-input:focus {
@@ -97,141 +37,90 @@ body {
 }
 
 /* =====================================================
-   MANTINE RICH TEXT EDITOR – NETFLIX FIX
+   MANTINE RICH TEXT EDITOR (FIXED)
 ===================================================== */
 
-/* Root */
 .blog-editor .mantine-RichTextEditor-root {
   border-radius: 16px !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  background: #141414 !important;
-  overflow: hidden !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  background: #ffffff !important;
 }
 
 /* Toolbar */
 .blog-editor .mantine-RichTextEditor-toolbar {
-  background: #181818 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-  padding: 10px 14px !important;
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
 }
 
-/* Toolbar buttons */
+/* Toolbar icons */
 .blog-editor .mantine-RichTextEditor-toolbar button {
-  color: #e5e5e5 !important;
+  color: #111827 !important;
 }
 
-.blog-editor .mantine-RichTextEditor-toolbar button:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Content area */
+/* Content */
 .blog-editor .mantine-RichTextEditor-content {
   min-height: 360px !important;
   padding: 24px 26px !important;
   font-size: 1.05rem !important;
   line-height: 1.75 !important;
-  background: #141414 !important;
-  color: #e5e5e5 !important;
-}
-
-/* Grammarly / injected spacing fix */
-.blog-editor .mantine-RichTextEditor-content * {
-  padding-right: 0 !important;
+  background: #ffffff !important;
+  color: #111827 !important; /* ✅ FIX */
 }
 
 /* =====================================================
-   TIPTAP CONTENT TYPOGRAPHY
+   TIPTAP TYPOGRAPHY (FIXED)
 ===================================================== */
 
-.tiptap p {
+.blog-editor .tiptap p {
   margin-bottom: 1.25rem;
+  color: #374151;
 }
 
-.tiptap h1 {
+.blog-editor ::placeholder{
+  color: #374151;
+}
+
+.blog-editor .tiptap h1 {
   font-size: 2.1rem;
   font-weight: 800;
   margin-top: 2rem;
   margin-bottom: 1rem;
-  color: #ffffff;
+  color: #111827;
 }
 
-.tiptap h2 {
+.blog-editor .tiptap h2 {
   font-size: 1.6rem;
   font-weight: 700;
   margin-top: 1.8rem;
   margin-bottom: 0.9rem;
-  color: #ffffff;
+  color: #111827;
 }
 
-.tiptap h3 {
+.blog-editor .tiptap h3 {
   font-size: 1.3rem;
   font-weight: 700;
   margin-top: 1.6rem;
   margin-bottom: 0.8rem;
-  color: #ffffff;
+  color: #111827;
 }
 
-.tiptap blockquote {
+.blog-editor .tiptap blockquote {
   border-left: 4px solid #e50914;
   padding-left: 1rem;
-  color: #a1a1aa;
+  color: #6b7280;
   font-style: italic;
 }
 
 /* =====================================================
-   READER AREA (STORY VIEW – DARK)
+   READER AREA
 ===================================================== */
 
 .reader-area {
-  color: #e5e5e5;
+  color: #111827;
 }
 
 .reader-area p {
   font-size: 1.1rem;
   line-height: 1.75;
   margin-bottom: 1.25rem;
-}
-
-/* MOBILE: slide from bottom */
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideDown {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-slide-down {
-  animation: slideDown 0.25s ease-out;
-}
-
-
-/* Default = mobile */
-.animate-popup {
-  animation: slideUp 0.35s ease-out forwards;
-}
-
-/* Desktop override */
-@media (min-width: 640px) {
-  .animate-popup {
-    animation: slideDown 0.25s ease-out forwards;
-  }
-}
-
-:root {
-  --mobile-bottom-nav-height: 64px;
 }
