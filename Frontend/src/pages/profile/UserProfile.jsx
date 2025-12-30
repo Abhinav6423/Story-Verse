@@ -45,8 +45,12 @@ const UserProfile = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-white">
-              
+            <div
+                className="min-h-screen bg-white"
+                style={{ paddingBottom: "var(--mobile-bottom-nav-height)" }}
+            >
+
+
 
                 {/* COVER */}
                 <div className="relative h-36 sm:h-56 w-full">

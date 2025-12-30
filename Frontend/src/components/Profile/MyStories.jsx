@@ -21,7 +21,7 @@ const MyStories = () => {
     const stories = data?.data || [];
 
     return (
-        <div className="max-h-screen bg-white">
+        <div className=" bg-white ">
             <div className="max-w-7xl mx-auto py-7 sm:py-3">
 
                 {/* ===== HEADER ===== */}
