@@ -46,7 +46,7 @@ const UserProfile = () => {
     return (
         <>
             <div className="min-h-screen bg-white">
-                <Navbar />
+              
 
                 {/* COVER */}
                 <div className="relative h-36 sm:h-56 w-full">

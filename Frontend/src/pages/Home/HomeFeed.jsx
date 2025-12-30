@@ -7,10 +7,8 @@ import MobileBottomNav from "../../components/Home/MobileBottomNav.jsx";
 const HomeFeed = () => {
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* TOP NAVBAR */}
-      <div className="relative">
-        <Navbar />
-      </div>
+     
+      
 
       {/* GOOD READS STRIP */}
       <HomeGoodReadGrid />

@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Menu, Plus, LayoutGrid, User } from "lucide-react";
+import { Menu, Plus, LayoutGrid, User, LogOut } from "lucide-react";
 import CategoryPopup from "./CategoryPopup";
-import { logoutUser } from "../../Api-calls/logout.js";
-import { LogOut } from "lucide-react"
-import {toast} from 'react-toastify'
-const Navbar = () => {
+import { logoutUser } from "../../Api-calls/logout";
+import { toast } from "react-toastify";
+
+const Navbar = ({ onAnyNavClick }) => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [showBrowse, setShowBrowse] = useState(false);
 
     const profileMenuRef = useRef(null);
     const mobileMenuRef = useRef(null);
+    const hamburgerRef = useRef(null);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -19,6 +20,14 @@ const Navbar = () => {
     /* ================= CLICK OUTSIDE HANDLER ================= */
     useEffect(() => {
         const handleClickOutside = (e) => {
+            // Ignore hamburger & mobile menu clicks
+            if (
+                hamburgerRef.current?.contains(e.target) ||
+                mobileMenuRef.current?.contains(e.target)
+            ) {
+                return;
+            }
+
             if (
                 showProfileMenu &&
                 profileMenuRef.current &&
@@ -27,11 +36,7 @@ const Navbar = () => {
                 setShowProfileMenu(false);
             }
 
-            if (
-                showMobileMenu &&
-                mobileMenuRef.current &&
-                !mobileMenuRef.current.contains(e.target)
-            ) {
+            if (showMobileMenu) {
                 setShowMobileMenu(false);
             }
         };
@@ -45,112 +50,66 @@ const Navbar = () => {
     useEffect(() => {
         setShowProfileMenu(false);
         setShowMobileMenu(false);
+        setShowBrowse(false);
     }, [location.pathname]);
 
     const handleLogout = async () => {
         try {
             const result = await logoutUser();
             if (result?.success) {
-                toast.success(result?.message);
+                toast.success(result.message);
                 navigate("/");
             }
         } catch (error) {
-            console.error("Logout error:", error);
-            toast.error(error?.response?.data);
+            toast.error("Logout failed");
         }
-    }
+    };
 
     return (
         <>
             {/* ================= NAVBAR ================= */}
-            <nav className="w-full sticky top-0 z-50 bg-white border-b border-gray-200">
+            <nav className="sticky top-0 z-50 bg-white border-b">
                 <div className="relative max-w-7xl mx-auto px-6 h-16 flex items-center">
 
                     {/* LOGO */}
                     <Link
                         to="/home"
-                        className="font-serif text-2xl font-semibold text-gray-900 tracking-tighter"
+                        
+                        className="font-serif text-2xl font-semibold tracking-tight"
                     >
                         StoryFlix
                     </Link>
 
-                    {/* CENTER TABS (DESKTOP) */}
-                    <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex gap-6 text-sm font-medium text-gray-700">
-                        <button className="hover:text-black">Short Stories</button>
-                        <button className="hover:text-black">Books</button>
-                    </div>
+                    {/* DESKTOP ACTIONS */}
+                    <div className="ml-auto hidden md:flex items-center gap-6 text-sm">
 
-                    {/* RIGHT ACTIONS (DESKTOP) */}
-                    <div className="ml-auto hidden md:flex items-center gap-7 text-sm font-medium text-gray-700">
-
-                        <Link
-                            to="/create"
-                            className="flex items-center gap-2 hover:text-black"
-                        >
-                            <span className="w-7 h-7 flex items-center justify-center border border-gray-800 rounded-full">
-                                <Plus size={14} />
-                            </span>
+                        <Link to="/create" className="flex items-center gap-2">
+                            <Plus size={14} />
                             Write story
                         </Link>
 
-                        <button
-                            onClick={() => setShowBrowse(true)}
-                            className="flex items-center gap-2 hover:text-black"
-                        >
+                        <button onClick={() => setShowBrowse(true)}>
                             <LayoutGrid size={18} />
-                            Browse
                         </button>
 
-                        {/* PROFILE DROPDOWN */}
+                        {/* PROFILE MENU */}
                         <div className="relative" ref={profileMenuRef}>
-                            <button
-                                onClick={() =>
-                                    setShowProfileMenu((p) => !p)
-                                }
-                                className="flex items-center gap-2 hover:text-black"
-                            >
+                            <button onClick={() => setShowProfileMenu(p => !p)}>
                                 <User size={18} />
-                                Profile
                             </button>
 
                             {showProfileMenu && (
-                                <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
-                                    <Link
-                                        to="/profile"
-                                        className="block px-4 py-2 text-sm hover:bg-gray-100"
-                                    >
+                                <div className="absolute right-0 mt-3 w-48 bg-white border rounded-xl shadow-lg">
+                                    <Link to="/profile" className="block px-4 py-2">
                                         View Profile
-                                    </Link>
-                                    <Link
-                                        to="/goodReads/ShortStory"
-                                        className="block px-4 py-2 text-sm hover:bg-gray-100"
-                                    >
-                                        View Good Reads
-                                    </Link>
-                                    <Link
-                                        to=""
-                                        className="block px-4 py-2 text-sm hover:bg-gray-100"
-                                    >
-                                        View History
                                     </Link>
                                     <button
                                         onClick={handleLogout}
-                                        className="
-        w-full
-        px-4 py-2
-        text-sm
-        text-left
-        font-medium
-        text-red-600
-        hover:bg-gray-100
-        flex items-center gap-2
-    "
+                                        className="w-full px-4 py-2 text-left text-red-600 flex gap-2"
                                     >
                                         <LogOut size={16} />
                                         Logout
                                     </button>
-
-
                                 </div>
                             )}
                         </div>
@@ -158,8 +117,12 @@ const Navbar = () => {
 
                     {/* HAMBURGER (MOBILE) */}
                     <button
+                        ref={hamburgerRef}
                         className="ml-auto md:hidden"
-                        onClick={() => setShowMobileMenu(true)}
+                        onClick={() => {
+                            onAnyNavClick();
+                            setShowMobileMenu(prev => !prev)
+                        }}
                     >
                         <Menu size={22} />
                     </button>
@@ -172,60 +135,38 @@ const Navbar = () => {
                     {/* BACKDROP */}
                     <div className="fixed inset-0 bg-black/40 z-40" />
 
-                    {/* TOP DROPDOWN */}
+                    {/* DROPDOWN */}
                     <div
                         ref={mobileMenuRef}
-                        className="
-                            fixed top-16 left-0 right-0 z-50
-                            bg-white
-                            border-b border-gray-200
-                            shadow-lg
-                            animate-slide-down
-                        "
+                        className="fixed top-16 left-0 right-0 z-50 bg-white shadow-lg"
                     >
                         <Link
                             to="/profile"
-                            className="block px-6 py-4 border-b text-sm font-medium hover:bg-gray-50"
+                            onClick={() => setShowMobileMenu(false)}
+                            className="block px-4 py-2 border-b"
                         >
                             View Profile
                         </Link>
-
                         <Link
                             to="/goodReads/ShortStory"
-                            className="block px-6 py-4 border-b text-sm font-medium hover:bg-gray-50"
+                            onClick={() => setShowMobileMenu(false)}
+                            className="block  px-4 py-2 border-b"
                         >
-                            View Good Reads
+                            View GoodReads
                         </Link>
 
-                        <Link
-                            to=""
-                            className="block px-6 py-4 text-sm font-medium hover:bg-gray-50 border-b"
-                        >
-                            View History
-                        </Link>
+
 
                         <button
                             onClick={handleLogout}
-                            className="
-        w-full
-        px-6 py-4
-        text-sm 
-        font-medium
-        text-red-600
-        hover:bg-gray-50
-        flex items-center gap-1
-    "
+                            className="w-full  px-4 py-2 text-left text-red-600 flex gap-2"
                         >
                             <LogOut size={18} />
-                            <span className="text-sm">LogOut</span>
+                            Logout
                         </button>
-
-
-
                     </div>
                 </>
-            )
-            }
+            )}
 
             {/* ================= CATEGORY POPUP ================= */}
             <CategoryPopup

@@ -103,7 +103,7 @@ const GoodReadsShortStoryGrid = () => {
 
     return (
         <section className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#dff7ee] to-white">
-            <Navbar />
+            
 
             {/* SOFT GREEN GLOW (responsive) */}
             <div

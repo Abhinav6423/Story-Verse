@@ -21,8 +21,7 @@ const CategoryShortStoryResultsGrid = () => {
   if (isError) return <div className="p-6 text-red-500">{isError}</div>
   return (
     <>
-      {/* NAVBAR */}
-      <Navbar />
+     
 
       {/* PAGE WRAPPER */}
       <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#e9f7f1] to-white">

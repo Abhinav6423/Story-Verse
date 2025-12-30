@@ -1,28 +1,34 @@
 import { Home, PlusCircle, Grid, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
-
 import CategoryPopup from "./CategoryPopup.jsx";
-function MobileBottomNav() {
+
+const MobileBottomNav = ({ showBrowse, setShowBrowse, onAnyNavClick }) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const [showBrowse, setShowBrowse] = useState(false);
 
     const navItems = [
         { label: "Home", icon: Home, path: "/home" },
         { label: "Write", icon: PlusCircle, path: "/create" },
-        { label: "Browse", icon: Grid, action: "browse" }, // 👈 special
+        { label: "Browse", icon: Grid, action: "browse" },
         { label: "Profile", icon: User, path: "/profile" },
     ];
 
+    const handleBrowseClick = () => {
+        setShowBrowse((prev) => !prev);
+    };
+
+    const handleNavClick = (path) => {
+        setShowBrowse(false);
+        navigate(path);
+    };
+
     return (
         <>
-            {/* ================= MOBILE NAV ================= */}
+            {/* MOBILE BOTTOM NAV */}
             <nav
                 className="
           fixed bottom-0 left-0 right-0
-          z-50
-          bg-white
+          z-50 bg-white
           border-t border-gray-200
           md:hidden
         "
@@ -31,28 +37,27 @@ function MobileBottomNav() {
                     {navItems.map(({ label, icon: Icon, path, action }) => {
                         const isActive = path && location.pathname === path;
 
-                        // 👉 BROWSE BUTTON (NO ROUTE CHANGE)
+                        // BROWSE BUTTON
                         if (action === "browse") {
                             return (
                                 <button
                                     key={label}
-                                    onClick={() => setShowBrowse(true)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleBrowseClick();
+                                    }}
                                     className="flex flex-col items-center gap-1 text-xs"
                                 >
                                     <Icon
                                         size={22}
                                         strokeWidth={2}
                                         className={
-                                            showBrowse
-                                                ? "text-emerald-600"
-                                                : "text-gray-400"
+                                            showBrowse ? "text-emerald-600" : "text-gray-400"
                                         }
                                     />
                                     <span
                                         className={
-                                            showBrowse
-                                                ? "text-emerald-600"
-                                                : "text-gray-400"
+                                            showBrowse ? "text-emerald-600" : "text-gray-400"
                                         }
                                     >
                                         {label}
@@ -61,11 +66,11 @@ function MobileBottomNav() {
                             );
                         }
 
-                        // 👉 NORMAL NAV LINKS
+                        // NORMAL NAV BUTTON
                         return (
-                            <Link
+                            <button
                                 key={label}
-                                to={path}
+                                onClick={() => handleNavClick(path)}
                                 className="flex flex-col items-center gap-1 text-xs"
                             >
                                 <Icon
@@ -82,23 +87,23 @@ function MobileBottomNav() {
                                 >
                                     {label}
                                 </span>
-                            </Link>
+                            </button>
                         );
                     })}
                 </div>
             </nav>
 
-            {/* ================= BROWSE POPUP ================= */}
+            {/* CATEGORY POPUP */}
             <CategoryPopup
                 open={showBrowse}
                 onClose={() => setShowBrowse(false)}
                 onSelect={(category) => {
-                    navigate(`/home?category=${category}`);
                     setShowBrowse(false);
+                    navigate(`/home?category=${category}`);
                 }}
             />
         </>
     );
-}
+};
 
 export default MobileBottomNav;

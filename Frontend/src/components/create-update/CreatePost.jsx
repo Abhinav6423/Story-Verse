@@ -84,7 +84,7 @@ const CreatePost = () => {
 
     return (
         <div className="min-h-screen bg-[#eef1f6] pb-16">
-            <Navbar />
+            
 
             <div
                 className="

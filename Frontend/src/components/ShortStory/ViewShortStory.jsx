@@ -151,26 +151,26 @@ const ViewShortStory = () => {
                     {/* ACTION BUTTONS */}
                     <div
                         className="
-            flex flex-row
-            items-center
-            justify-center sm:justify-end
-            gap-3
-          "
+    flex items-center
+    justify-center sm:justify-end
+    gap-2 sm:gap-3
+    whitespace-nowrap
+  "
                     >
                         {/* LIKE */}
                         <button
                             onClick={handleLike}
                             className={`
-              inline-flex items-center gap-2
-              px-4 py-2
-              rounded-full
-              text-sm
-              border
-              transition
-              ${liked
+      inline-flex items-center gap-1.5
+      px-3 py-2 sm:px-4
+      rounded-full
+      text-xs sm:text-sm
+      border
+      transition
+      ${liked
                                     ? "bg-black text-white border-black"
                                     : "bg-white text-black border-black hover:bg-gray-100"}
-            `}
+    `}
                         >
                             <ThumbsUp
                                 size={14}
@@ -182,21 +182,21 @@ const ViewShortStory = () => {
                             </span>
                         </button>
 
-                        {/* GOOD READ (BIGGER) */}
+                        {/* GOOD READ */}
                         <button
                             onClick={handleGoodReads}
                             className={`
-              inline-flex items-center gap-2
-              px-6 py-3
-              rounded-full
-              text-base
-              font-semibold
-              border
-              transition
-              ${addedToGoodReads
+      inline-flex items-center gap-2
+      px-4 py-2 sm:px-6 sm:py-3
+      rounded-full
+      text-sm sm:text-base
+      font-semibold
+      border
+      transition
+      ${addedToGoodReads
                                     ? "bg-emerald-600 text-white border-emerald-600"
                                     : "bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50"}
-            `}
+    `}
                         >
                             <Bookmark
                                 size={18}
@@ -204,7 +204,7 @@ const ViewShortStory = () => {
                                 fill={addedToGoodReads ? "currentColor" : "none"}
                             />
                             <span>
-                                {goodReadsCount} Good reads
+                                {goodReadsCount} Good Reads
                             </span>
                         </button>
                     </div>
