@@ -234,6 +234,18 @@ const CreatePost = () => {
                 {/* ================= STEP 2 ================= */}
                 {step === 2 && (
                     <>
+                        {/* Editor Header */}
+                        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                            <span className="text-xs font-medium px-3 py-1 rounded-full bg-green-100 text-green-700">
+                                Step 2
+                            </span>
+                            <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                                Story Details
+                            </h2>
+                        </div>
+
+                        <div className="border-b mb-4 sm:mb-6" />
+
                         <Field label="Genre">
                             <select
                                 value={genre}
