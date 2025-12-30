@@ -16,7 +16,7 @@ const AppLayout = () => {
   return (
     <div className="min-h-screen bg-[#f8f9fb] pb-16">
       {/* DESKTOP NAVBAR */}
-      <Navbar onAnyNavClick={() => setShowBrowse(false)} />
+      <Navbar onAnyNavClick={() => setShowBrowse(false)} setShowBrowse={setShowBrowse} showBrowse={showBrowse} />
 
       {/* PAGE CONTENT */}
       <Outlet />

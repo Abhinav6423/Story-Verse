@@ -52,8 +52,9 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
                 }}
                 className="w-full"
               >
-                <div
-                  className="
+                <Link to={`/category/${cat.name}`}>
+                  <div
+                    className="
                     flex flex-col items-center justify-center
                     gap-1
                     p-4
@@ -64,12 +65,14 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
                     hover:bg-emerald-100/60
                     transition
                   "
-                >
-                  <Icon size={22} className="text-emerald-800" />
-                  <span className="text-sm font-medium text-emerald-900">
-                    {cat.name}
-                  </span>
-                </div>
+                  >
+                    <Icon size={22} className="text-emerald-800" />
+                    <span className="text-sm font-medium text-emerald-900">
+                      {cat.name}
+                    </span>
+                  </div>
+                </Link>
+
               </button>
             );
           })}

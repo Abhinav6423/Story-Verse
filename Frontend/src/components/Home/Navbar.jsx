@@ -5,10 +5,10 @@ import CategoryPopup from "./CategoryPopup";
 import { logoutUser } from "../../Api-calls/logout";
 import { toast } from "react-toastify";
 
-const Navbar = ({ onAnyNavClick }) => {
+const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
-    const [showBrowse, setShowBrowse] = useState(false);
+
 
     const profileMenuRef = useRef(null);
     const mobileMenuRef = useRef(null);
@@ -68,13 +68,13 @@ const Navbar = ({ onAnyNavClick }) => {
     return (
         <>
             {/* ================= NAVBAR ================= */}
-            <nav className="sticky top-0 z-50 bg-white border-b">
+            <nav className="sticky top-0 z-50 bg-white ">
                 <div className="relative max-w-7xl mx-auto px-6 h-16 flex items-center">
 
                     {/* LOGO */}
                     <Link
                         to="/home"
-                        
+
                         className="font-serif text-2xl font-semibold tracking-tight"
                     >
                         StoryFlix
@@ -83,29 +83,50 @@ const Navbar = ({ onAnyNavClick }) => {
                     {/* DESKTOP ACTIONS */}
                     <div className="ml-auto hidden md:flex items-center gap-6 text-sm">
 
-                        <Link to="/create" className="flex items-center gap-2">
-                            <Plus size={14} />
-                            Write story
+                        <Link to="/create" className="flex items-center gap-1">
+                            <div
+                                className="border rounded-full p-0.5">
+                                <Plus size={14} className="" />
+                            </div>
+                            <span className="font-medium">Write story</span>
                         </Link>
 
-                        <button onClick={() => setShowBrowse(true)}>
+
+                        {/* Browse Button */}
+                        <button
+                            className="cursor-pointer flex gap-1 items-center"
+                            onClick={() => {
+
+                                setShowBrowse(p => !p)
+
+                            }}>
                             <LayoutGrid size={18} />
+                            <span className="font-medium">Browse</span>
                         </button>
 
                         {/* PROFILE MENU */}
                         <div className="relative" ref={profileMenuRef}>
-                            <button onClick={() => setShowProfileMenu(p => !p)}>
+                            <button
+                                className="flex items-center gap-1"
+                                onClick={() => {
+                                    onAnyNavClick();
+                                    setShowProfileMenu(p => !p)
+                                }}>
                                 <User size={18} />
+                                <span className="font-medium">Profile</span>
                             </button>
 
                             {showProfileMenu && (
-                                <div className="absolute right-0 mt-3 w-48 bg-white border rounded-xl shadow-lg">
-                                    <Link to="/profile" className="block px-4 py-2">
+                                <div className="absolute right-0 mt-3 w-48 bg-white border rounded-xl shadow-lg p-0.5">
+                                    <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">
                                         View Profile
+                                    </Link>
+                                    <Link to="/goodReads/ShortStory" className="block px-4 py-2 hover:bg-gray-100">
+                                        Good Reads
                                     </Link>
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full px-4 py-2 text-left text-red-600 flex gap-2"
+                                        className="cursor-pointer w-full px-4 py-2 text-left text-red-600 flex gap-2 hover:bg-gray-100"
                                     >
                                         <LogOut size={16} />
                                         Logout
