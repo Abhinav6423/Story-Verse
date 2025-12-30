@@ -124,6 +124,7 @@ const ViewShortStory = () => {
         const result = await answerQuestionShortStory({ storyId, answer });
 
         if (result.success) {
+            toast.info("Submitting answer...");
             toast.success(result.message);
 
             setAlreadyAnswered(true)
@@ -250,29 +251,7 @@ const ViewShortStory = () => {
                                 {goodReadsCount} Good Reads
                             </span>
                         </button>
-                        {/* Question Button */}
-                        <button
-                            disabled={alreadyAnswered}
-                            onClick={() => {
-                                if (!alreadyAnswered) setQuestionPopup(true);
-                            }}
-                            className={`
-    inline-flex items-center justify-center
-    w-10 h-10 rounded-full
-    border transition
-    ${alreadyAnswered
-                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                    : "border-gray-300 hover:bg-gray-100"
-                                }
-  `}
-                            title={
-                                alreadyAnswered
-                                    ? "You already answered this question"
-                                    : "Answer Question"
-                            }
-                        >
-                            <MessageSquare size={18} />
-                        </button>
+                        
 
 
                     </div>
