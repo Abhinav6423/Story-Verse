@@ -25,12 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // ================== CORS ==================
-app.use(
-    cors({
-        origin: process.env.FRONTEND_URL,
-        credentials: true,
-    })
-);
+app.use(cors({ credentials: true }));
+
 
 // ================== PASSPORT ==================
 app.use(passport.initialize());

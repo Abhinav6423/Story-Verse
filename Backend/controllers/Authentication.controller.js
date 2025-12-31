@@ -3,12 +3,12 @@ import Userstats from "../modals/Userstats.modal.js";
 
 /* ---------------- COOKIE UTILS ---------------- */
 const setTokenInCookie = (res, token) => {
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,          // ✅ REQUIRED in production
-    sameSite: "none",      // ✅ REQUIRED for cross-site
-    path: "/",
-  });
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,          // ✅ REQUIRED in production
+        sameSite: "lax",      // ✅ REQUIRED for cross-site
+        path: "/",
+    });
 };
 
 
