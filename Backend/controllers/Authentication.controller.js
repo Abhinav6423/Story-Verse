@@ -3,15 +3,14 @@ import Userstats from "../modals/Userstats.modal.js";
 
 /* ---------------- COOKIE UTILS ---------------- */
 const setTokenInCookie = (res, token) => {
-    const isProd = process.env.NODE_ENV === "production";
-
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: isProd,
-        sameSite: isProd ? "none" : "lax",
-        path: "/",
-    });
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,          // ✅ REQUIRED in production
+    sameSite: "none",      // ✅ REQUIRED for cross-site
+    path: "/",
+  });
 };
+
 
 /* ---------------- LOCAL REGISTER ---------------- */
 export const registerUser = async (req, res) => {
