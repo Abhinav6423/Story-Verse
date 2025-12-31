@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import passport from "passport";
 
 import connectDB from "./DBconfig/dbConfig.js";
-import "./config/passport.js"; // env now available
+import "./config/Passport.js"; // env now available
 
 // Disable mongoose buffering
 mongoose.set("bufferCommands", false);
