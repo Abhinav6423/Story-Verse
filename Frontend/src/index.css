@@ -17,6 +17,12 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 /* =====================================================
    INPUTS
 ===================================================== */
@@ -76,7 +82,7 @@ body {
   color: #374151;
 }
 
-.blog-editor ::placeholder{
+.blog-editor ::placeholder {
   color: #374151;
 }
 

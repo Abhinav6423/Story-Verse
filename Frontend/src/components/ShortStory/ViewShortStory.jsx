@@ -104,14 +104,13 @@ const ViewShortStory = () => {
 
     // freezes screen 
     useEffect(() => {
-        if (questionPopup) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
+        if (!questionPopup) return;
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
 
         return () => {
-            document.body.style.overflow = "";
+            document.body.style.overflow = previousOverflow || "auto";
         };
     }, [questionPopup]);
 
@@ -233,6 +232,25 @@ const ViewShortStory = () => {
                         </button>
                     </div>
                 </div>
+
+                {/* DESCRIPTION */}
+                {story.description && (
+                    <p
+                        className="
+            mt-6
+            text-base sm:text-lg
+            text-gray-600
+            font-serif
+            leading-relaxed
+            max-w-3xl
+            mx-auto sm:mx-0
+            text-center sm:text-left
+        "
+                    >
+                        {story.description}
+                    </p>
+                )}
+
 
                 <hr className="my-8 border-gray-200" />
 
