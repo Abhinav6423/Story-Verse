@@ -23,7 +23,6 @@ body {
   overflow-x: hidden;
 }
 
-
 /* 🔒 FORCE STORY CONTENT TO RESPECT MOBILE WIDTH */
 .prose * {
   max-width: 100%;

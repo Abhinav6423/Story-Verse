@@ -10,6 +10,7 @@ import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Loader from "../Loader.jsx";
 import { categories } from "../../utils/Categories.jsx";
+import Link from "@tiptap/extension-link";
 
 const CreatePost = () => {
     const navigate = useNavigate();
@@ -28,15 +29,16 @@ const CreatePost = () => {
     /* ================= EDfirst================= */
     const editor = useEditor({
         extensions: [
-            StarterKit,
-
+            StarterKit.configure({
+                link: false, // ❌ disables link feature completely
+            }),
         ],
         content: "",
-
         onUpdate: ({ editor }) => {
-            setStory(editor.getHTML()); // ✅ STORE STORY
+            setStory(editor.getHTML());
         },
     });
+
 
     /* ================= SUBMIT ================= */
     const handleSave = async (e) => {
@@ -84,7 +86,7 @@ const CreatePost = () => {
 
     return (
         <div className="min-h-screen bg-[#eef1f6] pb-16">
-            
+
 
             <div
                 className="
