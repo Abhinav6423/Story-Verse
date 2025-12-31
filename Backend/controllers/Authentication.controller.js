@@ -132,7 +132,8 @@ export const googleCallback = async (req, res) => {
         const token = user.generateToken();
         setTokenInCookie(res, token);
 
-        return res.redirect(`${process.env.FRONTEND_URL}/auth/success`);
+        return res.redirect(`${process.env.FRONTEND_URL}/home`);
+
     } catch (error) {
         console.error(error);
         return res.redirect(`${process.env.FRONTEND_URL}/`);
