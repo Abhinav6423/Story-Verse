@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://story-verse-production-53fc.up.railway.app/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
