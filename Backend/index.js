@@ -42,12 +42,31 @@ app.use(cookieParser());
 //     })
 // );
 
+const allowedOrigins = [
+    "https://story-verse-lac.vercel.app",
+];
+
 app.use(
     cors({
-        origin: "https://story-verse-lac.vercel.app",
+        origin: function (origin, callback) {
+            // allow requests with no origin (mobile apps, curl, postman)
+            if (!origin) return callback(null, true);
+
+            if (allowedOrigins.includes(origin)) {
+                return callback(null, origin);
+            }
+
+            return callback(new Error("Not allowed by CORS"));
+        },
         credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
     })
 );
+
+// 🔥 THIS LINE IS CRITICAL
+app.options("*", cors());
+
 
 
 // ================== ROUTES ==================
