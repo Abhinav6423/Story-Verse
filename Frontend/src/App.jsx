@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import GoodReadsShortStoryGrid from './components/GoodReadsShortStory/GoodReadsShortStoryGrid.jsx'
 import Layout from './pages/Layout/Layout.jsx'
 import CategoryShortStoryResultsGrid from './components/categoryShortStoryResults/CategoryShortStoryResultsGrid.jsx'
+import UpdateShortStory from './components/Profile/UpdateShortStory.jsx'
 const App = () => {
   return (
 
@@ -38,6 +39,7 @@ const App = () => {
             <Route path='/create' element={<CreatePost />} />
             <Route path='/goodReads/ShortStory' element={<GoodReadsShortStoryGrid />} />
             <Route path='/category/:category' element={<CategoryShortStoryResultsGrid />} />
+            <Route path='/update/shortStory/:storyId' element={<UpdateShortStory />} />
           </Route>
         </Route>
       </Routes>

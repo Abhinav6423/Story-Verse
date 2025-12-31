@@ -160,14 +160,24 @@ const openUserShortStory = async (req, res) => {
 const updateShortStory = async (req, res) => {
     try {
         const { storyId } = req.params;
-        const { title, story, description, coverImage, finalQuestion, category, status } = req.body;
 
-        if (!storyId) {
+        if (!mongoose.Types.ObjectId.isValid(storyId)) {
             return res.status(400).json({
                 success: false,
-                message: "storyId is required"
+                message: "Invalid storyId"
             });
         }
+
+        const {
+            title,
+            story,
+            description,
+            coverImage,
+            finalQuestion,
+            finalAnswer,
+            category,
+            status
+        } = req.body;
 
         const shortStory = await ShortStory.findById(storyId);
 
@@ -192,24 +202,54 @@ const updateShortStory = async (req, res) => {
             });
         }
 
-        // ✅ update only provided fields
+        // 🔥 STORE PREVIOUS STATUS
+        const previousStatus = shortStory.status;
+
+        // ================= UPDATE FIELDS =================
         if (title !== undefined) shortStory.title = title;
         if (story !== undefined) shortStory.story = story;
         if (description !== undefined) shortStory.description = description;
         if (coverImage !== undefined) shortStory.coverImage = coverImage;
         if (finalQuestion !== undefined) shortStory.finalQuestion = finalQuestion;
+        if (finalAnswer !== undefined) shortStory.finalAnswer = finalAnswer;
         if (category !== undefined) shortStory.category = category;
         if (status !== undefined) shortStory.status = status;
 
-        // ✅ check if anything changed
-        if (!shortStory.isModified()) {
-            return res.status(400).json({
-                success: false,
-                message: "No changes provided"
-            });
+        await shortStory.save();
+
+        // ================= XP LOGIC =================
+        const XP_REWARD = 30;
+
+        // draft → published
+        if (previousStatus === "draft" && shortStory.status === "published") {
+            await Userstats.findOneAndUpdate(
+                { userId: shortStory.author },   // ✅ CORRECT FIELD
+                { $inc: { xp: XP_REWARD } },
+                { new: true, upsert: true }
+            );
         }
 
-        await shortStory.save();
+        // published → draft
+        if (previousStatus === "published" && shortStory.status === "draft") {
+            await Userstats.findOneAndUpdate(
+                { userId: shortStory.author },
+                [
+                    {
+                        $set: {
+                            xp: {
+                                $max: [
+                                    { $add: ["$xp", -XP_REWARD] },
+                                    0
+                                ]
+                            }
+                        }
+                    }
+                ],
+                { new: true }
+            );
+
+        }
+
 
         return res.status(200).json({
             success: true,
@@ -224,6 +264,8 @@ const updateShortStory = async (req, res) => {
         });
     }
 };
+
+
 
 
 const deleteShortStory = async (req, res) => {

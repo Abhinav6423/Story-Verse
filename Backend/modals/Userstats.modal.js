@@ -17,7 +17,8 @@ const UserstatsSchema = new Schema(
         },
         xp: {
             type: Number,
-            default: 0
+            default: 0,
+            min: 0
         },
         xpToNextLevel: {
             type: Number,

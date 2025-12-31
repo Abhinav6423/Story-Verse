@@ -5,6 +5,7 @@ import MyStoryCard from "./MyStoryCard.jsx";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../Loader.jsx";
 import { BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 const MyStories = () => {
     const [status, setStatus] = useState("published");
 
@@ -90,14 +91,19 @@ const MyStories = () => {
                     "
                     >
                         {stories.map((story) => (
+
+
                             <MyStoryCard
                                 key={story._id}
+                                id={story._id}
                                 title={story.title}
                                 image={story.coverImage}
                                 status={story.status}
                                 category={story.category}
                                 time={story.createdAt}
                             />
+
+
                         ))}
                     </div>
                 )}

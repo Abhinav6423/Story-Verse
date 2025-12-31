@@ -33,7 +33,6 @@ const Register = () => {
                 username,
                 email,
                 password,
-                profilePic
             });
 
             if (result?.success) {
