@@ -255,7 +255,19 @@ const ViewShortStory = () => {
                 <hr className="my-8 border-gray-200" />
 
                 {/* STORY CONTENT */}
-                <div className="prose prose-gray max-w-none font-serif text-[18px] leading-[1.6]">
+                <div
+                    className="
+    prose
+    prose-gray
+    font-serif
+    text-[18px]
+    leading-[1.6]
+    max-w-full
+    overflow-x-hidden
+    break-words
+  "
+                >
+
                     <div
                         dangerouslySetInnerHTML={{
                             __html: story.story.replace(

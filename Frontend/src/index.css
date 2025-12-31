@@ -23,6 +23,27 @@ body {
   overflow-x: hidden;
 }
 
+
+/* 🔒 FORCE STORY CONTENT TO RESPECT MOBILE WIDTH */
+.prose * {
+  max-width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.prose img,
+.prose video,
+.prose iframe,
+.prose table,
+.prose pre,
+.prose code {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  overflow-x: auto;
+}
+
 /* =====================================================
    INPUTS
 ===================================================== */
