@@ -1,7 +1,7 @@
 import User from "../modals/User.modal.js";
 import Userstats from "../modals/Userstats.modal.js";
-
-
+import crypto from "crypto";
+import sendEmail from "../utils/sendEmail.js";
 const setTokenInCookie = (res, token) => {
     res.cookie("token", token, {
         httpOnly: true,
@@ -12,133 +12,140 @@ const setTokenInCookie = (res, token) => {
 
 }
 
+
+
 const registerUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body
+        const { username, email, password } = req.body;
+
         if (!username || !email || !password) {
-            return res.status(400).json(
-                {
-                    success: false,
-                    message: "All fields are required"
-                }
-            )
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
         }
 
-        const userExists = await User.findOne({ email })
+        const userExists = await User.findOne({ email });
         if (userExists) {
-            return res.status(400).json(
-                {
-                    success: false,
-                    message: "User already exists"
-                }
-            )
+            return res.status(400).json({
+                success: false,
+                message: "User already exists"
+            });
         }
 
-        const user = await User.create(
-            {
-                username,
-                email,
-                password,
+        // 🔑 CREATE RAW TOKEN
+        const rawToken = crypto.randomBytes(32).toString("hex");
 
-            }
-        )
+        // 🔐 HASH TOKEN FOR DB
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(rawToken)
+            .digest("hex");
 
-        const token = await user.generateToken()
+        const user = await User.create({
+            username,
+            email,
+            password,
+            emailVerified: false,
+            emailVerifyToken: hashedToken,
+            emailVerifyExpire: Date.now() + 24 * 60 * 60 * 1000 // 24h
+        });
 
-        setTokenInCookie(res, token)
+        await Userstats.create({
+            userId: user._id,
+            username: user.username,
+            profilePic: user.profilePic
+        });
 
-        await Userstats.create(
-            {
-                userId: user._id,
-                username: user.username,
-                profilePic: user.profilePic
-            }
-        )
+        const verifyURL = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
+
+        await sendEmail({
+            to: user.email,
+            subject: "Verify your email - StoryFlix",
+            html: `
+        <h2>Welcome to StoryFlix</h2>
+        <p>Please verify your email to continue.</p>
+        <a href="${verifyURL}" target="_blank">Verify Email</a>
+        <p>This link expires in 24 hours.</p>
+    `,
+        });
 
         return res.status(201).json({
             success: true,
-            message: "User registered successfully",
-            user: {
-                _id: user._id,
-                username: user.username,
-                email: user.email,
-                profilePic: user.profilePic
-            }
+            message: "Registered successfully. Verify email.",
+            // verifyToken: rawToken // ⚠️ TEMP (for testing)
         });
 
     } catch (error) {
-        return res.status(500).json(
-            {
-                success: false,
-                message: error.message
-            }
-        )
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-}
+};
+
+
 
 const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body
+        const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.status(400).json(
-                {
-                    success: false,
-                    message: "All fields are required"
-                }
-            )
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required",
+            });
         }
 
-        const userExists = await User.findOne({ email })
+        const user = await User.findOne({ email });
 
-        if (!userExists) {
-            return res.status(400).json(
-                {
-                    success: false,
-                    message: "User does not exist"
-                }
-            )
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "User does not exist",
+            });
         }
 
-        const isMatch = await userExists.isPasswordCorrect(password)
+        const isMatch = await user.isPasswordCorrect(password);
 
         if (!isMatch) {
-            return res.status(400).json(
-                {
-                    success: false,
-                    message: "Invalid credentials"
-                }
-            )
+            return res.status(400).json({
+                success: false,
+                message: "Invalid credentials",
+            });
         }
 
-        const token = await userExists.generateToken()
-
-        setTokenInCookie(res, token)
-
-
-
-        return res.status(200).json(
-            {
-                success: true,
-                message: "User logged in successfully",
-                user: {
-                    id: userExists._id,
-                    username: userExists.username,
-                    email: userExists.email,
-                    profilePic: userExists.profilePic
-                },
-                token
-            }
-        )
-    } catch (error) {
-        return res.status(500).json(
-            {
+        // 🔒 BLOCK UNVERIFIED USERS
+        if (!user.emailVerified) {
+            return res.status(403).json({
                 success: false,
-                message: error.message
-            }
-        )
+                message: "Please verify your email before logging in",
+            });
+        }
+
+        const token = await user.generateToken();
+        setTokenInCookie(res, token);
+
+        return res.status(200).json({
+            success: true,
+            message: "User logged in successfully",
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                profilePic: user.profilePic,
+            },
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
     }
-}
+};
+
+
 
 const logoutUser = async (req, res) => {
     try {

@@ -12,6 +12,7 @@ import GoodReadsShortStoryGrid from './components/GoodReadsShortStory/GoodReadsS
 import Layout from './pages/Layout/Layout.jsx'
 import CategoryShortStoryResultsGrid from './components/categoryShortStoryResults/CategoryShortStoryResultsGrid.jsx'
 import UpdateShortStory from './components/Profile/UpdateShortStory.jsx'
+import VerifyEmail from './pages/VerifyEmail.jsx'
 const App = () => {
   return (
 
@@ -42,6 +43,9 @@ const App = () => {
             <Route path='/update/shortStory/:storyId' element={<UpdateShortStory />} />
           </Route>
         </Route>
+
+        <Route path="/verify-email" element={<VerifyEmail />} />
+
       </Routes>
     </>
   )

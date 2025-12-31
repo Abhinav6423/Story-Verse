@@ -8,6 +8,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { toast } from "react-toastify";
 import { categories } from "../../utils/Categories.jsx";
 import Loader from "../Loader.jsx";
+import Link from "@tiptap/extension-link";
 
 const UpdateShortStory = () => {
     const navigate = useNavigate();
@@ -24,9 +25,14 @@ const UpdateShortStory = () => {
     const [step, setStep] = useState(1);
     const [contentLoaded, setContentLoaded] = useState(false);
 
+
     /* ================= EDITOR ================= */
     const editor = useEditor({
-        extensions: [StarterKit],
+        extensions: [
+            StarterKit.configure({
+                link: false, // ❌ disables link feature completely
+            }),
+        ],
         content: "",
         onUpdate: ({ editor }) => {
             setStory(editor.getHTML());
