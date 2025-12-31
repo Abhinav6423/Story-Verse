@@ -1,27 +1,33 @@
 import User from "../modals/User.modal.js";
 import Userstats from "../modals/Userstats.modal.js";
-import crypto from "crypto";
-import sendEmail from "../utils/sendEmail.js";
+import { OAuth2Client } from "google-auth-library";
+
+/* ---------------- COOKIE UTILS ---------------- */
 const setTokenInCookie = (res, token) => {
+    const isProd = process.env.NODE_ENV === "production";
+
     res.cookie("token", token, {
         httpOnly: true,
-        secure: true,        // only true on https
-        sameSite: "none",
+        secure: isProd,                 // true on Railway
+        sameSite: isProd ? "none" : "lax",
         path: "/",
     });
-
-}
-
+};
 
 
-const registerUser = async (req, res) => {
+
+
+
+
+/* ---------------- LOCAL REGISTER ---------------- */
+export const registerUser = async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
         if (!username || !email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "All fields are required"
+                message: "All fields are required",
             });
         }
 
@@ -29,26 +35,16 @@ const registerUser = async (req, res) => {
         if (userExists) {
             return res.status(400).json({
                 success: false,
-                message: "User already exists"
+                message: "User already exists",
             });
         }
-
-        // 🔑 CREATE RAW TOKEN
-        const rawToken = crypto.randomBytes(32).toString("hex");
-
-        // 🔐 HASH TOKEN FOR DB
-        const hashedToken = crypto
-            .createHash("sha256")
-            .update(rawToken)
-            .digest("hex");
 
         const user = await User.create({
             username,
             email,
             password,
-            emailVerified: false,
-            emailVerifyToken: hashedToken,
-            emailVerifyExpire: Date.now() + 24 * 60 * 60 * 1000 // 24h
+            provider: "local",
+            emailVerified: true,
         });
 
         await Userstats.create({
@@ -57,40 +53,29 @@ const registerUser = async (req, res) => {
             profilePic: user.profilePic || "",
         });
 
-
-        const verifyURL = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
-
-        sendEmail({
-            to: user.email,
-            subject: "Verify your email - StoryFlix",
-            html: `
-    <h2>Welcome to StoryFlix</h2>
-    <p>Please verify your email to continue.</p>
-    <a href="${verifyURL}" target="_blank">Verify Email</a>
-    <p>This link expires in 24 hours.</p>
-  `,
-        }).catch(err => {
-            console.error("EMAIL FAILED:", err.message);
-        });
-
+        const token = user.generateToken();
+        setTokenInCookie(res, token);
 
         return res.status(201).json({
             success: true,
-            message: "Registered successfully. Verify email.",
-            // verifyToken: rawToken // ⚠️ TEMP (for testing)
+            message: "Registered successfully",
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                profilePic: user.profilePic,
+            },
         });
-
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 };
 
-
-
-const loginUser = async (req, res) => {
+/* ---------------- LOCAL LOGIN ---------------- */
+export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -102,16 +87,14 @@ const loginUser = async (req, res) => {
         }
 
         const user = await User.findOne({ email });
-
-        if (!user) {
+        if (!user || user.provider !== "local") {
             return res.status(400).json({
                 success: false,
-                message: "User does not exist",
+                message: "Invalid credentials",
             });
         }
 
         const isMatch = await user.isPasswordCorrect(password);
-
         if (!isMatch) {
             return res.status(400).json({
                 success: false,
@@ -119,20 +102,12 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // 🔒 BLOCK UNVERIFIED USERS
-        if (!user.emailVerified) {
-            return res.status(403).json({
-                success: false,
-                message: "Please verify your email before logging in",
-            });
-        }
-
-        const token = await user.generateToken();
+        const token = user.generateToken();
         setTokenInCookie(res, token);
 
         return res.status(200).json({
             success: true,
-            message: "User logged in successfully",
+            message: "Login successful",
             user: {
                 id: user._id,
                 username: user.username,
@@ -140,7 +115,6 @@ const loginUser = async (req, res) => {
                 profilePic: user.profilePic,
             },
         });
-
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -149,53 +123,90 @@ const loginUser = async (req, res) => {
     }
 };
 
+/* ---------------- GOOGLE AUTH ---------------- */
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-
-const logoutUser = async (req, res) => {
+export const googleAuth = async (req, res) => {
     try {
-        res.clearCookie("token")
-        return res.status(200).json(
-            {
-                success: true,
-                message: "User logged out successfully"
-            }
-        )
-    } catch (error) {
-        return res.status(500).json(
-            {
-                success: false,
-                message: error.message
-            }
-        )
-    }
-}
-
-const getLoggedInUser = async (req, res) => {
-    try {
-        const userId = req.user._id
-        if (!userId) {
-            return res.status(400).json(
-                {
-                    success: false,
-                    message: "You are Unauthorized"
-                }
-            )
+        const { token } = req.body;
+        if (!token) {
+            return res.status(400).json({ success: false, message: "Token missing" });
         }
-        const user = await User.findById(userId).select("-password")
-        return res.status(200).json(
-            {
-                success: true,
-                user: user
-            }
-        )
-    } catch (error) {
-        return res.status(500).json(
-            {
-                success: false,
-                message: error.message
-            }
-        )
-    }
-}
 
-export { registerUser, loginUser, logoutUser, getLoggedInUser }
+        const ticket = await googleClient.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const { email, name, picture } = ticket.getPayload();
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            user = await User.create({
+                email,
+                username: name || email.split("@")[0],
+                profilePic: picture,
+                provider: "google",
+                emailVerified: true,
+            });
+
+            await Userstats.create({
+                userId: user._id,
+                username: user.username,
+                profilePic: user.profilePic || "",
+            });
+        }
+
+        const jwtToken = user.generateToken();
+        setTokenInCookie(res, jwtToken);
+
+        return res.status(200).json({
+            success: true,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                profilePic: user.profilePic,
+            },
+        });
+    } catch (error) {
+        return res.status(401).json({
+            success: false,
+            message: "Google authentication failed",
+        });
+    }
+};
+
+/* ---------------- LOGOUT ---------------- */
+export const logoutUser = async (req, res) => {
+    res.clearCookie("token");
+    return res.status(200).json({
+        success: true,
+        message: "Logged out successfully",
+    });
+};
+
+/* ---------------- CURRENT USER ---------------- */
+export const getLoggedInUser = async (req, res) => {
+    try {
+        if (!req.user?._id) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+
+        const user = await User.findById(req.user._id).select("-password");
+
+        return res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};

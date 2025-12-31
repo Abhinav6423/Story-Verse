@@ -21,27 +21,34 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // ================== CORS ==================
-const allowedOrigins = [
-    "http://localhost:5173",
-    "https://story-verse-lac.vercel.app"
-];
+// const allowedOrigins = [
+//     "http://localhost:5173",
+//     "https://story-verse-lac.vercel.app"
+// ];
+
+// app.use(
+//     cors({
+//         origin: function (origin, callback) {
+//             // allow non-browser requests
+//             if (!origin) return callback(null, true);
+
+//             if (allowedOrigins.includes(origin)) {
+//                 return callback(null, origin); // 🔥 IMPORTANT
+//             }
+
+//             return callback(new Error("Not allowed by CORS"));
+//         },
+//         credentials: true,
+//     })
+// );
 
 app.use(
     cors({
-        origin: (origin, callback) => {
-            // Allow non-browser requests (Postman, curl)
-            if (!origin) return callback(null, true);
-
-            if (allowedOrigins.includes(origin)) {
-                return callback(null, true);
-            }
-
-            // ❗ Do NOT throw error
-            return callback(null, false);
-        },
-        credentials: true
+        origin: "https://story-verse-lac.vercel.app",
+        credentials: true,
     })
 );
+
 
 // ================== ROUTES ==================
 import authenticationRoutes from "./routes/authentication.routes.js";

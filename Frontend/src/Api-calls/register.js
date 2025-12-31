@@ -8,19 +8,15 @@ export const registerUser = async ({ username, email, password }) => {
             { withCredentials: true }
         );
 
-        console.log(res?.data);
+        // 🔑 return backend response AS-IS
+        return res.data;
 
-        return {
-            success: true,
-            message: "User registered successfully",
-            data: res?.data
-        };
     } catch (error) {
-        console.log(error);
-
         return {
             success: false,
-            message: error?.response?.data?.message || "Registration failed"
+            message:
+                error?.response?.data?.message ||
+                "Registration failed",
         };
     }
 };
