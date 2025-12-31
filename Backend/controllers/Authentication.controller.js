@@ -1,6 +1,5 @@
 import User from "../modals/User.modal.js";
 import Userstats from "../modals/Userstats.modal.js";
-import { OAuth2Client } from "google-auth-library";
 
 /* ---------------- COOKIE UTILS ---------------- */
 const setTokenInCookie = (res, token) => {
@@ -8,16 +7,11 @@ const setTokenInCookie = (res, token) => {
 
     res.cookie("token", token, {
         httpOnly: true,
-        secure: isProd,                 // true on Railway
+        secure: isProd,
         sameSite: isProd ? "none" : "lax",
         path: "/",
     });
 };
-
-
-
-
-
 
 /* ---------------- LOCAL REGISTER ---------------- */
 export const registerUser = async (req, res) => {
@@ -59,12 +53,7 @@ export const registerUser = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "Registered successfully",
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                profilePic: user.profilePic,
-            },
+            user,
         });
     } catch (error) {
         return res.status(500).json({
@@ -108,12 +97,7 @@ export const loginUser = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Login successful",
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                profilePic: user.profilePic,
-            },
+            user,
         });
     } catch (error) {
         return res.status(500).json({
@@ -123,64 +107,50 @@ export const loginUser = async (req, res) => {
     }
 };
 
-/* ---------------- GOOGLE AUTH ---------------- */
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-export const googleAuth = async (req, res) => {
+/* ---------------- GOOGLE CALLBACK (PASSPORT) ---------------- */
+/**
+ * Passport already verified Google
+ * req.user is available here
+ */
+export const googleCallback = async (req, res) => {
     try {
-        const { token } = req.body;
-        if (!token) {
-            return res.status(400).json({ success: false, message: "Token missing" });
-        }
-
-        const ticket = await googleClient.verifyIdToken({
-            idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-
-        const { email, name, picture } = ticket.getPayload();
-
-        let user = await User.findOne({ email });
+        const user = req.user;
 
         if (!user) {
-            user = await User.create({
-                email,
-                username: name || email.split("@")[0],
-                profilePic: picture,
-                provider: "google",
-                emailVerified: true,
-            });
-
-            await Userstats.create({
-                userId: user._id,
-                username: user.username,
-                profilePic: user.profilePic || "",
-            });
+            return res.redirect(`${process.env.FRONTEND_URL}/`);
         }
 
-        const jwtToken = user.generateToken();
-        setTokenInCookie(res, jwtToken);
-
-        return res.status(200).json({
-            success: true,
-            user: {
-                id: user._id,
+        // 🔥 SYNC USER STATS FOR GOOGLE USER
+        await Userstats.findOneAndUpdate(
+            { userId: user._id },
+            {
                 username: user.username,
-                email: user.email,
-                profilePic: user.profilePic,
+                profilePic: user.profilePic || "",
             },
-        });
+            { upsert: true }
+        );
+
+        const token = user.generateToken();
+        setTokenInCookie(res, token);
+
+        return res.redirect(`${process.env.FRONTEND_URL}/auth/success`);
     } catch (error) {
-        return res.status(401).json({
-            success: false,
-            message: "Google authentication failed",
-        });
+        console.error(error);
+        return res.redirect(`${process.env.FRONTEND_URL}/`);
     }
 };
 
+
+
+
 /* ---------------- LOGOUT ---------------- */
 export const logoutUser = async (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+
     return res.status(200).json({
         success: true,
         message: "Logged out successfully",

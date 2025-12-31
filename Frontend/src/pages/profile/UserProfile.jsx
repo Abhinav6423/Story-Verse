@@ -4,14 +4,12 @@ import Navbar from "../../components/Home/Navbar.jsx";
 import MyStories from "../../components/Profile/MyStories.jsx";
 import { getUserProfileData } from "../../Api-calls/getUserProfileData.js";
 import Loader from "../../components/Loader.jsx";
-import { LogOut } from "lucide-react"
-import { toast } from 'react-toastify'
-
+import { LogOut } from "lucide-react";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-
 const UserProfile = () => {
-    const { userData } = useAuth();
+    const { userData, setUserData } = useAuth();
     const [loading, setLoading] = useState(true);
     const [userStats, setUserStats] = useState({});
     const navigate = useNavigate();
@@ -25,23 +23,36 @@ const UserProfile = () => {
             }
         } catch (error) {
             console.error("Logout error:", error);
-            toast.error(error?.response?.data);
+            toast.error("Logout failed");
         }
-    }
+    };
 
     useEffect(() => {
         const userProfile = async () => {
             try {
                 const res = await getUserProfileData();
-                setUserStats(res?.data);
+
+                if (res?.success) {
+                    setUserStats(res.stats || {});
+                    setUserData(res.user); // ✅ sync auth user
+                } else {
+                    setUserStats({});
+                    console.error(res?.message);
+                }
             } finally {
                 setLoading(false);
             }
         };
+
         userProfile();
     }, []);
 
+
     if (loading) return <Loader />;
+
+    console.log("🔴 AUTH USER DATA =", userData);
+    console.log("🔴 USER STATS =", userStats);
+    console.log(userData?.profilePic)
 
     return (
         <>
@@ -49,9 +60,6 @@ const UserProfile = () => {
                 className="min-h-screen bg-white"
                 style={{ paddingBottom: "var(--mobile-bottom-nav-height)" }}
             >
-
-
-
                 {/* COVER */}
                 <div className="relative h-36 sm:h-56 w-full">
                     <img
@@ -65,31 +73,30 @@ const UserProfile = () => {
                 </div>
 
                 {/* PROFILE SECTION */}
-                <div className="px-4 sm:px-10 max-w-7xl mx-auto ">
-
+                <div className="px-4 sm:px-10 max-w-7xl mx-auto">
                     {/* PROFILE ROW */}
                     <div
                         className="
-        relative -mt-20
-        mx-auto
-        max-w-10xl
-        px-4
-        flex flex-col items-center text-center
-        lg:grid lg:grid-cols-[auto_1fr]
-        lg:items-end lg:text-left
-        lg:gap-30
-        
-    "
+              relative -mt-20
+              mx-auto
+              max-w-10xl
+              px-4
+              flex flex-col items-center text-center
+              lg:grid lg:grid-cols-[auto_1fr]
+              lg:items-end lg:text-left
+              lg:gap-30
+            "
                     >
                         {/* AVATAR + NAME */}
                         <div className="flex flex-col items-center lg:items-start">
-                            <div className="w-40 h-40 rounded-full border-4 border-white shadow-md">
+                            <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-md">
                                 <img
                                     src={userData?.profilePic}
                                     alt="profile"
-                                    className="w-full h-full object-cover "
+                                    className="w-full h-full object-cover rounded-full"
                                 />
                             </div>
+
 
                             <h1 className="mt-4 text-2xl font-medium text-gray-900">
                                 {userData?.username}
@@ -103,58 +110,55 @@ const UserProfile = () => {
                         {/* STATS */}
                         <div
                             className="
-            mt-6
-            grid grid-cols-3 gap-y-6 gap-x-10
-            lg:mt-0
-            lg:flex lg:items-center lg:gap-8
-        "
+                mt-6
+                grid grid-cols-3 gap-y-6 gap-x-10
+                lg:mt-0
+                lg:flex lg:items-center lg:gap-8
+              "
                         >
-                            <Stat label="Stories" value={userStats?.totalShortStoriesCreated || 0} />
+                            <Stat
+                                label="Stories"
+                                value={userStats?.totalShortStoriesCreated || 0}
+                            />
                             <Divider />
-                            <Stat label="Reads" value={userStats?.totalShortStoriesRead || 0} />
+                            <Stat
+                                label="Reads"
+                                value={userStats?.totalShortStoriesRead || 0}
+                            />
                             <Divider />
-                            <Stat label="Chapters+" value={userStats?.totalChaptersCreated || 0} />
+                            <Stat
+                                label="Chapters+"
+                                value={userStats?.totalChaptersCreated || 0}
+                            />
                             <Divider />
-                            <Stat label="Chapters-" value={userStats?.totalChaptersRead || 0} />
+                            <Stat
+                                label="Chapters-"
+                                value={userStats?.totalChaptersRead || 0}
+                            />
                             <Divider />
                             <Stat label="Level" value={userStats?.level || 0} />
                             <Divider />
                             <Stat label="XP" value={userStats?.xp || 0} />
                         </div>
-
-
                     </div>
 
                     <div className="w-full h-px bg-gray-400 mt-9"></div>
 
-
                     {/* STORIES */}
-                    <div className="">
-
+                    <div>
                         <MyStories />
                     </div>
-
-
-
-
-
                 </div>
-
             </div>
-
-
         </>
-
     );
 };
 
 /* ---------- SUB COMPONENTS ---------- */
 
 const Stat = ({ label, value }) => (
-    <div className="min-w-[80px]  flex flex-col items-center">
-        <p className="text-xl  font-bold text-gray-900">
-            {value}
-        </p>
+    <div className="min-w-[80px] flex flex-col items-center">
+        <p className="text-xl font-bold text-gray-900">{value}</p>
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-1">
             {label}
         </p>

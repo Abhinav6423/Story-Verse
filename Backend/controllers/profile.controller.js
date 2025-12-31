@@ -1,113 +1,123 @@
+import User from "../modals/User.modal.js";
 import Userstats from "../modals/Userstats.modal.js";
 import ShortStory from "../modals/Shortstory.modal.js";
 
+/* ================= USER PROFILE ================= */
 const getUserProfileData = async (req, res) => {
     try {
-        const userId = req.user._id
+        const userId = req.user?._id;
 
         if (!userId) {
-            return res.status(400).json({
+            return res.status(401).json({
                 success: false,
-                message: "Unauthorized"
-            })
+                message: "Unauthorized",
+            });
         }
 
-        const userStats = await Userstats.findOne({ userId })
+        // ✅ SAME user shape as /api/auth/me
+        const user = await User.findById(userId).select(
+            "username email profilePic provider"
+        );
 
-        if (!userStats) {
-            return res.status(404).json({
-                success: false,
-                message: "User stats not found"
-            })
-        }
+        const userStats = await Userstats.findOne({ userId });
 
         return res.status(200).json({
             success: true,
-            data: userStats
-        })
+            user,          // auth-safe user
+            stats: userStats,
+        });
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message
-        })
+            message: error.message,
+        });
     }
-}
+};
 
+/* ================= USER STORIES ================= */
 const getUserShortStories = async (req, res) => {
     try {
-        const userId = req.user._id
-        const { status, title, category } = req.query
+        const userId = req.user?._id;
+
         if (!userId) {
-            return res.status(400).json({
+            return res.status(401).json({
                 success: false,
-                message: "Unauthorized"
-            })
+                message: "Unauthorized",
+            });
         }
 
-        const filter = { author: userId }
-        if (status) {
-            filter.status = status
-        }
+        const filter = { author: userId };
+        if (req.query.status) filter.status = req.query.status;
 
-        const stories = await ShortStory.find(filter)
+        const stories = await ShortStory.find(filter);
 
         return res.status(200).json({
             success: true,
-            data: stories
-        })
+            data: stories,
+        });
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message
-        })
+            message: error.message,
+        });
     }
-}
+};
 
+/* ================= UPDATE PROFILE ================= */
 const updateProfile = async (req, res) => {
     try {
-        const { profilePic, username } = req.body
-
-        if (!profilePic || !username) {
-            return res.status(400).json({
-                success: false,
-                message: "profilePic and username are required"
-            })
-        }
-
-        const userId = req.user._id
+        const userId = req.user?._id;
+        const { profilePic, username } = req.body;
 
         if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+
+        if (!username) {
             return res.status(400).json({
                 success: false,
-                message: "Unauthorized"
-            })
+                message: "Username is required",
+            });
         }
 
-        const user = await User.findById(userId)
+        // ✅ Update User (auth source of truth)
+        const user = await User.findByIdAndUpdate(
+            userId,
+            {
+                username,
+                ...(profilePic && { profilePic }),
+            },
+            { new: true }
+        ).select("username email profilePic provider");
 
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found"
-            })
-        }
-
-        user.profilePic = profilePic
-        user.username = username
-
-        await user.save()
+        // ✅ Keep Userstats in sync (prevents stale UI)
+        await Userstats.findOneAndUpdate(
+            { userId },
+            {
+                username: user.username,
+                ...(profilePic && { profilePic }),
+            },
+            { upsert: true }
+        );
 
         return res.status(200).json({
             success: true,
-            message: "Profile updated successfully"
-        })
-
+            message: "Profile updated successfully",
+            user, // 🔥 frontend can update AuthProvider instantly
+        });
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message
-        })
+            message: error.message,
+        });
     }
-}
+};
 
-export { getUserProfileData, getUserShortStories , updateProfile} 
+export {
+    getUserProfileData,
+    getUserShortStories,
+    updateProfile,
+};

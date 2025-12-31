@@ -1,73 +1,60 @@
-import mongoose, { Schema } from "mongoose";
-import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
-const userSchema = new Schema(
-    {
-        username: {
-            type: String,
-            required: true,
-            trim: true,
-        },
+const userSchema = new mongoose.Schema(
+  {
+    googleId: String,
 
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-            lowercase: true,
-        },
-
-        provider: {
-            type: String,
-            enum: ["local", "google"],
-            default: "local",
-        },
-
-        // 🔐 password only for local users
-        password: {
-            type: String,
-            required: function () {
-                return this.provider === "local";
-            },
-        },
-
-        emailVerified: {
-            type: Boolean,
-            default: true, // Google users are already verified
-        },
-
-        profilePic: {
-            type: String,
-            default: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-        },
+    username: {
+      type: String,
+      required: true,
     },
-    { timestamps: true }
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
+    password: {
+      type: String,
+      select: false,
+    },
+
+    profilePic: {
+      type: String,
+      default:
+        "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    },
+
+    provider: {
+      type: String,
+      enum: ["google", "local"],
+      required: true,
+    },
+
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
 );
 
-/* ---------------- PASSWORD HASH ---------------- */
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
-
-    if (this.password) {
-        this.password = await bcrypt.hash(this.password, 10);
-    }
-
-    next();
-});
-
-/* ---------------- PASSWORD CHECK ---------------- */
+/* ---------------- PASSWORD ---------------- */
 userSchema.methods.isPasswordCorrect = async function (password) {
-    if (!this.password) return false;
-    return bcrypt.compare(password, this.password);
+  if (!this.password) return false;
+  return bcrypt.compare(password, this.password);
 };
 
-/* ---------------- JWT TOKEN ---------------- */
+/* ---------------- JWT ---------------- */
 userSchema.methods.generateToken = function () {
-    return jwt.sign(
-        { id: this._id },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-    );
+  return jwt.sign(
+    { id: this._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
 };
 
 const User = mongoose.model("User", userSchema);

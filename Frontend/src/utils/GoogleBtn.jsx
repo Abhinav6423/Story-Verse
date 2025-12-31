@@ -1,43 +1,25 @@
-import { GoogleLogin } from "@react-oauth/google";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/Authcontext.js";
-import { toast } from "react-toastify";
-
 const GoogleButton = () => {
-  const navigate = useNavigate();
-  const { reloadUserData } = useAuth();
-
-  const handleSuccess = async (credentialResponse) => {
-    try {
-      const idToken = credentialResponse.credential;
-
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/google`,
-        { token: idToken },
-        { withCredentials: true }
-      );
-
-      if (res.data?.success) {
-        await reloadUserData(); // sync auth context
-        toast.success("Logged in with Google 🎉");
-        navigate("/home");
-      } else {
-        toast.error("Google login failed");
-      }
-    } catch (error) {
-      console.error("Google auth error:", error);
-      toast.error("Google login failed");
-    }
+  const handleGoogleLogin = () => {
+    window.location.href =
+      `${import.meta.env.VITE_BACKEND_URL}/api/auth/google`;
   };
 
   return (
-    <div className="flex justify-center">
-      <GoogleLogin
-        onSuccess={handleSuccess}
-        onError={() => toast.error("Google login failed")}
+    <button
+      onClick={handleGoogleLogin}
+      className="
+        w-full flex items-center justify-center gap-3
+        bg-white border rounded-lg py-2.5
+        hover:bg-gray-100 transition
+      "
+    >
+      <img
+        src="https://developers.google.com/identity/images/g-logo.png"
+        alt="Google"
+        className="w-5 h-5"
       />
-    </div>
+      Continue with Google
+    </button>
   );
 };
 
