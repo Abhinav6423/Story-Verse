@@ -54,21 +54,25 @@ const registerUser = async (req, res) => {
         await Userstats.create({
             userId: user._id,
             username: user.username,
-            profilePic: user.profilePic
+            profilePic: user.profilePic || "",
         });
+
 
         const verifyURL = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 
-        await sendEmail({
+        sendEmail({
             to: user.email,
             subject: "Verify your email - StoryFlix",
             html: `
-        <h2>Welcome to StoryFlix</h2>
-        <p>Please verify your email to continue.</p>
-        <a href="${verifyURL}" target="_blank">Verify Email</a>
-        <p>This link expires in 24 hours.</p>
-    `,
+    <h2>Welcome to StoryFlix</h2>
+    <p>Please verify your email to continue.</p>
+    <a href="${verifyURL}" target="_blank">Verify Email</a>
+    <p>This link expires in 24 hours.</p>
+  `,
+        }).catch(err => {
+            console.error("EMAIL FAILED:", err.message);
         });
+
 
         return res.status(201).json({
             success: true,

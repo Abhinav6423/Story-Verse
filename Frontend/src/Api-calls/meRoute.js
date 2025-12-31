@@ -1,18 +1,17 @@
-import axios from "axios"
+import axios from "axios";
 
 export const meRoute = async () => {
     try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`, { withCredentials: true })
-        return {
-            success: true,
-            message: "User data fetched successfully",
-            data: res?.data
+        const res = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/api/auth/me`,
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (err) {
+        if (err.response?.status === 401) {
+            // 👇 THIS IS NORMAL
+            return { success: false };
         }
-    } catch (error) {
-        return {
-            success: false,
-            message: error?.response?.data
-        }
+        throw err; // real errors only
     }
-}
-
+};
