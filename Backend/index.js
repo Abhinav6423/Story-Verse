@@ -21,7 +21,7 @@ app.use(cookieParser()); // 🔥 REQUIRED
 
 app.use(
     cors({
-        origin: "http://localhost:5173", // 👈 FRONTEND URL
+        origin: process.env.FRONTEND_URL, // 👈 FRONTEND URL
         credentials: true,               // 👈 COOKIE SUPPORT
     })
 );
