@@ -113,6 +113,7 @@ export const loginUser = async (req, res) => {
  */
 export const googleCallback = async (req, res) => {
     try {
+        
         const user = req.user;
 
         if (!user) {
