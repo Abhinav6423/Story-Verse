@@ -11,8 +11,8 @@ import { useNavigate } from "react-router-dom";
 const UserProfile = () => {
     const { userData, setUserData } = useAuth();
     const [loading, setLoading] = useState(true);
-    const [userStats, setUserStats] = useState({});
     const navigate = useNavigate();
+    const [userStats, setUserStats] = useState({})
 
     const handleLogout = async () => {
         try {
@@ -33,10 +33,9 @@ const UserProfile = () => {
                 const res = await getUserProfileData();
 
                 if (res?.success) {
-                    setUserStats(res.stats || {});
-                    setUserData(res.user); // ✅ sync auth user
+                    setUserStats(res?.data?.userStats);
+                    console.log(res.data)
                 } else {
-                    setUserStats({});
                     console.error(res?.message);
                 }
             } finally {
@@ -50,9 +49,8 @@ const UserProfile = () => {
 
     if (loading) return <Loader />;
 
-    console.log("🔴 AUTH USER DATA =", userData);
-    console.log("🔴 USER STATS =", userStats);
-    console.log(userData?.profilePic)
+
+
 
     return (
         <>

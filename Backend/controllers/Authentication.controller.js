@@ -5,8 +5,8 @@ import Userstats from "../modals/Userstats.modal.js";
 const setTokenInCookie = (res, token) => {
     res.cookie("token", token, {
         httpOnly: true,
-        secure: true,          // ✅ REQUIRED in production
-        sameSite: "none",      // ✅ REQUIRED for cross-site
+        secure: process.env.NODE_ENV === "production", // 🔥 FIX
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 🔥 FIX
         path: "/",
     });
 };
@@ -36,14 +36,11 @@ export const registerUser = async (req, res) => {
             username,
             email,
             password,
-            provider: "local",
-            emailVerified: true,
         });
 
         await Userstats.create({
             userId: user._id,
             username: user.username,
-            profilePic: user.profilePic || "",
         });
 
         const token = user.generateToken();
@@ -53,6 +50,7 @@ export const registerUser = async (req, res) => {
             success: true,
             message: "Registered successfully",
             user,
+            token
         });
     } catch (error) {
         return res.status(500).json({
@@ -75,10 +73,10 @@ export const loginUser = async (req, res) => {
         }
 
         const user = await User.findOne({ email });
-        if (!user || user.provider !== "local") {
+        if (!user) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid credentials",
+                message: "User not found",
             });
         }
 
@@ -86,7 +84,7 @@ export const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid credentials",
+                message: "Invalid credentials 011",
             });
         }
 
@@ -97,6 +95,7 @@ export const loginUser = async (req, res) => {
             success: true,
             message: "Login successful",
             user,
+            token
         });
     } catch (error) {
         return res.status(500).json({
@@ -105,47 +104,6 @@ export const loginUser = async (req, res) => {
         });
     }
 };
-
-/* ---------------- GOOGLE CALLBACK (PASSPORT) ---------------- */
-/**
- * Passport already verified Google
- * req.user is available here
- */
-export const googleCallback = async (req, res) => {
-    try {
-        
-        const user = req.user;
-
-        if (!user) {
-            return res.redirect(`${process.env.FRONTEND_URL}/`);
-        }
-
-        console.log("GOOGLE CALLBACK USER:", req.user);
-
-
-        // 🔥 SYNC USER STATS FOR GOOGLE USER
-        await Userstats.findOneAndUpdate(
-            { userId: user._id },
-            {
-                username: user.username,
-                profilePic: user.profilePic || "",
-            },
-            { upsert: true }
-        );
-
-        const token = user.generateToken();
-        setTokenInCookie(res, token);
-
-        return res.redirect(`${process.env.FRONTEND_URL}/home`);
-
-    } catch (error) {
-        console.error(error);
-        return res.redirect(`${process.env.FRONTEND_URL}/`);
-    }
-};
-
-
-
 
 /* ---------------- LOGOUT ---------------- */
 export const logoutUser = async (req, res) => {
@@ -164,23 +122,17 @@ export const logoutUser = async (req, res) => {
 /* ---------------- CURRENT USER ---------------- */
 export const getLoggedInUser = async (req, res) => {
     try {
-        if (!req.user?._id) {
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized",
-            });
-        }
-
-        const user = await User.findById(req.user._id).select("-password");
-
+        const user = req.user;
+        if (!user) return res.status(401).json({ success: false, message: "User not found" });
         return res.status(200).json({
             success: true,
-            user,
+            user: req.user, // already attached by verifyToken
         });
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message,
+            message: "Server error",
         });
     }
 };
+

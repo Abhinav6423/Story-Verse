@@ -3,21 +3,24 @@ import jwt from "jsonwebtoken";
 
 const verifyToken = async (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        const token = req.cookies?.token;
 
+        // 🔹 Not logged in is NORMAL
         if (!token) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized: No token"
+                message: "Not logged in",
             });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        if (!decoded?.id) {
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
+        } catch {
+            // 🔹 Invalid/expired token = logout state
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized: Invalid token"
+                message: "Invalid token",
             });
         }
 
@@ -26,17 +29,17 @@ const verifyToken = async (req, res, next) => {
         if (!user) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized: User not found"
+                message: "User not found",
             });
         }
 
         req.user = user;
         next();
-
-    } catch (error) {
+    } catch (err) {
+        console.error("verifyToken error:", err);
         return res.status(500).json({
             success: false,
-            message: error.message
+            message: "Server error",
         });
     }
 };

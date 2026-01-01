@@ -3,7 +3,7 @@ import axios from "axios";
 export const OpenFeedShortStory = async ({ storyId }) => {
     try {
         const res = await axios.get(
-            `/api/story/${storyId}`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/story/${storyId}`,
             {
                 withCredentials: true,
             }

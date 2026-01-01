@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export const updateShortStory = async ({ storyId, title, story, description, coverImage, finalQuestion, finalAnswer, category, status }) => {
     try {
-        const res = await axios.put(`/api/story/${storyId}`, { title, story, description, coverImage, finalQuestion, finalAnswer, category, status }, { withCredentials: true })
+        const res = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/story/${storyId}`, { title, story, description, coverImage, finalQuestion, finalAnswer, category, status }, { withCredentials: true })
 
         if (res.status === 200) {
             return {

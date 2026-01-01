@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/Authcontext.js";
 import { loginUser } from "../../Api-calls/login.js";
-import Loader from "../../components/Loader.jsx";
 import { toast } from "react-toastify";
-import GoogleButton from "../../utils/GoogleBtn.jsx";
 
 const Login = () => {
-  const { reloadUserData } = useAuth();
+  const { reloadUserData, user } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); // ONLY for email login
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Redirect ONLY inside useEffect
+  useEffect(() => {
+    if (user) {
+      navigate("/home");
+    }
+  }, [user, navigate]);
 
   /* ---------------- EMAIL / PASSWORD LOGIN ---------------- */
   const handleSubmit = async (e) => {
@@ -28,7 +33,7 @@ const Login = () => {
         return;
       }
 
-      await reloadUserData(); // sync context AFTER login
+      await reloadUserData(); // sync auth context
       navigate("/home");
     } catch (err) {
       console.error(err);
@@ -38,10 +43,8 @@ const Login = () => {
     }
   };
 
-  /* ---------------- UI ---------------- */
   return (
     <div className="h-screen w-full bg-[#0f2a22] overflow-hidden">
-
       {/* LOGO */}
       <div className="absolute top-4 right-6 z-20">
         <Link to="/" className="text-white text-xl font-serif font-semibold">
@@ -50,7 +53,6 @@ const Login = () => {
       </div>
 
       <div className="h-full flex flex-col md:flex-row">
-
         {/* IMAGE */}
         <div className="hidden md:flex md:w-[60%] p-4">
           <img
@@ -63,7 +65,6 @@ const Login = () => {
         {/* FORM */}
         <div className="w-full md:w-[40%] flex items-center justify-center px-4">
           <div className="w-full max-w-md bg-white rounded-2xl px-6 py-8 shadow-xl">
-
             <h2 className="text-2xl font-semibold text-center">
               Hello Again 👋
             </h2>
@@ -101,23 +102,12 @@ const Login = () => {
               </button>
             </form>
 
-            {/* DIVIDER */}
-            <div className="flex items-center gap-3 my-6">
-              <div className="flex-1 h-px bg-gray-300" />
-              <span className="text-sm text-gray-400">or</span>
-              <div className="flex-1 h-px bg-gray-300" />
-            </div>
-
-            {/* GOOGLE LOGIN (REDIRECT ONLY) */}
-            <GoogleButton />
-
             <p className="text-center text-sm text-gray-600 mt-6">
               Don&apos;t have an account?{" "}
               <Link to="/register" className="text-emerald-600 font-medium">
                 Register
               </Link>
             </p>
-
           </div>
         </div>
       </div>

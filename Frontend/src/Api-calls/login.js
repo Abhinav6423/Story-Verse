@@ -2,13 +2,12 @@ import axios from "axios"
 
 export const loginUser = async (email, password) => {
     try {
-        const res = await axios.post(`/api/auth/login`,
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
             {
                 email,
                 password
             }, { withCredentials: true })
 
-        console.log(import.meta.env.VITE_BACKEND_URL)
 
         return {
             success: true,

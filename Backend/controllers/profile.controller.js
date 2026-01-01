@@ -2,9 +2,11 @@ import User from "../modals/User.modal.js";
 import Userstats from "../modals/Userstats.modal.js";
 import ShortStory from "../modals/Shortstory.modal.js";
 
-/* ================= USER PROFILE ================= */
+
+
 const getUserProfileData = async (req, res) => {
     try {
+        // req.user verifyToken se aata hai
         const userId = req.user?._id;
 
         if (!userId) {
@@ -14,25 +16,32 @@ const getUserProfileData = async (req, res) => {
             });
         }
 
-        // ✅ SAME user shape as /api/auth/me
-        const user = await User.findById(userId).select(
-            "username email profilePic provider"
-        );
-
         const userStats = await Userstats.findOne({ userId });
+
+        // 👇 agar stats hi nahi mile
+        if (!userStats) {
+            return res.status(404).json({
+                success: false,
+                message: "User stats not found",
+            });
+        }
 
         return res.status(200).json({
             success: true,
-            user,          // auth-safe user
-            stats: userStats,
+            userStats, // 🔥 actual data bhejna zaroori hai
         });
     } catch (error) {
+        console.error("getUserProfileData error:", error);
+
         return res.status(500).json({
             success: false,
-            message: error.message,
+            message: "Server error",
         });
     }
 };
+
+export default getUserProfileData;
+
 
 /* ================= USER STORIES ================= */
 const getUserShortStories = async (req, res) => {

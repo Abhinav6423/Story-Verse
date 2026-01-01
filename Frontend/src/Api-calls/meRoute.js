@@ -3,7 +3,7 @@ import axios from "axios";
 export const meRoute = async () => {
     try {
         const res = await axios.get(
-            `/api/auth/me`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/auth/me`,
             { withCredentials: true }
         );
         return res.data;

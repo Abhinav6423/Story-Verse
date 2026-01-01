@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
-    googleId: String,
 
     username: {
       type: String,
@@ -19,7 +18,7 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      select: false,
+      required: true,
     },
 
     profilePic: {
@@ -28,19 +27,14 @@ const userSchema = new mongoose.Schema(
         "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     },
 
-    provider: {
-      type: String,
-      enum: ["google", "local"],
-      required: true,
-    },
-
-    emailVerified: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+})
 
 /* ---------------- PASSWORD ---------------- */
 userSchema.methods.isPasswordCorrect = async function (password) {

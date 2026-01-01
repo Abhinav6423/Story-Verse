@@ -8,16 +8,14 @@ const AuthProvider = ({ children }) => {
 
   const fetchUserData = useCallback(async () => {
     try {
-      setLoading(true);
       const result = await meRoute();
 
-      if (result?.success && result?.user) {
+      if (result?.success) {
         setUserData(result.user);
       } else {
         setUserData(null);
       }
-    } catch (error) {
-      console.error("Auth fetch error:", error);
+    } catch {
       setUserData(null);
     } finally {
       setLoading(false);
@@ -27,6 +25,9 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
+  
+
+
 
   return (
     <AuthContext.Provider

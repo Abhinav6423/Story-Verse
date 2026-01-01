@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../Api-calls/register.js";
 import Loader from "../../components/Loader.jsx";
 import { toast } from "react-toastify";
-import GoogleButton from "../../utils/GoogleBtn.jsx";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -22,13 +21,13 @@ const Register = () => {
 
       if (result?.success) {
         toast.success("Account created successfully 🎉");
+        navigate("/home");
 
         setUsername("");
         setEmail("");
         setPassword("");
 
-        // ✅ auto-login → go to home
-        navigate("/home");
+
       } else {
         toast.error(result?.message || "Registration failed");
       }
@@ -117,16 +116,7 @@ const Register = () => {
               </button>
             </form>
 
-            {/* GOOGLE SIGN UP */}
-            <div className="mt-6">
-              <div className="flex items-center gap-3 my-4">
-                <div className="flex-1 h-px bg-gray-300" />
-                <span className="text-sm text-gray-400">or</span>
-                <div className="flex-1 h-px bg-gray-300" />
-              </div>
 
-              <GoogleButton />
-            </div>
 
             <p className="text-center text-sm text-gray-600 mt-5">
               Already have an account?{" "}
