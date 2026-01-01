@@ -6,7 +6,7 @@ const setTokenInCookie = (res, token) => {
     res.cookie("token", token, {
         httpOnly: true,
         secure: true,          // ✅ REQUIRED in production
-        sameSite: "lax",      // ✅ REQUIRED for cross-site
+        sameSite: "none",      // ✅ REQUIRED for cross-site
         path: "/",
     });
 };
@@ -118,6 +118,9 @@ export const googleCallback = async (req, res) => {
         if (!user) {
             return res.redirect(`${process.env.FRONTEND_URL}/`);
         }
+
+        console.log("GOOGLE CALLBACK USER:", req.user);
+
 
         // 🔥 SYNC USER STATS FOR GOOGLE USER
         await Userstats.findOneAndUpdate(
