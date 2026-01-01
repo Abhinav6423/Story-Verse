@@ -22,9 +22,11 @@ router.post("/login", loginValidator, loginUser);
 router.get(
   "/google",
   passport.authenticate("google", {
-    scope: ["profile", "email"],
+    scope: ["openid", "profile", "email"],
+    session: false,
   })
 );
+
 
 // Step 2: Google redirects back here
 router.get(
