@@ -62,18 +62,38 @@ const ShortStoryCard = ({ story }) => {
                         </div>
                     )}
 
-                    <img
-                        src={story.coverImage}
-                        alt={story.title}
-                        className="
-            w-full
-            h-full
-            object-cover
-            hover:scale-105
-            transition-transform
-            duration-300
-          "
-                    />
+                    {story?.coverImage ? (
+                        <img
+                            src={story.coverImage}
+                            alt={story.title}
+                            className="
+        w-full
+        h-full
+        object-cover
+        hover:scale-105
+        transition-transform
+        duration-300
+      "
+                        />
+                    ) : (
+                        <div
+                            className="
+        w-full
+        h-full
+        flex
+        items-center
+        justify-center
+        bg-sky-100
+        text-sky-900
+        px-4
+        text-center
+      "
+                        >
+                            <h3 className="text-lg font-semibold leading-snug line-clamp-4">
+                                {story.title}
+                            </h3>
+                        </div>
+                    )}
                 </div>
 
                 {/* INFO */}

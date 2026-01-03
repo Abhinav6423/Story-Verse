@@ -81,7 +81,7 @@ const UpdateShortStory = () => {
 
     /* ================= SUBMIT ================= */
     const handleSave = async () => {
-        if (!title || !story || !genre || !description || !coverImg || !finalQ || !finalA || !status) {
+        if (!title || !story || !genre || !description || !finalQ || !finalA || !status) {
             toast.error("All fields are required");
             return;
         }

@@ -56,11 +56,38 @@ const MyStoryCard = ({ title, image, id }) => {
 
             {/* BOOK COVER */}
             <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-gray-100 transition hover:shadow-lg">
-                <img
-                    src={image}
-                    alt={title}
-                    className="w-full h-full object-cover"
-                />
+                {image ? (
+                    <img
+                        src={image}
+                        alt={title}
+                        className="
+        w-full
+        h-full
+        object-cover
+        hover:scale-105
+        transition-transform
+        duration-300
+      "
+                    />
+                ) : (
+                    <div
+                        className="
+        w-full
+        h-full
+        flex
+        items-center
+        justify-center
+        bg-sky-100
+        text-sky-900
+        px-4
+        text-center
+      "
+                    >
+                        <h3 className="text-lg font-semibold leading-snug line-clamp-4">
+                            {title}
+                        </h3>
+                    </div>
+                )}
 
                 {/* ACTION BUTTONS */}
                 <div className="absolute top-2 right-2 flex gap-2">

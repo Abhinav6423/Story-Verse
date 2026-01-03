@@ -17,7 +17,7 @@ const createShortStory = async (req, res) => {
             finalAnswer
         } = req.body;
 
-        if (!title || !story || !description || !coverImage || !finalQuestion || !category || !finalAnswer) {
+        if (!title || !story || !description || !finalQuestion || !category || !finalAnswer) {
             return res.status(400).json({
                 success: false,
                 message: "All required fields must be provided"
