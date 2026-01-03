@@ -33,11 +33,38 @@ function HomeGoodReadCard({ story, rank }) {
 
       {/* COVER */}
       <div className="w-[80px] h-[100px] flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-        <img
-          src={story.coverImage}
-          alt={story.title}
-          className="w-full h-full object-cover"
-        />
+        {story?.coverImage ? (
+          <img
+            src={story.coverImage}
+            alt={story.title}
+            className="
+        w-full
+        h-full
+        object-cover
+        hover:scale-105
+        transition-transform
+        duration-300
+      "
+          />
+        ) : (
+          <div
+            className="
+        w-full
+        h-full
+        flex
+        items-center
+        justify-center
+        bg-sky-100
+        text-sky-900
+        px-4
+        text-center
+      "
+          >
+            <h3 className="text-lg font-semibold leading-snug line-clamp-4">
+              {story.title}
+            </h3>
+          </div>
+        )}
       </div>
 
       {/* RIGHT CONTENT */}
@@ -58,7 +85,7 @@ function HomeGoodReadCard({ story, rank }) {
               className="w-5 h-5 rounded-full object-cover"
             />
             <p className="text-xs text-gray-500 font-semibold truncate">
-              {story?.author?.username }
+              {story?.author?.username}
             </p>
           </div>
         </div>
@@ -66,7 +93,7 @@ function HomeGoodReadCard({ story, rank }) {
         {/* BOTTOM: GOOD READS */}
         <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600">
           <ThumbsUp size={14} strokeWidth={2} />
-          <span>{story?.totalGoodReads } Good reads</span>
+          <span>{story?.totalGoodReads} Good reads</span>
         </div>
       </div>
     </div>
