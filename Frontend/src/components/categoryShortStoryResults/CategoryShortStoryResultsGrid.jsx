@@ -5,6 +5,8 @@ import { Link, useParams } from "react-router-dom";
 import { listFeedShortStory } from "../../Api-calls/homeFeedShortStoryList.js"
 import { useQuery } from "@tanstack/react-query"
 import Loader from "../Loader.jsx";
+
+
 const CategoryShortStoryResultsGrid = () => {
   const { category } = useParams();
   console.log(category)

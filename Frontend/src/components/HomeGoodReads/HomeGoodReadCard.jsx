@@ -1,4 +1,6 @@
 import { ThumbsUp } from "lucide-react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 function HomeGoodReadCard({ story, rank }) {
   return (
@@ -34,31 +36,32 @@ function HomeGoodReadCard({ story, rank }) {
       {/* COVER */}
       <div className="w-[80px] h-[100px] flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
         {story?.coverImage ? (
-          <img
+          <LazyLoadImage
             src={story.coverImage}
             alt={story.title}
+            effect="blur"
             className="
-        w-full
-        h-full
-        object-cover
-        hover:scale-105
-        transition-transform
-        duration-300
-      "
+              w-full
+              h-full
+              object-cover
+              hover:scale-105
+              transition-transform
+              duration-300
+            "
           />
         ) : (
           <div
             className="
-        w-full
-        h-full
-        flex
-        items-center
-        justify-center
-        bg-sky-100
-        text-sky-900
-        px-4
-        text-center
-      "
+              w-full
+              h-full
+              flex
+              items-center
+              justify-center
+              bg-sky-100
+              text-sky-900
+              px-4
+              text-center
+            "
           >
             <h3 className="text-lg font-semibold leading-snug line-clamp-4">
               {story.title}
@@ -82,6 +85,7 @@ function HomeGoodReadCard({ story, rank }) {
             <img
               src={story.author?.profilePic}
               alt={story.author?.username}
+              loading="lazy"
               className="w-5 h-5 rounded-full object-cover"
             />
             <p className="text-xs text-gray-500 font-semibold truncate">
