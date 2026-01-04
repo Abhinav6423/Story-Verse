@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const logoutUser = async () => {
     try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, { withCredentials: true })
+        const res = await axios.get(`/api/auth/logout`, { withCredentials: true })
         return {
             success: true,
             message: "User logged out successfully",

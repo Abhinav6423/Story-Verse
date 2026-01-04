@@ -3,7 +3,7 @@ import axios from "axios";
 export const getUserProfileData = async () => {
     try {
         const res = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/api/profile/userProfile`,
+            `/api/profile/userProfile`,
             { withCredentials: true }
         );
 

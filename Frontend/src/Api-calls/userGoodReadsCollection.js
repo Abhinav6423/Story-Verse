@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const userGoodReadsCollection = async () => {
     const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/story/goodReads`,
+        `/api/story/goodReads`,
         {
             withCredentials: true,
         }
