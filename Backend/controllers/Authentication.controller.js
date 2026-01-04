@@ -5,11 +5,12 @@ import Userstats from "../modals/Userstats.modal.js";
 const setTokenInCookie = (res, token) => {
     res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // 🔥 FIX
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 🔥 FIX
+        secure: true,   // Railway = HTTPS
+        sameSite: "lax", // 🔥 THIS IS THE FIX
         path: "/",
     });
 };
+
 
 
 /* ---------------- LOCAL REGISTER ---------------- */
@@ -109,9 +110,11 @@ export const loginUser = async (req, res) => {
 export const logoutUser = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: true,
+        sameSite: "lax",
+        path: "/",
     });
+
 
     return res.status(200).json({
         success: true,
