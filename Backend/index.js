@@ -13,6 +13,8 @@ import connectDB from "./DBconfig/dbConfig.js";
 mongoose.set("bufferCommands", false);
 
 const app = express();
+app.set("trust proxy", 1);
+
 const PORT = process.env.PORT || 7000;
 
 // ================== MIDDLEWARE ==================
