@@ -5,13 +5,11 @@ import Userstats from "../modals/Userstats.modal.js";
 const setTokenInCookie = (res, token) => {
     res.cookie("token", token, {
         httpOnly: true,
-        secure: true,   // Railway = HTTPS
-        sameSite: "lax", // 🔥 THIS IS THE FIX
+        secure: true,      // Railway HTTPS
+        sameSite: "lax",   // SAME DOMAIN FIX
         path: "/",
     });
 };
-
-
 
 /* ---------------- LOCAL REGISTER ---------------- */
 export const registerUser = async (req, res) => {
@@ -47,13 +45,16 @@ export const registerUser = async (req, res) => {
         const token = user.generateToken();
         setTokenInCookie(res, token);
 
+        // 🔥 DEBUG
+        console.log("REGISTER SET-COOKIE", res.getHeaders()["set-cookie"]);
+
         return res.status(201).json({
             success: true,
             message: "Registered successfully",
             user,
-            token
         });
     } catch (error) {
+        console.error("REGISTER ERROR", error);
         return res.status(500).json({
             success: false,
             message: error.message,
@@ -85,20 +86,23 @@ export const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid credentials 011",
+                message: "Invalid credentials",
             });
         }
 
         const token = user.generateToken();
         setTokenInCookie(res, token);
 
+        // 🔥 DEBUG (MOST IMPORTANT)
+        console.log("LOGIN SET-COOKIE", res.getHeaders()["set-cookie"]);
+
         return res.status(200).json({
             success: true,
             message: "Login successful",
             user,
-            token
         });
     } catch (error) {
+        console.error("LOGIN ERROR", error);
         return res.status(500).json({
             success: false,
             message: error.message,
@@ -115,6 +119,7 @@ export const logoutUser = async (req, res) => {
         path: "/",
     });
 
+    console.log("LOGOUT COOKIE CLEARED");
 
     return res.status(200).json({
         success: true,
@@ -125,17 +130,26 @@ export const logoutUser = async (req, res) => {
 /* ---------------- CURRENT USER ---------------- */
 export const getLoggedInUser = async (req, res) => {
     try {
+        // 🔥 DEBUG
+        console.log("ME COOKIES", req.cookies);
+
         const user = req.user;
-        if (!user) return res.status(401).json({ success: false, message: "User not found" });
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+
         return res.status(200).json({
             success: true,
-            user: req.user, // already attached by verifyToken
+            user,
         });
     } catch (error) {
+        console.error("ME ERROR", error);
         return res.status(500).json({
             success: false,
             message: "Server error",
         });
     }
 };
-
