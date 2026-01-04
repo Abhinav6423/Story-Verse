@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { ThumbsUp, Bookmark, MessageSquare, X } from "lucide-react";
+import { ThumbsUp, Bookmark, X } from "lucide-react";
 import { toast } from "react-toastify";
 
 import Loader from "../Loader.jsx";
@@ -53,21 +53,48 @@ const ViewShortStory = () => {
     fetchStory();
   }, [storyId]);
 
-  /* ---------------- BODY SCROLL LOCK ---------------- */
-  useEffect(() => {
-    if (!questionPopup) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev || "auto";
-    };
-  }, [questionPopup]);
+  /* ---------------- LIKE ---------------- */
+  const handleLike = async () => {
+    const wasLiked = liked;
+
+    setLiked(!wasLiked);
+    setLikesCount((p) => (wasLiked ? p - 1 : p + 1));
+
+    try {
+      await likeShortStory({ storyId });
+      toast.success(wasLiked ? "Like removed" : "Story liked ❤️");
+    } catch {
+      setLiked(wasLiked);
+      setLikesCount((p) => (wasLiked ? p + 1 : p - 1));
+      toast.error("Action failed");
+    }
+  };
+
+  /* ---------------- GOOD READ ---------------- */
+  const handleGoodReads = async () => {
+    const wasAdded = addedToGoodReads;
+
+    setAddedToGoodReads(!wasAdded);
+    setGoodReadsCount((p) => (wasAdded ? p - 1 : p + 1));
+
+    try {
+      const result = await addShortStoryToGoodReads({ storyId });
+      if (!result?.success) throw new Error();
+      toast.success(
+        wasAdded ? "Removed from Good Reads" : "Added to Good Reads 📚"
+      );
+    } catch {
+      setAddedToGoodReads(wasAdded);
+      setGoodReadsCount((p) => (wasAdded ? p + 1 : p - 1));
+      toast.error("Action failed");
+    }
+  };
 
   if (loading) return <Loader />;
 
   return (
     <div className="min-h-screen bg-[#f8f9fb] text-gray-800">
-      {/* COVER IMAGE */}
+      {/* COVER */}
       <div className="relative w-full h-[260px] sm:h-[350px]">
         {story?.coverImage ? (
           <LazyLoadImage
@@ -78,7 +105,7 @@ const ViewShortStory = () => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-sky-100 text-sky-900">
+          <div className="w-full h-full flex items-center justify-center bg-sky-100">
             <h3 className="text-lg font-semibold">{story.title}</h3>
           </div>
         )}
@@ -91,7 +118,7 @@ const ViewShortStory = () => {
       {/* CONTENT */}
       <div className="max-w-4xl mx-auto px-4 sm:px-10 pt-16">
         {/* TITLE */}
-        <h1 className="text-3xl sm:text-4xl font-serif text-center text-gray-900">
+        <h1 className="text-3xl sm:text-4xl font-serif text-center">
           {story.title}
         </h1>
 
@@ -108,27 +135,43 @@ const ViewShortStory = () => {
           </p>
         </div>
 
-        {/* DESCRIPTION ✅ ADDED BACK */}
-        {story.description && (
-          <p
-            className="
-              mt-6
-              text-base sm:text-lg
-              text-gray-600
-              font-serif
-              leading-relaxed
-              max-w-3xl
-              mx-auto
-              text-center
-            "
+        {/* ACTION BUTTONS ✅ RESTORED */}
+        <div className="flex justify-center gap-3 mt-4">
+          <button
+            onClick={handleLike}
+            className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${
+              liked
+                ? "bg-black text-white"
+                : "bg-white text-black border-black"
+            }`}
           >
+            <ThumbsUp size={14} className="inline mr-1" />
+            {likesCount} Likes
+          </button>
+
+          <button
+            onClick={handleGoodReads}
+            className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${
+              addedToGoodReads
+                ? "bg-emerald-600 text-white border-emerald-600"
+                : "bg-white text-emerald-600 border-emerald-400"
+            }`}
+          >
+            <Bookmark size={14} className="inline mr-1" />
+            {goodReadsCount} Good Reads
+          </button>
+        </div>
+
+        {/* DESCRIPTION ✅ */}
+        {story.description && (
+          <p className="mt-6 text-lg text-gray-600 font-serif leading-relaxed text-center">
             {story.description}
           </p>
         )}
 
-        <hr className="my-8 border-gray-200" />
+        <hr className="my-8" />
 
-        {/* STORY CONTENT */}
+        {/* STORY */}
         <div
           className="prose prose-gray max-w-full"
           dangerouslySetInnerHTML={{ __html: story.story }}
