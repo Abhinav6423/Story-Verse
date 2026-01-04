@@ -29,36 +29,37 @@ app.use("/api/auth", authRoutes);
 app.use("/api/story", shortStoryRoutes);
 app.use("/api/profile", userProfileRoutes);
 
+
 // ================== FRONTEND SERVING ==================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve React static files
-app.use(express.static(path.join(__dirname, "../Frontend/dist")));
+const FRONTEND_DIST_PATH = path.resolve(__dirname, "..", "Frontend", "dist");
 
-// Fallback: serve index.html for ALL non-API routes
+app.use(express.static(FRONTEND_DIST_PATH));
+
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "../Frontend/dist/index.html"));
+    res.sendFile(path.join(FRONTEND_DIST_PATH, "index.html"));
 });
 
 // ================== START SERVER ==================
 const startServer = async () => {
-  try {
-    await connectDB();
-    console.log("✅ MongoDB connected");
+    try {
+        await connectDB();
+        console.log("✅ MongoDB connected");
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
-  } catch (err) {
-    console.error("❌ Server error", err);
-  }
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+        });
+    } catch (err) {
+        console.error("❌ Server error", err);
+    }
 };
 
 startServer();
 
 // ================== ERROR HANDLER ==================
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ success: false, message: "Server error" });
+    console.error(err.stack);
+    res.status(500).json({ success: false, message: "Server error" });
 });
