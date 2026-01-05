@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../../Api-calls/register.js";
+import { signupUser } from "../../Api-calls/register.js";
 import Loader from "../../components/Loader.jsx";
 import { toast } from "react-toastify";
 
@@ -17,7 +17,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const result = await registerUser(email, password);
+      const result = await signupUser(email, password);
 
       if (result?.success) {
         toast.success("Account created successfully 🎉");

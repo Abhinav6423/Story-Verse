@@ -1,11 +1,16 @@
 import admin from "firebase-admin";
+import dotenv from "dotenv";
 
-/* Parse service account from ENV */
+dotenv.config({ path: "./.env" });
+
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT env missing");
+}
+
 const serviceAccount = JSON.parse(
   process.env.FIREBASE_SERVICE_ACCOUNT
 );
 
-/* Prevent re-initialization in dev / serverless */
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
