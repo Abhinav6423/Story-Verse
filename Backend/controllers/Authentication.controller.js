@@ -1,125 +1,73 @@
 import User from "../modals/User.modal.js";
 import Userstats from "../modals/Userstats.modal.js";
+import admin from "../config/firebaseAdmin.js";
 
-/* ---------------- COOKIE UTILS ---------------- */
+/* ================= COOKIE UTILS ================= */
 const setTokenInCookie = (res, token) => {
     res.cookie("token", token, {
         httpOnly: true,
-        secure: true,      // Railway HTTPS
-        sameSite: "lax",   // SAME DOMAIN FIX
+        secure: false,   // 🔥 FORCE false for localhost
+        sameSite: "lax", // 🔥 MUST be lax for localhost
         path: "/",
     });
 };
 
-/* ---------------- LOCAL REGISTER ---------------- */
-export const registerUser = async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
 
-        if (!username || !email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required",
-            });
-        }
+/* ================= FIREBASE LOGIN (MAIN) ================= */
+export const firebaseLogin = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
 
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res.status(400).json({
-                success: false,
-                message: "User already exists",
-            });
-        }
-
-        const user = await User.create({
-            username,
-            email,
-            password,
-        });
-
-        await Userstats.create({
-            userId: user._id,
-            username: user.username,
-        });
-
-        const token = user.generateToken();
-        setTokenInCookie(res, token);
-
-        // 🔥 DEBUG
-        console.log("REGISTER SET-COOKIE", res.getHeaders()["set-cookie"]);
-
-        return res.status(201).json({
-            success: true,
-            message: "Registered successfully",
-            user,
-        });
-    } catch (error) {
-        console.error("REGISTER ERROR", error);
-        return res.status(500).json({
-            success: false,
-            message: error.message,
-        });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ success: false });
     }
+
+    const firebaseToken = authHeader.split(" ")[1];
+
+    const decoded = await admin.auth().verifyIdToken(firebaseToken);
+    console.log("✅ Firebase token verified:", decoded.email);
+
+    let user = await User.findOne({ firebaseUid: decoded.uid });
+
+    if (!user) {
+      user = await User.create({
+        firebaseUid: decoded.uid,
+        email: decoded.email,
+        username: decoded.email.split("@")[0],
+      });
+
+      await Userstats.create({
+        userId: user._id,
+        username: user.username,
+      });
+    }
+
+    const token = user.generateToken();
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
+
+    return res.status(200).json({ success: true, user });
+  } catch (err) {
+    console.error("🔥 firebaseLogin error:", err);
+    return res.status(401).json({ success: false });
+  }
 };
 
-/* ---------------- LOCAL LOGIN ---------------- */
-export const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required",
-            });
-        }
 
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: "User not found",
-            });
-        }
-
-        const isMatch = await user.isPasswordCorrect(password);
-        if (!isMatch) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid credentials",
-            });
-        }
-
-        const token = user.generateToken();
-        setTokenInCookie(res, token);
-
-        // 🔥 DEBUG (MOST IMPORTANT)
-        console.log("LOGIN SET-COOKIE", res.getHeaders()["set-cookie"]);
-
-        return res.status(200).json({
-            success: true,
-            message: "Login successful",
-            user,
-        });
-    } catch (error) {
-        console.error("LOGIN ERROR", error);
-        return res.status(500).json({
-            success: false,
-            message: error.message,
-        });
-    }
-};
-
-/* ---------------- LOGOUT ---------------- */
+/* ================= LOGOUT ================= */
 export const logoutUser = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        secure: true,
-        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
     });
-
-    console.log("LOGOUT COOKIE CLEARED");
 
     return res.status(200).json({
         success: true,
@@ -127,26 +75,21 @@ export const logoutUser = async (req, res) => {
     });
 };
 
-/* ---------------- CURRENT USER ---------------- */
+/* ================= CURRENT USER ================= */
 export const getLoggedInUser = async (req, res) => {
     try {
-        // 🔥 DEBUG
-        console.log("ME COOKIES", req.cookies);
-
-        const user = req.user;
-        if (!user) {
+        if (!req.user) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized",
+                message: "User not authenticated",
             });
         }
 
         return res.status(200).json({
             success: true,
-            user,
+            user: req.user,
         });
     } catch (error) {
-        console.error("ME ERROR", error);
         return res.status(500).json({
             success: false,
             message: "Server error",

@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
-
     username: {
       type: String,
       required: true,
@@ -16,9 +15,18 @@ const userSchema = new mongoose.Schema(
       unique: true,
     },
 
+    // 🔥 Firebase UID
+    firebaseUid: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+
+    // 🔥 OPTIONAL (Firebase users)
     password: {
       type: String,
-      required: true,
+      required: false,
+      select: false,
     },
 
     profilePic: {
@@ -26,23 +34,29 @@ const userSchema = new mongoose.Schema(
       default:
         "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     },
-
   },
   { timestamps: true }
 );
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-})
+/* ================= PASSWORD HASH ================= */
+// ✅ CORRECT ASYNC HOOK (NO next)
+userSchema.pre("save", async function () {
+  // Firebase users → no password
+  if (!this.password) return;
 
-/* ---------------- PASSWORD ---------------- */
+  // Password not changed
+  if (!this.isModified("password")) return;
+
+  this.password = await bcrypt.hash(this.password, 10);
+});
+
+/* ================= PASSWORD CHECK ================= */
 userSchema.methods.isPasswordCorrect = async function (password) {
   if (!this.password) return false;
   return bcrypt.compare(password, this.password);
 };
 
-/* ---------------- JWT ---------------- */
+/* ================= JWT ================= */
 userSchema.methods.generateToken = function () {
   return jwt.sign(
     { id: this._id },
@@ -53,3 +67,5 @@ userSchema.methods.generateToken = function () {
 
 const User = mongoose.model("User", userSchema);
 export default User;
+
+

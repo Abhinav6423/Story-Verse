@@ -17,7 +17,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const result = await registerUser({ username, email, password });
+      const result = await registerUser(email, password);
 
       if (result?.success) {
         toast.success("Account created successfully 🎉");
@@ -86,7 +86,7 @@ const Register = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
-                required
+                // required
                 className="w-full rounded-lg border px-4 py-2.5 text-sm"
               />
 
