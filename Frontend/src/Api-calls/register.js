@@ -1,22 +1,31 @@
-import axios from "axios";
+import {
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+    signOut
+} from "firebase/auth";
+import { auth } from "../firebase.js";
 
-export const registerUser = async ({ username, email, password }) => {
+export const signupUser = async (email, password) => {
     try {
-        const res = await axios.post(
-            `/api/auth/register`,
-            { username, email, password },
-            { withCredentials: true }
+        const userCred = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
         );
 
-        // 🔑 return backend response AS-IS
-        return res.data;
+        await sendEmailVerification(userCred.user);
 
+        // 🔐 force verification before login
+        await signOut(auth);
+
+        return {
+            success: true,
+            message: "Verification email sent. Please check your inbox."
+        };
     } catch (error) {
         return {
             success: false,
-            message:
-                error?.response?.data?.message ||
-                "Registration failed",
+            message: error.message || "Signup failed"
         };
     }
 };
