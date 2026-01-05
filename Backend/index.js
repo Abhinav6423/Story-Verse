@@ -36,7 +36,15 @@ app.use("/api/profile", userProfileRoutes);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const FRONTEND_DIST_PATH = path.resolve(__dirname, "..", "Frontend", "dist");
+const FRONTEND_DIST_PATH = path.resolve(
+    process.cwd(),
+    "Frontend",
+    "dist"
+);
+
+console.log("🚨 Serving frontend from:", FRONTEND_DIST_PATH);
+
+
 
 app.use(express.static(FRONTEND_DIST_PATH));
 
