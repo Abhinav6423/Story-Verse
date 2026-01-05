@@ -54,16 +54,18 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
     }, [location.pathname]);
 
     const handleLogout = async () => {
+        // 1️⃣ UI RESET FIRST (instant)
+        toast.success("Logged out");
+        navigate("/");
+
+        // 2️⃣ Background cleanup
         try {
-            const result = await logoutUser();
-            if (result?.success) {
-                toast.success(result.message);
-                navigate("/");
-            }
-        } catch (error) {
-            toast.error("Logout failed");
+            await logoutUser();
+        } catch (err) {
+            console.error("Logout API failed silently");
         }
     };
+
 
     return (
         <>
