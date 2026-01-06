@@ -18,7 +18,7 @@ const CreatePost = () => {
     const [title, setTitle] = useState("");
     const [genre, setGenre] = useState("");
     const [description, setDescription] = useState("");
-    const [coverImg, setCoverImg] = useState("");
+    const [coverImg, setCoverImg] = useState(null);
     const [finalQ, setFinalQ] = useState("");
     const [finalA, setFinalA] = useState("");
     const [status, setStatus] = useState("draft");
@@ -48,25 +48,33 @@ const CreatePost = () => {
             return;
         }
 
+        if (!coverImg) {
+            toast.error("Cover image is required");
+            return;
+        }
+
+
         try {
             setLoading(true)
-            const result = await createShortStory({
-                title,
-                category: genre,
-                description,
-                coverImage: coverImg,
-                finalQuestion: finalQ,
-                finalAnswer: finalA,
-                status,
-                story, // ✅ FULL HTML CONTENT
-            });
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("category", genre);
+            formData.append("description", description);
+            formData.append("finalQuestion", finalQ);
+            formData.append("finalAnswer", finalA);
+            formData.append("status", status);
+            formData.append("story", story);
+            formData.append("coverImage", coverImg); // 👈 FILE
+
+            const result = await createShortStory(formData);
+
 
             if (result?.success) {
                 toast.success("Story created successfully");
                 setTitle("");
                 setStory("");
                 setDescription("");
-                setCoverImg("");
+                setCoverImg(null);
                 setFinalQ("");
                 setFinalA("");
                 setStatus("draft");
@@ -274,13 +282,15 @@ const CreatePost = () => {
                             />
                         </Field>
 
-                        <Field label="Cover Image URL">
+                        <Field label="Cover Image">
                             <input
-                                value={coverImg}
-                                onChange={(e) => setCoverImg(e.target.value)}
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setCoverImg(e.target.files[0])}
                                 className="field-input"
                             />
                         </Field>
+
 
                         <Field label="Final Question">
                             <input

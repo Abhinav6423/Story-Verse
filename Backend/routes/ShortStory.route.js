@@ -1,6 +1,6 @@
 import express from "express";
 import verifyToken from "../middlewares/VerifyToken.middleware.js";
-
+import upload from "../middlewares/multer.js";
 import {
    createShortStory,
    listShortStory,
@@ -23,7 +23,9 @@ const router = express.Router();
    CREATOR / AUTHOR ROUTES
    ========================= */
 
-router.post("/", verifyToken, createShortStory);
+router.post("/", verifyToken,
+   upload.single("coverImage"),
+   createShortStory);
 
 router.get("/me", verifyToken, listUserShortStory);
 router.get("/me/:storyId", verifyToken, openUserShortStory);

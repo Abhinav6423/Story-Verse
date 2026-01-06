@@ -1,31 +1,26 @@
 import axios from "axios";
 
-export const createShortStory = async ({ title, story, description, coverImage, finalQuestion, category, status, finalAnswer }) => {
+export const createShortStory = async (formData) => {
     try {
         const res = await axios.post(
-            `/api/story/`,
+            "/api/story/",
+            formData,
             {
-                title,
-                story,
-                description,
-                coverImage,
-                finalQuestion,
-                category,
-                status,
-                finalAnswer
-
-            }, { withCredentials: true }
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
         );
 
         return {
             success: true,
-            message: "User logged in successfully",
             data: res?.data
-        }
+        };
     } catch (error) {
         return {
             success: false,
             message: error?.response?.data?.message || "Creation failed"
-        }
+        };
     }
 };

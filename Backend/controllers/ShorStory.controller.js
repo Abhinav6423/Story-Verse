@@ -3,6 +3,7 @@ import Userstats from "../modals/Userstats.modal.js";
 import Userhistory from "../modals/Userhistory.modal.js";
 import goodReadShortStory from "../modals/GoodReadShortStory.modal.js";
 import mongoose from "mongoose"
+import { uploadToCloudinary } from "../utils/cloudinaryUploadFunction.js"
 // creator panel
 const createShortStory = async (req, res) => {
     try {
@@ -10,14 +11,20 @@ const createShortStory = async (req, res) => {
             title,
             story,
             description,
-            coverImage,
             finalQuestion,
             category,
             status,
             finalAnswer
         } = req.body;
 
-        if (!title || !story || !description || !finalQuestion || !category || !finalAnswer) {
+        if (
+            !title ||
+            !story ||
+            !description ||
+            !finalQuestion ||
+            !category ||
+            !finalAnswer
+        ) {
             return res.status(400).json({
                 success: false,
                 message: "All required fields must be provided"
@@ -31,32 +38,40 @@ const createShortStory = async (req, res) => {
             });
         }
 
+        let coverImageUrl = null;
+
+        // ✅ upload only if image exists (memoryStorage fix)
+        if (req.file) {
+            const { url } = await uploadToCloudinary(
+                req.file,   // ✅ FIXED (buffer, not path)
+                "story_covers"
+            );
+            coverImageUrl = url;
+        }
+
         const shortStory = await ShortStory.create({
             title,
             story,
             description,
-            coverImage,
+            coverImage: coverImageUrl,
             finalQuestion,
             category,
             author: req.user._id,
             status: status || "draft",
-            finalAnswer: finalAnswer
+            finalAnswer
         });
 
         await Userstats.updateOne(
             { userId: req.user._id },
-
             { $inc: { totalShortStoriesCreated: 1 } }
-        )
+        );
 
         if (shortStory.status === "published") {
-
             const stats = await Userstats.findOneAndUpdate(
                 { userId: req.user._id },
                 { $inc: { xp: 30 } },
                 { new: true }
-
-            )
+            );
 
             if (stats.xp >= stats.xpToNextLevel) {
                 await Userstats.findOneAndUpdate(
@@ -68,12 +83,9 @@ const createShortStory = async (req, res) => {
                             xpToNextLevel: stats.xpToNextLevel * 2
                         }
                     }
-
-                )
+                );
             }
         }
-
-
 
         return res.status(201).json({
             success: true,
@@ -87,6 +99,9 @@ const createShortStory = async (req, res) => {
         });
     }
 };
+
+
+
 
 const listUserShortStory = async (req, res) => {
     try {
