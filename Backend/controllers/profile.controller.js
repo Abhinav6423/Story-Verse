@@ -1,7 +1,7 @@
 import User from "../modals/User.modal.js";
 import Userstats from "../modals/Userstats.modal.js";
 import ShortStory from "../modals/Shortstory.modal.js";
-
+import { uploadToCloudinary } from "../utils/cloudinaryUploadFunction.js"
 
 
 const getUserProfileData = async (req, res) => {
@@ -72,11 +72,12 @@ const getUserShortStories = async (req, res) => {
     }
 };
 
-/* ================= UPDATE PROFILE ================= */
+
+
 const updateProfile = async (req, res) => {
     try {
         const userId = req.user?._id;
-        const { profilePic, username } = req.body;
+        const { username } = req.body;
 
         if (!userId) {
             return res.status(401).json({
@@ -85,29 +86,35 @@ const updateProfile = async (req, res) => {
             });
         }
 
-        if (!username) {
-            return res.status(400).json({
-                success: false,
-                message: "Username is required",
-            });
+
+        let profilePicUrl;
+
+        // ✅ Upload image to Cloudinary if provided
+        if (req.file) {
+            const { url } = await uploadToCloudinary(
+                req.file,   // ✅ FIXED (buffer, not path)
+                "story_covers"
+            );
+            profilePicUrl = url;
         }
 
-        // ✅ Update User (auth source of truth)
+        // ✅ Update User
         const user = await User.findByIdAndUpdate(
             userId,
             {
-                username,
-                ...(profilePic && { profilePic }),
+                ...(username && { username }),
+                ...(profilePicUrl && { profilePic: profilePicUrl }),
             },
             { new: true }
         ).select("username email profilePic provider");
 
-        // ✅ Keep Userstats in sync (prevents stale UI)
+
+        // ✅ Sync Userstats
         await Userstats.findOneAndUpdate(
             { userId },
             {
                 username: user.username,
-                ...(profilePic && { profilePic }),
+                ...(profilePicUrl && { profilePic: profilePicUrl }),
             },
             { upsert: true }
         );
@@ -115,7 +122,7 @@ const updateProfile = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Profile updated successfully",
-            user, // 🔥 frontend can update AuthProvider instantly
+            user,
         });
     } catch (error) {
         return res.status(500).json({
@@ -124,6 +131,8 @@ const updateProfile = async (req, res) => {
         });
     }
 };
+
+
 
 export {
     getUserProfileData,

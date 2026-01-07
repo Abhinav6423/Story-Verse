@@ -139,11 +139,10 @@ const ViewShortStory = () => {
         <div className="flex justify-center gap-3 mt-4">
           <button
             onClick={handleLike}
-            className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${
-              liked
-                ? "bg-black text-white"
-                : "bg-white text-black border-black"
-            }`}
+            className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${liked
+              ? "bg-black text-white"
+              : "bg-white text-black border-black"
+              }`}
           >
             <ThumbsUp size={14} className="inline mr-1" />
             {likesCount} Likes
@@ -151,11 +150,10 @@ const ViewShortStory = () => {
 
           <button
             onClick={handleGoodReads}
-            className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${
-              addedToGoodReads
-                ? "bg-emerald-600 text-white border-emerald-600"
-                : "bg-white text-emerald-600 border-emerald-400"
-            }`}
+            className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${addedToGoodReads
+              ? "bg-emerald-600 text-white border-emerald-600"
+              : "bg-white text-emerald-600 border-emerald-400"
+              }`}
           >
             <Bookmark size={14} className="inline mr-1" />
             {goodReadsCount} Good Reads

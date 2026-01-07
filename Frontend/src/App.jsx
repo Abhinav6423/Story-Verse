@@ -18,6 +18,7 @@ import UpdateShortStory from "./components/Profile/UpdateShortStory.jsx";
 
 import AuthSuccess from "./pages/Authentication/AuthSucess"; // ✅ ADD THIS
 import { ToastContainer } from "react-toastify";
+import UpdateProfile from "./components/Profile/UpdateProfile.jsx";
 
 const App = () => {
   return (
@@ -60,7 +61,9 @@ const App = () => {
               path="/update/shortStory/:storyId"
               element={<UpdateShortStory />}
             />
+            <Route path="/profile/update" element={<UpdateProfile />} />
           </Route>
+
         </Route>
       </Routes>
     </>

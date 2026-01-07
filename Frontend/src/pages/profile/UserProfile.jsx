@@ -1,59 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../context/Authcontext.js";
-import Navbar from "../../components/Home/Navbar.jsx";
-import MyStories from "../../components/Profile/MyStories.jsx";
-import { getUserProfileData } from "../../Api-calls/getUserProfileData.js";
-import Loader from "../../components/Loader.jsx";
-import { LogOut } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+
+import { useAuth } from "../../context/Authcontext.js";
+import { getUserProfileData } from "../../Api-calls/getUserProfileData.js";
+
+import Loader from "../../components/Loader.jsx";
+import MyStories from "../../components/Profile/MyStories.jsx";
+import UpdateProfile from "../../components/Profile/UpdateProfile.jsx";
 
 const UserProfile = () => {
-    const { userData, setUserData } = useAuth();
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
-    const [userStats, setUserStats] = useState({})
+    const { userData } = useAuth();
 
-    const handleLogout = async () => {
-        try {
-            const result = await logoutUser();
-            if (result?.success) {
-                toast.success(result?.message);
-                navigate("/");
-            }
-        } catch (error) {
-            console.error("Logout error:", error);
-            toast.error("Logout failed");
-        }
-    };
+    const [loading, setLoading] = useState(true);
+    const [userStats, setUserStats] = useState({});
+    const [showUpdateProfile, setShowUpdateProfile] = useState(false);
 
     useEffect(() => {
-        const userProfile = async () => {
+        const fetchProfile = async () => {
             try {
                 const res = await getUserProfileData();
-
                 if (res?.success) {
-                    setUserStats(res?.data?.userStats);
-                    console.log(res.data)
+                    setUserStats(res.data.userStats);
                 } else {
-                    console.error(res?.message);
+                    toast.error(res?.message || "Failed to load profile");
                 }
+            } catch (err) {
+                toast.error("Failed to load profile");
             } finally {
                 setLoading(false);
             }
         };
 
-        userProfile();
+        fetchProfile();
     }, []);
-
 
     if (loading) return <Loader />;
 
-
-
-
     return (
         <>
+            {/* ================= PROFILE PAGE ================= */}
             <div
                 className="min-h-screen bg-white"
                 style={{ paddingBottom: "var(--mobile-bottom-nav-height)" }}
@@ -70,31 +56,31 @@ const UserProfile = () => {
                     />
                 </div>
 
-                {/* PROFILE SECTION */}
+                {/* PROFILE CONTENT */}
                 <div className="px-4 sm:px-10 max-w-7xl mx-auto">
-                    {/* PROFILE ROW */}
-                    <div
-                        className="
-              relative -mt-20
-              mx-auto
-              max-w-10xl
-              px-4
-              flex flex-col items-center text-center
-              lg:grid lg:grid-cols-[auto_1fr]
-              lg:items-end lg:text-left
-              lg:gap-30
-            "
-                    >
+                    {/* PROFILE HEADER */}
+                    <div className="relative -mt-20 flex flex-col items-center text-center lg:grid lg:grid-cols-[auto_1fr] lg:items-end lg:text-left lg:gap-24">
+
                         {/* AVATAR + NAME */}
                         <div className="flex flex-col items-center lg:items-start">
-                            <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-md">
-                                <img
-                                    src={userData?.profilePic}
-                                    alt="profile"
-                                    className="w-full h-full object-cover rounded-full"
-                                />
-                            </div>
+                            <div className="relative w-40 h-40">
+                                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-md">
+                                    <img
+                                        src={userData?.profilePic}
+                                        alt="profile"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
 
+                                {/* ✏️ EDIT ICON */}
+                                <button
+                                    onClick={() => setShowUpdateProfile(true)}
+                                    className="absolute bottom-2 right-2 bg-emerald-500 p-2 rounded-full shadow-md hover:bg-emerald-400 transition"
+                                    aria-label="Edit Profile"
+                                >
+                                    <Pencil size={16} className="text-black" />
+                                </button>
+                            </div>
 
                             <h1 className="mt-4 text-2xl font-medium text-gray-900">
                                 {userData?.username}
@@ -106,33 +92,14 @@ const UserProfile = () => {
                         </div>
 
                         {/* STATS */}
-                        <div
-                            className="
-                mt-6
-                grid grid-cols-3 gap-y-6 gap-x-10
-                lg:mt-0
-                lg:flex lg:items-center lg:gap-8
-              "
-                        >
-                            <Stat
-                                label="Stories"
-                                value={userStats?.totalShortStoriesCreated || 0}
-                            />
+                        <div className="mt-6 grid grid-cols-3 gap-y-6 gap-x-10 lg:mt-0 lg:flex lg:items-center lg:gap-8">
+                            <Stat label="Stories" value={userStats?.totalShortStoriesCreated || 0} />
                             <Divider />
-                            <Stat
-                                label="Reads"
-                                value={userStats?.totalShortStoriesRead || 0}
-                            />
+                            <Stat label="Reads" value={userStats?.totalShortStoriesRead || 0} />
                             <Divider />
-                            <Stat
-                                label="Chapters+"
-                                value={userStats?.totalChaptersCreated || 0}
-                            />
+                            <Stat label="Chapters+" value={userStats?.totalChaptersCreated || 0} />
                             <Divider />
-                            <Stat
-                                label="Chapters-"
-                                value={userStats?.totalChaptersRead || 0}
-                            />
+                            <Stat label="Chapters-" value={userStats?.totalChaptersRead || 0} />
                             <Divider />
                             <Stat label="Level" value={userStats?.level || 0} />
                             <Divider />
@@ -140,14 +107,17 @@ const UserProfile = () => {
                         </div>
                     </div>
 
-                    <div className="w-full h-px bg-gray-400 mt-9"></div>
+                    <div className="w-full h-px bg-gray-400 mt-9" />
 
                     {/* STORIES */}
-                    <div>
-                        <MyStories />
-                    </div>
+                    <MyStories />
                 </div>
             </div>
+
+            {/* ================= UPDATE PROFILE MODAL ================= */}
+            {showUpdateProfile && (
+                <UpdateProfile onClose={() => setShowUpdateProfile(false)} />
+            )}
         </>
     );
 };

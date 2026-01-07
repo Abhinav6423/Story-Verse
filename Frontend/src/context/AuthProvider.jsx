@@ -34,6 +34,7 @@ const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         userData,
+        setUserData,
         loading,
         reloadUserData: fetchUserData,
       }}
