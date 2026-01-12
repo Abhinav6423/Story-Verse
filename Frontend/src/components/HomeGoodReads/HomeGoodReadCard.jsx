@@ -8,33 +8,19 @@ function HomeGoodReadCard({ story, rank }) {
       className="
         relative
         min-w-[280px]
-        bg-white
         rounded-xl
         px-4 py-3
         flex gap-4
         shadow-sm
         hover:shadow-md
         transition
+        bg-[#212121]
       "
     >
-      {/* RANK BADGE */}
-      <span
-        className="
-          absolute
-          -top-2 -left-2
-          w-7 h-7
-          rounded-full
-          bg-yellow-400
-          text-xs
-          font-bold
-          flex items-center justify-center
-        "
-      >
-        #{rank}
-      </span>
+      
 
       {/* COVER */}
-      <div className="w-[80px] h-[100px] flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+      <div className="w-[80px] h-[100px] flex-shrink-0 rounded-lg overflow-hidden ">
         {story?.coverImage ? (
           <LazyLoadImage
             src={story.coverImage}
@@ -57,8 +43,8 @@ function HomeGoodReadCard({ story, rank }) {
               flex
               items-center
               justify-center
-              bg-sky-100
-              text-sky-900
+              
+              text-white
               px-4
               text-center
             "
@@ -74,7 +60,7 @@ function HomeGoodReadCard({ story, rank }) {
       <div className="flex flex-col justify-between flex-1 py-1">
         {/* TOP: TITLE + AUTHOR */}
         <div className="space-y-1.5">
-          <h3 className="text-sm font-semibold text-gray-900 leading-[1.25]">
+          <h3 className="text-sm font-semibold text-white leading-[1.25]">
             {story.title?.length > 20
               ? `${story.title.slice(0, 20)}...`
               : story.title}
@@ -88,7 +74,7 @@ function HomeGoodReadCard({ story, rank }) {
               loading="lazy"
               className="w-5 h-5 rounded-full object-cover"
             />
-            <p className="text-xs text-gray-500 font-semibold truncate">
+            <p className="text-xs text-white font-semibold truncate">
               {story?.author?.username}
             </p>
           </div>
@@ -96,7 +82,7 @@ function HomeGoodReadCard({ story, rank }) {
 
         {/* BOTTOM: GOOD READS */}
         <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600">
-          <ThumbsUp size={14} strokeWidth={2} />
+          <ThumbsUp size={14} fill="green" />
           <span>{story?.totalGoodReads} Good reads</span>
         </div>
       </div>

@@ -5,10 +5,11 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 
 const GoodReadShortStoryCard = ({ story }) => {
     return (
-        <div className="w-full">
-            {/* POSTER */}
-            <div
-                className="
+        <div className="w-full bg-[#212121] p-2 rounded-xl">
+            <div className="w-full">
+                {/* POSTER */}
+                <div
+                    className="
           relative
           aspect-[2/3]
           rounded-xl
@@ -18,13 +19,13 @@ const GoodReadShortStoryCard = ({ story }) => {
           hover:shadow-lg
           transition
         "
-            >
-                {story?.coverImage ? (
-                    <LazyLoadImage
-                        src={story.coverImage}
-                        alt={story.title}
-                        effect="blur"
-                        className="
+                >
+                    {story?.coverImage ? (
+                        <LazyLoadImage
+                            src={story.coverImage}
+                            alt={story.title}
+                            effect="blur"
+                            className="
               w-full
               h-full
               object-cover
@@ -32,10 +33,10 @@ const GoodReadShortStoryCard = ({ story }) => {
               transition-transform
               duration-300
             "
-                    />
-                ) : (
-                    <div
-                        className="
+                        />
+                    ) : (
+                        <div
+                            className="
               w-full
               h-full
               flex
@@ -46,39 +47,40 @@ const GoodReadShortStoryCard = ({ story }) => {
               px-4
               text-center
             "
-                    >
-                        <h3 className="text-lg font-semibold leading-snug line-clamp-4">
-                            {story?.title}
-                        </h3>
-                    </div>
-                )}
-            </div>
-
-            {/* INFO */}
-            <div className="mt-2 space-y-1">
-                {/* TITLE + LIKES */}
-                <div className="flex items-start justify-between gap-2">
-                    <h3 className="text-sm font-semibold text-gray-900 leading-tight truncate">
-                        {story?.title}
-                    </h3>
-
-                    <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 shrink-0">
-                        <ThumbsUp size={14} />
-                        <span>{story?.likes}</span>
-                    </div>
+                        >
+                            <h3 className="text-lg text-white font-semibold leading-snug line-clamp-4">
+                                {story?.title}
+                            </h3>
+                        </div>
+                    )}
                 </div>
 
-                {/* AUTHOR */}
-                <div className="flex items-center gap-2">
-                    <img
-                        src={story?.author?.profilePic}
-                        alt={story?.author?.username}
-                        loading="lazy"
-                        className="w-5 h-5 rounded-full object-cover"
-                    />
-                    <p className="text-xs text-gray-500 truncate">
-                        {story?.author?.username || "Unknown"}
-                    </p>
+                {/* INFO */}
+                <div className="mt-2 space-y-1">
+                    {/* TITLE + LIKES */}
+                    <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-sm font-semibold text-white leading-tight truncate">
+                            {story?.title}
+                        </h3>
+
+                        <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 shrink-0">
+                            <ThumbsUp fill="green" size={14} />
+                            <span>{story?.likes}</span>
+                        </div>
+                    </div>
+
+                    {/* AUTHOR */}
+                    <div className="flex items-center gap-2">
+                        <img
+                            src={story?.author?.profilePic}
+                            alt={story?.author?.username}
+                            loading="lazy"
+                            className="w-5 h-5 rounded-full object-cover"
+                        />
+                        <p className="text-xs text-gray-100 truncate">
+                            {story?.author?.username || "Unknown"}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

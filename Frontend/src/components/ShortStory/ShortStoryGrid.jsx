@@ -31,23 +31,35 @@ const ShortStoryGrid = () => {
     }
 
     return (
-        <div className="mt-0 sm:mt-15 bg-white">
+        <div className="mt-0 sm:mt-15 bg-transparent">
             {/* ================= SECTION HEADER ================= */}
-            <div className="mb-6 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Compass size={20} className="text-emerald-600" />
+            <div className="mb-8 flex items-center gap-3">
+                <span
+                    className="
+      w-10 h-10
+      rounded-full
+      bg-emerald-500/15
+      flex items-center justify-center
+    "
+                >
+                    <Compass size={22} className="text-emerald-400" />
                 </span>
 
-                <h2 className="text-xl  font-semibold text-gray-900">
-                    Explore
+                <h2
+                    className="
+      text-2xl font-medium text-white tracking-tight
+    "
+                >
+                    Fresh Reads
                 </h2>
             </div>
+
 
             {/* ================= STORY GRID ================= */}
             <div
                 className="
           grid
-          gap-x-4 gap-y-8
+          gap-2 
           grid-cols-2
           sm:grid-cols-3
           md:grid-cols-4

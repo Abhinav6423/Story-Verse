@@ -30,7 +30,9 @@ router.post("/", verifyToken,
 router.get("/me", verifyToken, listUserShortStory);
 router.get("/me/:storyId", verifyToken, openUserShortStory);
 
-router.put("/:storyId", verifyToken, updateShortStory);
+router.put("/:storyId",
+   upload.single("coverImage"),
+   verifyToken, updateShortStory);
 router.delete("/:storyId", verifyToken, deleteShortStory);
 
 router.get("/goodReads", verifyToken, listGoodReads);

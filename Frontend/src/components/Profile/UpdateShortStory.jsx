@@ -16,7 +16,7 @@ const UpdateShortStory = () => {
     const [title, setTitle] = useState("");
     const [genre, setGenre] = useState("");
     const [description, setDescription] = useState("");
-    const [coverImg, setCoverImg] = useState("");
+    const [coverImg, setCoverImg] = useState(null)
     const [finalQ, setFinalQ] = useState("");
     const [finalA, setFinalA] = useState("");
     const [status, setStatus] = useState("draft");
@@ -80,38 +80,52 @@ const UpdateShortStory = () => {
     }, [editor, storyId, contentLoaded]);
 
     /* ================= SUBMIT ================= */
-    const handleSave = async () => {
-        if (!title || !story || !genre || !description || !finalQ || !finalA || !status) {
-            toast.error("All fields are required");
+    const handleSave = async (e) => {
+        e.preventDefault();
+        if (!title || !story) {
+            toast.error("Title and story content are required");
             return;
         }
 
-        try {
-            setLoading(true);
+        if (!coverImg) {
+            toast.error("Cover image is required");
+            return;
+        }
 
-            const result = await updateShortStory({
-                storyId,
-                title,
-                category: genre,
-                description,
-                coverImage: coverImg,
-                finalQuestion: finalQ,
-                finalAnswer: finalA,
-                status,
-                story,
-            });
+
+        try {
+            setLoading(true)
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("category", genre);
+            formData.append("description", description);
+            formData.append("finalQuestion", finalQ);
+            formData.append("finalAnswer", finalA);
+            formData.append("status", status);
+            formData.append("story", story);
+            formData.append("coverImage", coverImg); // 👈 FILE
+
+            const result = await updateShortStory(formData, storyId);
+
 
             if (result?.success) {
                 toast.success("Story updated successfully");
+                setTitle("");
+                setStory("");
+                setDescription("");
+                setCoverImg(null);
+                setFinalQ("");
+                setFinalA("");
+                setStatus("draft");
                 navigate("/home");
             } else {
-                toast.error(result?.message || "Failed to update story");
+                toast.error(result?.message || "Failed to create story");
             }
         } catch (error) {
             console.error(error);
             toast.error("Something went wrong");
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
     };
 
@@ -216,10 +230,11 @@ const UpdateShortStory = () => {
                             />
                         </Field>
 
-                        <Field label="Cover Image URL">
+                        <Field label="Cover Image">
                             <input
-                                value={coverImg}
-                                onChange={(e) => setCoverImg(e.target.value)}
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setCoverImg(e.target.files[0])}
                                 className="field-input"
                             />
                         </Field>

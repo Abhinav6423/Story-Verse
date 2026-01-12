@@ -52,15 +52,16 @@ const MyStoryCard = ({ title, image, id }) => {
     }
 
     return (
-        <div className="w-full">
+        <div className="w-full p-2 rounded-xl bg-[#212121] ">
+            <div className="w-full">
 
-            {/* BOOK COVER */}
-            <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-gray-100 transition hover:shadow-lg">
-                {image ? (
-                    <img
-                        src={image}
-                        alt={title}
-                        className="
+                {/* BOOK COVER */}
+                <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-gray-100 transition hover:shadow-lg">
+                    {image ? (
+                        <img
+                            src={image}
+                            alt={title}
+                            className="
         w-full
         h-full
         object-cover
@@ -68,10 +69,10 @@ const MyStoryCard = ({ title, image, id }) => {
         transition-transform
         duration-300
       "
-                    />
-                ) : (
-                    <div
-                        className="
+                        />
+                    ) : (
+                        <div
+                            className="
         w-full
         h-full
         flex
@@ -82,39 +83,40 @@ const MyStoryCard = ({ title, image, id }) => {
         px-4
         text-center
       "
-                    >
-                        <h3 className="text-lg font-semibold leading-snug line-clamp-4">
-                            {title}
-                        </h3>
-                    </div>
-                )}
+                        >
+                            <h3 className="text-lg font-semibold leading-snug line-clamp-4">
+                                {title}
+                            </h3>
+                        </div>
+                    )}
 
-                {/* ACTION BUTTONS */}
-                <div className="absolute top-2 right-2 flex gap-2">
-                    <button
-                        onClick={handleUpdate}
-                        className="p-1.5 rounded-full bg-white/90 shadow text-gray-700 hover:text-blue-600"
-                        title="Edit"
-                    >
-                        <Pencil size={14} />
-                    </button>
+                    {/* ACTION BUTTONS */}
+                    <div className="absolute top-2 right-2 flex gap-2">
+                        <button
+                            onClick={handleUpdate}
+                            className="p-1.5 rounded-full bg-black shadow text-white hover:text-blue-600"
+                            title="Edit"
+                        >
+                            <Pencil size={14} />
+                        </button>
 
-                    <button
-                        onClick={handleDelete}
-                        disabled={deleting}
-                        className={`p-1.5 rounded-full bg-white/90 shadow transition
+                        <button
+                            onClick={handleDelete}
+                            disabled={deleting}
+                            className={`p-1.5 rounded-full bg-black shadow transition
                             ${deleting ? "opacity-50 cursor-not-allowed" : "hover:text-red-600"}
                         `}
-                        title="Delete"
-                    >
-                        <Trash2 size={14} />
-                    </button>
+                            title="Delete"
+                        >
+                            <Trash2 size={14} />
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <h3 className="mt-2 text-sm font-medium text-gray-900 leading-snug">
-                {title}
-            </h3>
+                <h3 className="mt-2 text-sm font-medium text-white leading-snug">
+                    {title}
+                </h3>
+            </div>
         </div>
     );
 };

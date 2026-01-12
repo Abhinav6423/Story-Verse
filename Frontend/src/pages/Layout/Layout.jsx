@@ -1,27 +1,41 @@
-import { Outlet, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import MobileBottomNav from "../../components/Home/MobileBottomNav.jsx";
-import Navbar from "../../components/Home/Navbar.jsx";
-import CategoryPopup from "../../components/Home/CategoryPopup.jsx";
 
-const AppLayout = () => {
+import { useState, useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import Navbar from "../../components/Home/Navbar";
+import MobileBottomNav from "../../components/Home/MobileBottomNav";
+import CategoryPopup from "../../components/Home/CategoryPopup";
+import Homebg from "../../Assets/Homebg.jpeg";
+const Layout = () => {
   const [showBrowse, setShowBrowse] = useState(false);
   const location = useLocation();
 
-  /* 🔑 CLOSE POPUP ON ANY ROUTE CHANGE */
   useEffect(() => {
     setShowBrowse(false);
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[#f8f9fb] pb-16">
-      {/* DESKTOP NAVBAR */}
-      <Navbar onAnyNavClick={() => setShowBrowse(false)} setShowBrowse={setShowBrowse} showBrowse={showBrowse} />
+    <div
+      className="min-h-screen flex flex-col text-gray-200 pb-16 md:pb-4 bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: `url(${Homebg})`,
+      }}
+    >
+
+
+
+      {/* NAVBAR */}
+      <Navbar
+        onAnyNavClick={() => setShowBrowse(false)}
+        setShowBrowse={setShowBrowse}
+        showBrowse={showBrowse}
+      />
 
       {/* PAGE CONTENT */}
-      <Outlet />
+      <main className="flex-1">
+        <Outlet />
+      </main>
 
-      {/* MOBILE BOTTOM NAV */}
+      {/* MOBILE NAV */}
       <MobileBottomNav
         showBrowse={showBrowse}
         setShowBrowse={setShowBrowse}
@@ -32,12 +46,10 @@ const AppLayout = () => {
       <CategoryPopup
         open={showBrowse}
         onClose={() => setShowBrowse(false)}
-        onSelect={(category) => {
-          setShowBrowse(false);
-        }}
+        onSelect={() => setShowBrowse(false)}
       />
     </div>
   );
 };
 
-export default AppLayout;
+export default Layout;

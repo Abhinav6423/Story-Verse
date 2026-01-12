@@ -70,38 +70,41 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
     return (
         <>
             {/* ================= NAVBAR ================= */}
-            <nav className="sticky top-0 z-50 bg-white ">
-                <div className="relative max-w-7xl mx-auto px-6 h-16 flex items-center">
+            <nav className="sticky top-0 z-50   backdrop-blur-md text-gray-100">
+
+
+                {/* GLASS BACKGROUND LAYERS */}
+                <div className="absolute inset-0 bg-[#1A1A1A] "></div>
+
+                <div className="relative max-w-7xl mx-auto px-6 h-16 flex items-center text-gray-100">
 
                     {/* LOGO */}
                     <Link
                         to="/home"
-
-                        className="font-serif text-2xl font-semibold tracking-tight"
+                        className="font-serif italic text-2xl font-light tracking-tight text-gray-100"
                     >
                         StoryFlix
                     </Link>
 
                     {/* DESKTOP ACTIONS */}
-                    <div className="ml-auto hidden md:flex items-center gap-6 text-sm">
+                    <div className="ml-auto hidden md:flex items-center gap-6 text-sm text-gray-300">
 
-                        <Link to="/create" className="flex items-center gap-1">
-                            <div
-                                className="border rounded-full p-0.5">
-                                <Plus size={14} className="" />
+                        {/* WRITE STORY */}
+                        <Link
+                            to="/create"
+                            className="flex items-center gap-1 hover:text-white transition"
+                        >
+                            <div className="border border-white/30 rounded-full p-0.5">
+                                <Plus size={14} />
                             </div>
                             <span className="font-medium">Write story</span>
                         </Link>
 
-
-                        {/* Browse Button */}
+                        {/* BROWSE */}
                         <button
-                            className="cursor-pointer flex gap-1 items-center"
-                            onClick={() => {
-
-                                setShowBrowse(p => !p)
-
-                            }}>
+                            className="cursor-pointer flex gap-1 items-center hover:text-white transition"
+                            onClick={() => setShowBrowse(p => !p)}
+                        >
                             <LayoutGrid size={18} />
                             <span className="font-medium">Browse</span>
                         </button>
@@ -109,26 +112,35 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
                         {/* PROFILE MENU */}
                         <div className="relative" ref={profileMenuRef}>
                             <button
-                                className="flex items-center gap-1"
+                                className="flex items-center gap-1 hover:text-white transition"
                                 onClick={() => {
                                     onAnyNavClick();
-                                    setShowProfileMenu(p => !p)
-                                }}>
+                                    setShowProfileMenu(p => !p);
+                                }}
+                            >
                                 <User size={18} />
                                 <span className="font-medium">Profile</span>
                             </button>
 
                             {showProfileMenu && (
-                                <div className="absolute right-0 mt-3 w-48 bg-white border rounded-xl shadow-lg p-0.5">
-                                    <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">
+                                <div className="absolute right-0 mt-3 w-48 bg-[#1f2a27] border border-white/10 rounded-xl shadow-xl p-0.5">
+                                    <Link
+                                        to="/profile"
+                                        className="block px-4 py-2 text-gray-200 hover:bg-white/10 rounded-lg"
+                                    >
                                         View Profile
                                     </Link>
-                                    <Link to="/goodReads/ShortStory" className="block px-4 py-2 hover:bg-gray-100">
+
+                                    <Link
+                                        to="/goodReads/ShortStory"
+                                        className="block px-4 py-2 text-gray-200 hover:bg-white/10 rounded-lg"
+                                    >
                                         Good Reads
                                     </Link>
+
                                     <button
                                         onClick={handleLogout}
-                                        className="cursor-pointer w-full px-4 py-2 text-left text-red-600 flex gap-2 hover:bg-gray-100"
+                                        className="cursor-pointer w-full px-4 py-2 text-left text-red-400 flex gap-2 hover:bg-white/10 rounded-lg"
                                     >
                                         <LogOut size={16} />
                                         Logout
@@ -141,10 +153,10 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
                     {/* HAMBURGER (MOBILE) */}
                     <button
                         ref={hamburgerRef}
-                        className="ml-auto md:hidden"
+                        className="ml-auto md:hidden text-gray-200"
                         onClick={() => {
                             onAnyNavClick();
-                            setShowMobileMenu(prev => !prev)
+                            setShowMobileMenu(prev => !prev);
                         }}
                     >
                         <Menu size={22} />
@@ -155,34 +167,31 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
             {/* ================= MOBILE MENU ================= */}
             {showMobileMenu && (
                 <>
-                    {/* BACKDROP */}
                     <div className="fixed inset-0 bg-black/40 z-40" />
 
-                    {/* DROPDOWN */}
                     <div
                         ref={mobileMenuRef}
-                        className="fixed top-16 left-0 right-0 z-50 bg-white shadow-lg"
+                        className="fixed top-16 left-0 right-0 z-50 bg-[#1f2a27] shadow-xl"
                     >
                         <Link
                             to="/profile"
                             onClick={() => setShowMobileMenu(false)}
-                            className="block px-4 py-2 border-b"
+                            className="block px-4 py-3 text-gray-200 border-b border-white/10 hover:bg-white/10"
                         >
                             View Profile
                         </Link>
+
                         <Link
                             to="/goodReads/ShortStory"
                             onClick={() => setShowMobileMenu(false)}
-                            className="block  px-4 py-2 border-b"
+                            className="block px-4 py-3 text-gray-200 border-b border-white/10 hover:bg-white/10"
                         >
                             View GoodReads
                         </Link>
 
-
-
                         <button
                             onClick={handleLogout}
-                            className="w-full  px-4 py-2 text-left text-red-600 flex gap-2"
+                            className="w-full px-4 py-3 text-left text-red-400 flex gap-2 hover:bg-white/10"
                         >
                             <LogOut size={18} />
                             Logout
@@ -201,6 +210,8 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
                 }}
             />
         </>
+
+
     );
 };
 

@@ -93,7 +93,7 @@ const CreatePost = () => {
     if (loading) return <Loader />
 
     return (
-        <div className="min-h-screen bg-[#eef1f6] pb-16">
+        <div className="min-h-screen border-black/70 border text-black bg-[#eef1f6] pb-16">
 
 
             <div

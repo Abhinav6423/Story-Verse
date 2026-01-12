@@ -41,7 +41,7 @@ const UserProfile = () => {
         <>
             {/* ================= PROFILE PAGE ================= */}
             <div
-                className="min-h-screen bg-white"
+                className="min-h-screen bg-[#1A1A1A]  text-white"
                 style={{ paddingBottom: "var(--mobile-bottom-nav-height)" }}
             >
                 {/* COVER */}
@@ -64,7 +64,7 @@ const UserProfile = () => {
                         {/* AVATAR + NAME */}
                         <div className="flex flex-col items-center lg:items-start">
                             <div className="relative w-40 h-40">
-                                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-md">
+                                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-[#1A1A1A] shadow-md">
                                     <img
                                         src={userData?.profilePic}
                                         alt="profile"
@@ -78,15 +78,15 @@ const UserProfile = () => {
                                     className="absolute bottom-2 right-2 bg-emerald-500 p-2 rounded-full shadow-md hover:bg-emerald-400 transition"
                                     aria-label="Edit Profile"
                                 >
-                                    <Pencil size={16} className="text-black" />
+                                    <Pencil  size={16} className="text-black" />
                                 </button>
                             </div>
 
-                            <h1 className="mt-4 text-2xl font-medium text-gray-900">
+                            <h1 className="mt-4 text-2xl font-medium text-white">
                                 {userData?.username}
                             </h1>
 
-                            <p className="text-green-950 font-medium text-sm mt-1">
+                            <p className="text-white font-medium text-sm mt-1">
                                 Story Writer • Reader
                             </p>
                         </div>
@@ -107,7 +107,7 @@ const UserProfile = () => {
                         </div>
                     </div>
 
-                    <div className="w-full h-px bg-gray-400 mt-9" />
+                    <div className="w-full h-px bg-gray-400 mt-9 sm:mt-15" />
 
                     {/* STORIES */}
                     <MyStories />
@@ -126,8 +126,8 @@ const UserProfile = () => {
 
 const Stat = ({ label, value }) => (
     <div className="min-w-[80px] flex flex-col items-center">
-        <p className="text-xl font-bold text-gray-900">{value}</p>
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-1">
+        <p className="text-xl font-bold text-white">{value}</p>
+        <p className="text-xs font-semibold text-white uppercase tracking-wide mt-1">
             {label}
         </p>
     </div>

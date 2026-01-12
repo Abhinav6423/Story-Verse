@@ -61,20 +61,8 @@ function HomeGoodReadGrid() {
             <div
                 className="
           hidden md:block
-          absolute inset-0
+          absolute inset-0 bg-transparent
         "
-                style={{
-                    background: `
-            linear-gradient(
-              90deg,
-              #0b3d2e 0%,
-              #0e5a45 25%,
-              #1fd1a3 50%,
-              #0e5a45 75%,
-              #0b3d2e 100%
-            )
-          `,
-                }}
             />
 
             {/* ===== MOBILE GRADIENT ===== */}
@@ -83,16 +71,7 @@ function HomeGoodReadGrid() {
           md:hidden
           absolute inset-0
         "
-                style={{
-                    background: `
-            radial-gradient(
-              circle at 60% 35%,
-              #1fd1a3 0%,
-              #0e5a45 45%,
-              #0b3d2e 100%
-            )
-          `,
-                }}
+
             />
 
             {/* ===== CONTENT ===== */}
@@ -104,7 +83,7 @@ function HomeGoodReadGrid() {
           flex flex-col
           md:flex-row
           gap-6 sm:gap-26
-          md:items-center
+          md:items-center 
         "
             >
                 {/* LEFT INFO */}
@@ -149,13 +128,30 @@ function HomeGoodReadGrid() {
                         </Link>
                     ))}
 
-                    {/* 👇 SCROLL END SPACER (CRITICAL) */}
-                    <div className="flex-none w-4 md:hidden" />
+
                 </div>
 
 
 
+
+
             </div>
+
+            <div
+                className="
+    absolute
+    bottom-0
+    left-0
+    w-full
+    h-px
+   bg-white/70
+   mx-4 
+          md:mx-10 
+    
+  "
+            />
+
+
         </section>
     );
 }

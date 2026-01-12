@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/Authcontext.js";
 import { loginUser } from "../../Api-calls/login.js";
 import { toast } from "react-toastify";
+import AuthImg from "../../Assets/AuthImg.png";
 
 const Login = () => {
   const { reloadUserData, user } = useAuth();
@@ -44,75 +45,108 @@ const Login = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-[#0f2a22] overflow-hidden">
+    <div className="h-screen w-full bg-[#0b1f1a] overflow-hidden relative">
       {/* LOGO */}
-      <div className="absolute top-4 right-6 z-20">
+      <div className="absolute top-6 left-[2%]  z-20">
         <Link to="/" className="text-white text-xl font-serif font-semibold">
           StoryFlix
         </Link>
       </div>
 
-      <div className="h-full flex flex-col md:flex-row">
-        {/* IMAGE */}
-        <div className="hidden md:flex md:w-[60%] p-4">
-          <img
-            src="https://i.pinimg.com/736x/70/4e/a9/704ea9e793e0e7e27117acfb7dc4d38e.jpg"
-            alt="Library"
-            className="w-full h-full object-cover rounded-xl"
-          />
-        </div>
+      <div className="h-full flex">
+        {/* LEFT LOGIN PANEL */}
+        <div className="w-full md:w-[50%] flex items-center justify-center px-6">
+          <div className="w-full max-w-md rounded-2xl  backdrop-blur-xl px-6 py-8 ">
 
-        {/* FORM */}
-        <div className="w-full md:w-[40%] flex items-center justify-center px-4">
-          <div className="w-full max-w-md bg-white rounded-2xl px-6 py-8 shadow-xl">
-            <h2 className="text-2xl font-semibold text-center">
-              Hello Again 👋
+            {/* Heading */}
+            <h2 className="text-[30px] text-center font-medium text-white mb-8 tracking-tight">
+              Welcome back
             </h2>
 
-            <p className="text-sm text-gray-500 text-center mt-2 mb-6">
-              Welcome back, you’ve been missed
-            </p>
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              {/* Email */}
+              <div>
+                <label className="block text-[11px] text-gray-400 mb-2">
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  placeholder="Enter email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
 
-            {/* EMAIL LOGIN */}
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full rounded-lg border px-4 py-2.5 text-sm"
-              />
+              {/* Password */}
+              <div>
+                <label className="block text-[11px] text-gray-400 mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                />
 
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full rounded-lg border px-4 py-2.5 text-sm"
-              />
+                {/* Forgot password */}
+                <div className="text-right mt-2">
+                  <Link
+                    to="/forgot-password"
+                    className="text-[11px] text-gray-400 hover:text-emerald-400 transition"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              </div>
 
+              {/* Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-slate-900 text-white rounded-lg py-3 text-sm font-medium disabled:opacity-60"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg py-2.5 text-sm font-medium transition disabled:opacity-60 mt-2"
               >
-                {loading ? "Signing in..." : "Sign In"}
+                {loading ? "Signing in..." : "Log in"}
               </button>
             </form>
 
-            <p className="text-center text-sm text-gray-600 mt-6">
-              Don&apos;t have an account?{" "}
-              <Link to="/register" className="text-emerald-600 font-medium">
-                Register
+            {/* Register */}
+            <p className="text-center text-[11px] text-gray-400 mt-5">
+              Don’t have an account?{" "}
+              <Link to="/register" className="text-emerald-400 font-medium">
+                Register User
               </Link>
             </p>
+
+            {/* Verification Info */}
+            <div className="mt-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-3">
+              <p className="text-[11px] text-emerald-200 leading-relaxed">
+                A verification email has been sent to your registered email address.
+                If you don’t see it in your inbox, please check your spam or junk folder.
+              </p>
+            </div>
+
           </div>
+        </div>
+
+
+
+        {/* RIGHT IMAGE GRID */}
+        <div className="hidden md:block md:w-[50%] ">
+          <img
+            src={AuthImg}
+            alt="Story covers"
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
     </div>
   );
+
 };
 
 export default Login;

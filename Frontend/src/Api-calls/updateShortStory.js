@@ -1,20 +1,26 @@
-import axios from 'axios'
+import axios from "axios";
 
-export const updateShortStory = async ({ storyId, title, story, description, coverImage, finalQuestion, finalAnswer, category, status }) => {
+export const updateShortStory = async (formData, storyId) => {
     try {
-        const res = await axios.put(`/api/story/${storyId}`, { title, story, description, coverImage, finalQuestion, finalAnswer, category, status }, { withCredentials: true })
+        const res = await axios.put(
+            `/api/story/${storyId}`,
+            formData,
+            {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
 
-        if (res.status === 200) {
-            return {
-                success: true,
-                message: "Short story updated successfully",
-                data: res?.data
-            };
-        }
+        return {
+            success: true,
+            data: res?.data
+        };
     } catch (error) {
         return {
             success: false,
-            message: error?.response?.data?.message || "Something went wrong"
+            message: error?.response?.data?.message || "Creation failed"
         };
     }
-}
+};

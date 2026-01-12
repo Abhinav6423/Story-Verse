@@ -22,33 +22,33 @@ const MyStories = () => {
     const stories = data?.data || [];
 
     return (
-        <div className=" bg-white ">
+        <div className=" bg-transparent  ">
             <div className="max-w-7xl mx-auto py-7 sm:py-3">
 
                 {/* ===== HEADER ===== */}
-                <div className="flex flex-col sm:flex-row gap-5 items-center justify-between mb-8 sm:mb-12 ">
+                <div className="flex flex-col sm:flex-row gap-5 items-center justify-between mb-8 sm:mb-8 ">
 
-                    <h2 className="text-xl font-semibold text-green-950">
+                    <h2 className="text-2xl font-semibold text-white ">
                         Your Stories
                     </h2>
 
                     {/* FILTERS */}
-                    <div className="flex items-center bg-gray-200 rounded-full p-2.5">
+                    <div className="flex items-center bg-[#059E70] rounded-full px-1 py-.5">
                         <button
                             onClick={() => setStatus("published")}
                             className={`
             cursor-pointer
             flex items-center gap-2.5
-            px-5 py-2.5
+            px-3 py-1.5
             rounded-full
-            text-sm font-semibold
+            text-xs font-semibold
             transition-all
             ${status === "published"
-                                    ? "bg-green-950 text-white shadow-md"
-                                    : "text-gray-600 hover:text-gray-900"}
+                                    ? "bg-white text-black shadow-md"
+                                    : "text-white "}
         `}
                         >
-                            <BookOpen className="w-5 h-5" />
+                           
                             Published
                         </button>
 
@@ -62,11 +62,11 @@ const MyStories = () => {
             text-sm font-semibold
             transition-all
             ${status === "draft"
-                                    ? "bg-green-950 text-white shadow-md"
-                                    : "text-gray-600 hover:text-gray-900"}
+                                    ? "bg-white text-black shadow-md"
+                                    : "text-white "}
         `}
                         >
-                            <BookOpen className="w-5 h-5" />
+                           
                             Draft
                         </button>
                     </div>

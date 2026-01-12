@@ -93,9 +93,9 @@ const ViewShortStory = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="min-h-screen bg-[#f8f9fb] text-gray-800">
+    <div className="min-h-screen bg-[#0b1412] text-gray-200 ">
       {/* COVER */}
-      <div className="relative w-full h-[260px] sm:h-[350px]">
+      <div className="relative w-full h-[260px] sm:h-[380px]">
         {story?.coverImage ? (
           <LazyLoadImage
             src={story.coverImage}
@@ -105,78 +105,96 @@ const ViewShortStory = () => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-sky-100">
+          <div className="w-full h-full flex items-center justify-center bg-emerald-900/40">
             <h3 className="text-lg font-semibold">{story.title}</h3>
           </div>
         )}
 
-        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-[#1f3d34] text-white px-6 py-2 rounded-full shadow-lg border-4 border-white">
+        {/* DARK GRADIENT OVERLAY */}
+        {/* <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-[#0b1412]" /> */}
+
+        {/* CATEGORY */}
+        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-emerald-600 text-white px-6 py-2 rounded-full shadow-lg border-[4px] border-[#0b1412] text-sm">
           {story.category}
         </span>
       </div>
 
       {/* CONTENT */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-10 pt-16">
-        {/* TITLE */}
-        <h1 className="text-3xl sm:text-4xl font-serif text-center">
-          {story.title}
-        </h1>
+      <div className="max-w-5xl mx-auto px-4 sm:px-10 pt-16">
 
-        {/* AUTHOR */}
-        <div className="flex justify-center gap-2 mt-2">
-          <img
-            src={story.author?.profilePic}
-            alt={story.author?.username}
-            loading="lazy"
-            className="w-6 h-6 rounded-full object-cover"
-          />
-          <p className="text-sm text-gray-500">
-            {story.author?.username}
-          </p>
+        {/* HEADER ROW */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+
+          {/* LEFT: Title + Author + Description */}
+          <div className="max-w-2xl">
+            <h1 className="text-3xl sm:text-4xl font-serif text-white">
+              {story.title}
+            </h1>
+
+            {/* AUTHOR */}
+            <div className="flex items-center gap-2 mt-2">
+              <img
+                src={story.author?.profilePic}
+                alt={story.author?.username}
+                loading="lazy"
+                className="w-6 h-6 rounded-full object-cover"
+              />
+              <p className="text-sm text-gray-400">
+                {story.author?.username}
+              </p>
+            </div>
+
+
+          </div>
+
+          {/* RIGHT: ACTION BUTTONS */}
+          <div className="flex md:flex gap-3 md:items-end">
+            <button
+              onClick={handleLike}
+              className={`px-4 py-2 rounded-full text-sm font-medium border transition ${liked
+                ? "bg-white text-black border-white"
+                : "bg-transparent text-gray-300 border-gray-500 hover:border-white"
+                }`}
+            >
+              <ThumbsUp size={14} className="inline mr-1" />
+              {likesCount} Likes
+            </button>
+
+            <button
+              onClick={handleGoodReads}
+              className={`px-4 py-2 rounded-full text-sm font-medium border transition ${addedToGoodReads
+                ? "bg-emerald-600 text-white border-emerald-600"
+                : "bg-transparent text-emerald-400 border-emerald-500/60 hover:bg-emerald-600/10"
+                }`}
+            >
+              <Bookmark size={14} className="inline mr-1" />
+              {goodReadsCount} Good Reads
+            </button>
+          </div>
         </div>
 
-        {/* ACTION BUTTONS ✅ RESTORED */}
-        <div className="flex justify-center gap-3 mt-4">
-          <button
-            onClick={handleLike}
-            className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${liked
-              ? "bg-black text-white"
-              : "bg-white text-black border-black"
-              }`}
-          >
-            <ThumbsUp size={14} className="inline mr-1" />
-            {likesCount} Likes
-          </button>
-
-          <button
-            onClick={handleGoodReads}
-            className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${addedToGoodReads
-              ? "bg-emerald-600 text-white border-emerald-600"
-              : "bg-white text-emerald-600 border-emerald-400"
-              }`}
-          >
-            <Bookmark size={14} className="inline mr-1" />
-            {goodReadsCount} Good Reads
-          </button>
-        </div>
-
-        {/* DESCRIPTION ✅ */}
+        {/* DESCRIPTION */}
         {story.description && (
-          <p className="mt-6 text-lg text-gray-600 font-serif leading-relaxed text-center">
+          <p className="mt-11 text-sm text-gray-400 leading-relaxed ">
+            <span className="text-emerald-400 font-medium block mb-2">
+              Description
+            </span>
             {story.description}
           </p>
         )}
 
-        <hr className="my-8" />
+        <hr className="my-10 border-gray-700/60" />
 
-        {/* STORY */}
+        {/* STORY CONTENT */}
         <div
-          className="prose prose-gray max-w-full"
+          className="prose prose-invert prose-lg max-w-full leading-relaxed text-gray-300"
           dangerouslySetInnerHTML={{ __html: story.story }}
         />
       </div>
+
     </div>
   );
+
 };
 
 export default ViewShortStory;

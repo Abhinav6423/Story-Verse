@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import TopTrendStoryCard from "./TopTrendStoryCard.jsx";
 import { listTrendingShortStory } from "../../Api-calls/trendingShortStory.js";
 import Loader from "../Loader.jsx";
-import {FlameIcon} from "lucide-react";
+import { FlameIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function TopTrendStoryGrid() {
@@ -21,37 +21,41 @@ function TopTrendStoryGrid() {
     if (!stories.length) return null;
 
     return (
-        <div className="mt-6 px-4 md:px-6">
+        <div className="mt-0 px-4 md:px-6 bg-transparent text-white ">
             {/* ================= TRENDING SECTION ================= */}
-            <section>
+            <section className="py-6 ">
                 {/* HEADER */}
-                <div className="mb-5 flex items-center gap-1">
-                    <FlameIcon fill="green" size={20} strokeWidth={2}  className="text-green-800"/>
-                    <h2 className="text-xl font-semibold text-gray-900">
-                        Trending
+                <div className="mb-4 flex items-center gap-2">
+                    <FlameIcon
+                        size={25}
+                        className="text-emerald-400 fill-emerald-400 drop-shadow-[0_0_6px_rgba(52,211,153,0.6)]"
+                    />
+                    <h2 className="text-2xl font-medium tracking-tight">
+                        The Hottest Reads
                     </h2>
                 </div>
 
                 {/* GRID */}
                 <div
                     className="
-        grid
-        grid-cols-2
-        sm:grid-cols-3
-        md:grid-cols-4
-        lg:grid-cols-5
-        xl:grid-cols-6
-        gap-5
-      "
+          grid
+          grid-cols-2
+          sm:grid-cols-3
+          md:grid-cols-4
+          lg:grid-cols-5
+          gap-2 sm:gap-12
+        "
                 >
-                    {stories.map((story) => (
-                       <Link to={`/story/${story?._id}`}><TopTrendStoryCard key={story._id} story={story} /></Link>
+                    {stories.map((story, idx) => (
+                        <Link key={story._id} to={`/story/${story._id}`}>
+                            <TopTrendStoryCard story={story} idx={idx} />
+                        </Link>
                     ))}
                 </div>
             </section>
         </div>
-
     );
+
 }
 
 export default TopTrendStoryGrid;

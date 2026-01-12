@@ -154,3 +154,8 @@ body {
 :root {
   --mobile-bottom-nav-height: 10px;
 }
+
+.prose * {
+  background-color: transparent !important;
+}
+

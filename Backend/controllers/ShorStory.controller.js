@@ -187,12 +187,21 @@ const updateShortStory = async (req, res) => {
             title,
             story,
             description,
-            coverImage,
             finalQuestion,
             finalAnswer,
             category,
             status
         } = req.body;
+
+        let coverImage = null;
+
+        if (req.file) {
+            const { url } = await uploadToCloudinary(
+                req.file,   // ✅ FIXED (buffer, not path)
+                "story_covers"
+            );
+            coverImage = url
+        }
 
         const shortStory = await ShortStory.findById(storyId);
 

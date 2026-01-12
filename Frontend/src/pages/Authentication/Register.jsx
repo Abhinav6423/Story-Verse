@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { signupUser } from "../../Api-calls/register.js";
 import Loader from "../../components/Loader.jsx";
 import { toast } from "react-toastify";
-
+import AuthImg from "../../Assets/AuthImg.png";
 const Register = () => {
   const navigate = useNavigate();
 
@@ -42,94 +42,122 @@ const Register = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="h-screen w-full bg-[#0f2a22] relative overflow-auto">
-
+    <div className="h-screen w-full bg-[#0b1f1a] overflow-hidden relative">
       {/* LOGO */}
-      <div className="hidden md:block absolute top-4 right-6 z-20">
+      <div className="absolute top-6 left-[2%]  z-20">
         <Link to="/" className="text-white text-xl font-serif font-semibold">
           StoryFlix
         </Link>
       </div>
 
-      <div className="md:hidden w-full flex justify-center pt-4 pb-3 z-20 relative">
-        <Link to="/" className="text-white text-xl font-serif font-semibold">
-          StoryFlix
-        </Link>
-      </div>
+      <div className="h-full flex">
+        {/* LEFT LOGIN PANEL */}
+        <div className="w-full md:w-[50%] flex items-center justify-center px-6">
+          <div className="w-full max-w-md p-5  ">
 
-      {/* MAIN */}
-      <div className="h-full flex flex-col md:flex-row">
-
-        {/* IMAGE */}
-        <div className="hidden md:flex md:basis-[60%] px-4 py-2">
-          <img
-            src="https://i.pinimg.com/736x/70/4e/a9/704ea9e793e0e7e27117acfb7dc4d38e.jpg"
-            alt="Library"
-            className="w-full h-full object-cover rounded-lg"
-          />
-        </div>
-
-        {/* FORM */}
-        <div className="w-full md:basis-[40%] flex items-center justify-center px-4">
-          <div className="w-full max-w-md bg-white rounded-2xl px-6 py-8 shadow-lg">
-
-            <h2 className="text-2xl font-semibold text-gray-900">
+            {/* Heading */}
+            <h2 className="text-[30px] text-center font-medium text-white tracking-tight">
               Create your account
             </h2>
-            <p className="text-sm text-gray-500 mt-1 mb-6">
-              Join a community of readers and writers shaping new worlds.
+
+            <p className="mt-1 text-center text-sm text-white/70 mb-10">
+              Join a community of readers and writers shaping new worlds
             </p>
 
             <form className="space-y-4" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
-                // required
-                className="w-full rounded-lg border px-4 py-2.5 text-sm"
-              />
 
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                required
-                className="w-full rounded-lg border px-4 py-2.5 text-sm"
-              />
+              {/* Username */}
+              <div>
+                <label className="block text-[11px] text-gray-400 mb-2">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
 
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                required
-                className="w-full rounded-lg border px-4 py-2.5 text-sm"
-              />
+              {/* Email */}
+              <div>
+                <label className="block text-[11px] text-gray-400 mb-2">
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  placeholder="Enter email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
 
+              {/* Password */}
+              <div>
+                <label className="block text-[11px] text-gray-400 mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                />
+
+                <div className="text-right ">
+                  <Link
+                    to="/forgot-password"
+                    className="text-[11px] text-gray-400 hover:text-emerald-400 transition"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              </div>
+
+              {/* Button */}
               <button
                 type="submit"
-                className="w-full bg-slate-900 text-white rounded-lg py-3 text-sm font-medium"
+                disabled={loading}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg py-2 text-sm font-medium transition disabled:opacity-60 mt-2"
               >
-                Create account
+                {loading ? "Signing up..." : "Sign up"}
               </button>
             </form>
 
-
-
-            <p className="text-center text-sm text-gray-600 mt-5">
+            {/* Login link */}
+            <p className="text-center text-[11px] text-gray-400 mt-2">
               Already have an account?{" "}
-              <Link to="/" className="text-emerald-600 font-medium">
-                Login
+              <Link to="/" className="text-emerald-400 font-medium">
+                Login User
               </Link>
             </p>
 
+            
+
           </div>
+        </div>
+
+
+
+
+        {/* RIGHT IMAGE GRID */}
+        <div className="hidden md:block md:w-[50%] ">
+          <img
+            src={AuthImg}
+            alt="Story covers"
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
     </div>
   );
+
 };
 
 export default Register;
