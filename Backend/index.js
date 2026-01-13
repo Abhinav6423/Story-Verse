@@ -26,15 +26,20 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // mobile / curl
+      // allow requests with no origin (health check, curl, server calls)
+      if (!origin) return callback(null, true);
+
       if (allowedOrigins.includes(origin)) {
-        return callback(null, origin); // 👈 IMPORTANT
+        return callback(null, origin); // echo exact origin
       }
-      return callback(new Error("Not allowed by CORS"));
+
+      console.warn("❌ Blocked by CORS:", origin);
+      return callback(null, false); // 👈 DO NOT THROW
     },
     credentials: true,
   })
 );
+
 
 
 app.use(express.json());
