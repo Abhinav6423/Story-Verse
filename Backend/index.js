@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",     // dev
-      "https://your-frontend.vercel.app" // prod
+      "https://story-verse-gamma.vercel.app/" // prod
     ],
     credentials: true // ❗ IMPORTANT (allow cookies)
   })
