@@ -18,7 +18,7 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
     <>
       {/* BACKDROP */}
       <div
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-40 bg-black/10 backdrop-blur-sm"
         onClick={onClose}
       />
 
