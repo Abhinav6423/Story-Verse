@@ -5,6 +5,9 @@ const verifyToken = async (req, res, next) => {
     try {
         const token = req.cookies?.token;
 
+        console.log("🍪 Cookies received:", req.cookies);
+        console.log("📦 Raw cookie header:", req.headers.cookie);
+
         // 🔹 Not logged in is NORMAL
         if (!token) {
             return res.status(401).json({
