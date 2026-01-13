@@ -16,15 +16,20 @@ app.set("trust proxy", 1);
 const PORT = process.env.PORT || 7000;
 
 // ================== MIDDLEWARE ==================
+
+
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",     // dev
-      "https://story-verse-gamma.vercel.app/" // prod
+      "http://localhost:5173",
+      "https://story-verse-gamma.vercel.app"
     ],
-    credentials: true // ❗ IMPORTANT (allow cookies)
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
