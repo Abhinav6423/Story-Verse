@@ -4,13 +4,17 @@ import admin from "../config/firebaseAdmin.js";
 
 /* ================= COOKIE UTILS ================= */
 const setTokenInCookie = (res, token) => {
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: false,   // 🔥 FORCE false for localhost
-        sameSite: "lax", // 🔥 MUST be lax for localhost
-        path: "/",
-    });
+  const isProd = process.env.NODE_ENV === "production";
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProd,               // ✅ true in production
+    sameSite: isProd ? "none" : "lax", // ✅ required for cross-site
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
 };
+
 
 
 /* ================= FIREBASE LOGIN (MAIN) ================= */
@@ -44,12 +48,7 @@ export const firebaseLogin = async (req, res) => {
 
     const token = user.generateToken();
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      path: "/",
-    });
+    setTokenInCookie(res, token);
 
     return res.status(200).json({ success: true, user });
   } catch (err) {
@@ -62,37 +61,37 @@ export const firebaseLogin = async (req, res) => {
 
 /* ================= LOGOUT ================= */
 export const logoutUser = async (req, res) => {
-    res.clearCookie("token", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        path: "/",
-    });
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
+  });
 
-    return res.status(200).json({
-        success: true,
-        message: "Logged out successfully",
-    });
+  return res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
 };
 
 /* ================= CURRENT USER ================= */
 export const getLoggedInUser = async (req, res) => {
-    try {
-        if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: "User not authenticated",
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            user: req.user,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Server error",
-        });
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
     }
+
+    return res.status(200).json({
+      success: true,
+      user: req.user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
 };
