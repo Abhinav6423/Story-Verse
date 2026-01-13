@@ -6,6 +6,8 @@ import admin from "../config/firebaseAdmin.js";
 const setTokenInCookie = (res, token) => {
   const isProd = process.env.NODE_ENV === "production";
 
+  console.log(process.env.NODE_ENV)
+
   res.cookie("token", token, {
     httpOnly: true,
     secure: isProd,               // ✅ true in production
