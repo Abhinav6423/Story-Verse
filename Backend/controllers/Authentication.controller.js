@@ -52,7 +52,7 @@ export const firebaseLogin = async (req, res) => {
 
     setTokenInCookie(res, token);
 
-    return res.status(200).json({ success: true, user });
+    return res.status(200).json({ success: true });
   } catch (err) {
     console.error("🔥 firebaseLogin error:", err);
     return res.status(401).json({ success: false });

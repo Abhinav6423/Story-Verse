@@ -18,17 +18,24 @@ const PORT = process.env.PORT || 7000;
 // ================== MIDDLEWARE ==================
 
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://story-verse-gamma.vercel.app",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://story-verse-gamma.vercel.app"
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // mobile / curl
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, origin); // 👈 IMPORTANT
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
