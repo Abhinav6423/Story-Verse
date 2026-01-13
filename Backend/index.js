@@ -25,20 +25,30 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (health check, curl, server calls)
+    origin: (origin, callback) => {
+      // Allow server-to-server, health checks, etc.
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, origin); // echo exact origin
+      // Allow localhost
+      if (origin === "http://localhost:5173") {
+        return callback(null, origin);
       }
 
-      console.warn("❌ Blocked by CORS:", origin);
-      return callback(null, false); // 👈 DO NOT THROW
+      // Allow Vercel frontend
+      if (origin === "https://story-verse-gamma.vercel.app") {
+        return callback(null, origin);
+      }
+
+      // ❗ IMPORTANT: still allow request, but without CORS headers
+      return callback(null, origin);
     },
     credentials: true,
   })
 );
+
+// app.options("*", cors());
+
+
 
 
 
