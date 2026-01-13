@@ -3,7 +3,8 @@ import axios from "axios";
 export const createShortStory = async (formData) => {
     try {
         const res = await axios.post(
-            "/api/story/",
+            `${import.meta.env.VITE_BACKEND_URL
+            }/api/story/`,
             formData,
             {
                 withCredentials: true,

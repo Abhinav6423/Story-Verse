@@ -4,8 +4,7 @@ dotenv.config({ path: "./.env" });
 import express from "express";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-import path from "path";
-
+import cors from "cors";
 import connectDB from "./DBconfig/dbConfig.js";
 
 // ================== CONFIG ==================
@@ -17,6 +16,15 @@ app.set("trust proxy", 1);
 const PORT = process.env.PORT || 7000;
 
 // ================== MIDDLEWARE ==================
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",     // dev
+      "https://your-frontend.vercel.app" // prod
+    ],
+    credentials: true // ❗ IMPORTANT (allow cookies)
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -30,25 +38,19 @@ app.use("/api/auth", authRoutes);
 app.use("/api/story", shortStoryRoutes);
 app.use("/api/profile", userProfileRoutes);
 
-// ================== FRONTEND SERVING ==================
-// NOTE: Server Backend folder se run hota hai,
-// isliye ".." mandatory hai
-const FRONTEND_DIST_PATH = path.resolve(
-  process.cwd(),
-  "..",
-  "Frontend",
-  "dist"
-);
 
-console.log("🚀 Serving frontend from:", FRONTEND_DIST_PATH);
-
-// Serve static assets
-app.use(express.static(FRONTEND_DIST_PATH));
-
-// SPA fallback (Express v5 compatible)
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(FRONTEND_DIST_PATH, "index.html"));
+// ================== HEALTH CHECK ==================
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "Server is alive",
+    timestamp: new Date().toISOString(),
+  });
 });
+
+
+
+
 
 // ================== START SERVER ==================
 const startServer = async () => {

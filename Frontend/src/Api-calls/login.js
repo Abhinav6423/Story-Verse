@@ -21,7 +21,8 @@ export const loginUser = async (email, password) => {
 
         // 4️⃣ Send token to backend → backend sets COOKIE
         const res = await axios.post(
-            "/api/auth/firebase-login",   // 👈 IMPORTANT
+            `${import.meta.env.VITE_BACKEND_URL
+            }/api/auth/firebase-login`,   // 👈 IMPORTANT
             {},
             {
                 headers: {

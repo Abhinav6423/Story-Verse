@@ -3,8 +3,9 @@ import axios from "axios";
 export const answerQuestionShortStory = async ({ storyId, answer }) => {
   try {
     const res = await axios.post(
-      `/api/story/${storyId}/answer`,
-      { answer : answer },
+      `${import.meta.env.VITE_BACKEND_URL
+      }/api/story/${storyId}/answer`,
+      { answer: answer },
       { withCredentials: true }
     );
 
