@@ -6,16 +6,16 @@ import admin from "../config/firebaseAdmin.js";
 const setTokenInCookie = (res, token) => {
   const isProd = process.env.NODE_ENV === "production";
 
-  console.log(process.env.NODE_ENV)
-
   res.cookie("token", token, {
     httpOnly: true,
-    secure: isProd,               // ✅ true in production
-    sameSite: isProd ? "none" : "lax", // ✅ required for cross-site
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
     path: "/",
+    domain: isProd ? ".onrender.com" : undefined, // 👈 IMPORTANT
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
+
 
 
 
