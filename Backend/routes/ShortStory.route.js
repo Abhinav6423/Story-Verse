@@ -1,5 +1,6 @@
 import express from "express";
 import verifyToken from "../middlewares/VerifyToken.middleware.js";
+import verifyFirebaseToken from "../middlewares/verifyFirebaseToken.js";
 import upload from "../middlewares/multer.js";
 import {
    createShortStory,
@@ -23,33 +24,33 @@ const router = express.Router();
    CREATOR / AUTHOR ROUTES
    ========================= */
 
-router.post("/", verifyToken,
+router.post("/", verifyFirebaseToken,
    upload.single("coverImage"),
    createShortStory);
 
-router.get("/me", verifyToken, listUserShortStory);
-router.get("/me/:storyId", verifyToken, openUserShortStory);
+router.get("/me", verifyFirebaseToken, listUserShortStory);
+router.get("/me/:storyId", verifyFirebaseToken, openUserShortStory);
 
 router.put("/:storyId",
    upload.single("coverImage"),
-   verifyToken, updateShortStory);
-router.delete("/:storyId", verifyToken, deleteShortStory);
+   verifyFirebaseToken, updateShortStory);
+router.delete("/:storyId", verifyFirebaseToken, deleteShortStory);
 
-router.get("/goodReads", verifyToken, listGoodReads);
+router.get("/goodReads", verifyFirebaseToken, listGoodReads);
 
 /* =========================
    PUBLIC / READER ROUTES
    ========================= */
 
 // 🔥 STATIC ROUTES FIRST
-router.get("/trending", verifyToken, listTrendingShortStory);
-router.get("/list", verifyToken, listShortStory);
-router.get("/topGoodReads", verifyToken, getTopGoodReads);
+router.get("/trending", verifyFirebaseToken, listTrendingShortStory);
+router.get("/list", verifyFirebaseToken, listShortStory);
+router.get("/topGoodReads", verifyFirebaseToken, getTopGoodReads);
 
 // 🔥 DYNAMIC ROUTES LAST
-router.get("/:storyId", verifyToken, openShortStory);
-router.post("/:storyId/answer", verifyToken, userAnswer);
-router.put("/:storyId/like", verifyToken, likeShortStory);
-router.put("/:storyId/goodRead", verifyToken, markGoodReadShortStory);
+router.get("/:storyId", verifyFirebaseToken, openShortStory);
+router.post("/:storyId/answer", verifyFirebaseToken, userAnswer);
+router.put("/:storyId/like", verifyFirebaseToken, likeShortStory);
+router.put("/:storyId/goodRead", verifyFirebaseToken, markGoodReadShortStory);
 
 export default router;

@@ -2,13 +2,14 @@ import express from "express"
 const router = express.Router()
 import { getUserProfileData, getUserShortStories, updateProfile } from "../controllers/profile.controller.js"
 import verifyToken from "../middlewares/VerifyToken.middleware.js"
+import verifyFirebaseToken from "../middlewares/verifyFirebaseToken.js"
 import upload from "../middlewares/multer.js"
 
-router.get("/userProfile", verifyToken, getUserProfileData)
-router.get("/userShortStories", verifyToken, getUserShortStories)
+router.get("/userProfile", verifyFirebaseToken, getUserProfileData)
+router.get("/userShortStories", verifyFirebaseToken, getUserShortStories)
 router.put(
     "/updateProfile",
-    verifyToken,
+    verifyFirebaseToken,
     upload.single("profilePic"), // 🔥 IMPORTANT
     updateProfile
 );

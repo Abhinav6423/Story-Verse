@@ -1,9 +1,9 @@
 import axios from "axios"
+import api from "../api/api";
 
 export const deleteShortStory = async ({ storyId }) => {
     try {
-        const res = await axios.delete(`${import.meta.env.VITE_BACKEND_URL
-            }/api/story/${storyId}`, { withCredentials: true })
+        const res = await api.delete(`/api/story/${storyId}`, { withCredentials: true })
 
         if (res.status === 200) {
             return {

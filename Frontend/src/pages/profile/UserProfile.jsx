@@ -10,13 +10,15 @@ import MyStories from "../../components/Profile/MyStories.jsx";
 import UpdateProfile from "../../components/Profile/UpdateProfile.jsx";
 
 const UserProfile = () => {
-    const { userData } = useAuth();
+    const { userData, loading: authLoading } = useAuth();
 
     const [loading, setLoading] = useState(true);
     const [userStats, setUserStats] = useState({});
     const [showUpdateProfile, setShowUpdateProfile] = useState(false);
 
     useEffect(() => {
+        if (authLoading || !userData) return; // ⛔ WAIT
+
         const fetchProfile = async () => {
             try {
                 const res = await getUserProfileData();
@@ -25,7 +27,7 @@ const UserProfile = () => {
                 } else {
                     toast.error(res?.message || "Failed to load profile");
                 }
-            } catch (err) {
+            } catch {
                 toast.error("Failed to load profile");
             } finally {
                 setLoading(false);
@@ -33,7 +35,8 @@ const UserProfile = () => {
         };
 
         fetchProfile();
-    }, []);
+    }, [authLoading, userData]);
+
 
     if (loading) return <Loader />;
 
@@ -78,7 +81,7 @@ const UserProfile = () => {
                                     className="absolute bottom-2 right-2 bg-emerald-500 p-2 rounded-full shadow-md hover:bg-emerald-400 transition"
                                     aria-label="Edit Profile"
                                 >
-                                    <Pencil  size={16} className="text-black" />
+                                    <Pencil size={16} className="text-black" />
                                 </button>
                             </div>
 

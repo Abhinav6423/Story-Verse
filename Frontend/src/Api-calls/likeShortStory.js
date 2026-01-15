@@ -1,14 +1,13 @@
 import axios from "axios";
-
+import api from "../api/api.js";
 export const likeShortStory = async ({ storyId }) => {
     try {
-        const res = await axios.put(
-            `${import.meta.env.VITE_BACKEND_URL
-            }/api/story/${storyId}/like`,
+        const res = await api.put(
+            `/api/story/${storyId}/like`,
             {}, // 👈 empty body
-            {
-                withCredentials: true, // 👈 config (THIS is what sends cookie)
-            }
+            // {
+            //     withCredentials: true, // 👈 config (THIS is what sends cookie)
+            // }
         );
         // console.log(res?.data);
         return {

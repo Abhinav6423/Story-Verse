@@ -3,7 +3,7 @@ dotenv.config({ path: "./.env" });
 
 import express from "express";
 import mongoose from "mongoose";
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
 import cors from "cors";
 import connectDB from "./DBconfig/dbConfig.js";
 
@@ -18,35 +18,15 @@ const PORT = process.env.PORT || 7000;
 // ================== MIDDLEWARE ==================
 
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://story-verse-gamma.vercel.app",
-];
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow server-to-server, health checks, etc.
-      if (!origin) return callback(null, true);
-
-      // Allow localhost
-      if (origin === "http://localhost:5173") {
-        return callback(null, origin);
-      }
-
-      // Allow Vercel frontend
-      if (origin === "https://story-verse-gamma.vercel.app") {
-        return callback(null, origin);
-      }
-
-      // ❗ IMPORTANT: still allow request, but without CORS headers
-      return callback(null, origin);
-    },
-    credentials: true,
+    origin: [
+      "http://localhost:5173",
+      "https://story-verse-gamma.vercel.app",
+    ],
   })
 );
 
-// app.options("*", cors());
 
 
 
@@ -54,7 +34,7 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+// app.use(cookieParser());
 
 // ================== ROUTES ==================
 import authRoutes from "./routes/authentication.routes.js";

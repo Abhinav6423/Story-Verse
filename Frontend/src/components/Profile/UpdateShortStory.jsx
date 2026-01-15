@@ -132,7 +132,7 @@ const UpdateShortStory = () => {
     if (!editor || loading) return <Loader />;
 
     return (
-        <div className="min-h-screen bg-[#eef1f6] pb-16">
+        <div className="min-h-screen bg-[#eef1f6] border pb-0">
             <div className="max-w-5xl mx-auto mt-6 bg-white rounded-2xl shadow-lg p-6">
 
                 {/* HEADER */}
@@ -151,10 +151,10 @@ const UpdateShortStory = () => {
 
                 {/* STEP INDICATOR */}
                 <div className="flex gap-3 mb-6">
-                    <span className={`px-4 py-2 rounded-full text-sm ${step === 1 ? "bg-green-700 text-white" : "bg-gray-200"}`}>
+                    <span className={`px-4 py-2 rounded-full text-sm ${step === 1 ? "bg-green-700 text-white" : "bg-gray-200 text-black"}`}>
                         Step 1
                     </span>
-                    <span className={`px-4 py-2 rounded-full text-sm ${step === 2 ? "bg-green-700 text-white" : "bg-gray-200"}`}>
+                    <span className={`px-4 py-2 rounded-full text-sm ${step === 2 ? "bg-green-700 text-white" : "bg-gray-200 text-black"}`}>
                         Step 2
                     </span>
                 </div>
@@ -162,7 +162,8 @@ const UpdateShortStory = () => {
                 {/* STEP 1 */}
                 {step === 1 && (
                     <>
-                        <RichTextEditor editor={editor}>
+                        <RichTextEditor editor={editor} className="blog-editor">
+
                             <RichTextEditor.Toolbar sticky>
                                 <RichTextEditor.ControlsGroup>
                                     <RichTextEditor.Bold />
@@ -259,7 +260,7 @@ const UpdateShortStory = () => {
                         <div className="flex justify-between mt-6">
                             <button
                                 onClick={() => setStep(1)}
-                                className="px-6 py-3 bg-gray-200 rounded-xl"
+                                className="px-6 py-3 bg-gray-200 rounded-xl text-black"
                             >
                                 ← Back
                             </button>

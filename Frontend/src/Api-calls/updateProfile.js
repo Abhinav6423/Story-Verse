@@ -1,13 +1,12 @@
 import axios from "axios";
-
+import api from "../api/api";
 export const updateProfile = async (data) => {
     try {
         const res = await axios.put(
-            `${import.meta.env.VITE_BACKEND_URL
-            }/api/profile/updateProfile`,
+            `/api/profile/updateProfile`,
             data,
             {
-                withCredentials: true,
+                // withCredentials: true,
             }
         );
 

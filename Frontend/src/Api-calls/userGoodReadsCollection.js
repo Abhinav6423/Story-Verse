@@ -1,11 +1,10 @@
 import axios from "axios";
-
+import api from "../api/api";
 export const userGoodReadsCollection = async () => {
-    const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL
-        }/api/story/goodReads`,
+    const res = await api.get(
+        `/api/story/goodReads`,
         {
-            withCredentials: true,
+            // withCredentials: true,
         }
     );
     return res?.data; // 🔥 return raw backend response

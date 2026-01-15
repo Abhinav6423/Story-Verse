@@ -1,11 +1,11 @@
 import axios from "axios";
-
+import api from "../api/api";
 export const listTrendingShortStory = async () => {
-    const res = await axios.get(
+    const res = await api.get(
         `${import.meta.env.VITE_BACKEND_URL
         }/api/story/trending`,
         {
-            withCredentials: true,
+            // withCredentials: true,
         }
     );
 

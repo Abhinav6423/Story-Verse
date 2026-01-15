@@ -1,12 +1,12 @@
 import axios from "axios";
+import api from "../api/api.js";
 
 export const answerQuestionShortStory = async ({ storyId, answer }) => {
   try {
-    const res = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL
-      }/api/story/${storyId}/answer`,
+    const res = await api.post(
+      `/api/story/${storyId}/answer`,
       { answer: answer },
-      { withCredentials: true }
+      // { withCredentials: true }
     );
 
     return {

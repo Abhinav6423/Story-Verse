@@ -1,13 +1,13 @@
 import axios from "axios";
-
+import api from "../api/api.js";
 export const updateShortStory = async (formData, storyId) => {
     try {
-        const res = await axios.put(
+        const res = await api.put(
             `${import.meta.env.VITE_BACKEND_URL
             }/api/story/${storyId}`,
             formData,
             {
-                withCredentials: true,
+                // withCredentials: true,
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },

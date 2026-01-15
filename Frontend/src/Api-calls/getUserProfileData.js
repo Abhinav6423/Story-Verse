@@ -1,11 +1,10 @@
 import axios from "axios";
-
+import api from "../api/api";
 export const getUserProfileData = async () => {
     try {
-        const res = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL
-            }/api/profile/userProfile`,
-            { withCredentials: true }
+        const res = await api.get(
+            `/api/profile/userProfile`,
+            // { withCredentials: true }
         );
 
         // ✅ always return consistent shape

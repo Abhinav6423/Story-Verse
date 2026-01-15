@@ -3,18 +3,18 @@ import Userstats from "../modals/Userstats.modal.js";
 import admin from "../config/firebaseAdmin.js";
 
 /* ================= COOKIE UTILS ================= */
-const setTokenInCookie = (res, token) => {
-  const isProd = process.env.NODE_ENV === "production";
+// const setTokenInCookie = (res, token) => {
+//   const isProd = process.env.NODE_ENV === "production";
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
-    path: "/",
-    domain: isProd ? ".onrender.com" : undefined, // 👈 IMPORTANT
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
-};
+//   res.cookie("token", token, {
+//     httpOnly: true,
+//     secure: isProd,
+//     sameSite: isProd ? "none" : "lax",
+//     path: "/",
+//     domain: isProd ? ".onrender.com" : undefined, // 👈 IMPORTANT
+//     maxAge: 7 * 24 * 60 * 60 * 1000,
+//   });
+// };
 
 
 
@@ -48,9 +48,9 @@ export const firebaseLogin = async (req, res) => {
       });
     }
 
-    const token = user.generateToken();
+    // const token = user.generateToken();
 
-    setTokenInCookie(res, token);
+    // setTokenInCookie(res, token);
 
     return res.status(200).json({ success: true });
   } catch (err) {
@@ -62,19 +62,19 @@ export const firebaseLogin = async (req, res) => {
 
 
 /* ================= LOGOUT ================= */
-export const logoutUser = async (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    path: "/",
-  });
+// export const logoutUser = async (req, res) => {
+//   res.clearCookie("token", {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "production",
+//     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+//     path: "/",
+//   });
 
-  return res.status(200).json({
-    success: true,
-    message: "Logged out successfully",
-  });
-};
+//   return res.status(200).json({
+//     success: true,
+//     message: "Logged out successfully",
+//   });
+// };
 
 /* ================= CURRENT USER ================= */
 export const getLoggedInUser = async (req, res) => {

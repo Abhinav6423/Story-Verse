@@ -1,12 +1,11 @@
 import axios from "axios";
-
+import api from "../api/api";
 export const getUserCreatedShortStories = async (status) => {
-  const res = await axios.get(
-    `${import.meta.env.VITE_BACKEND_URL
-    }/api/profile/userShortStories`,
+  const res = await api.get(
+    `/api/profile/userShortStories`,
     {
       params: { status },
-      withCredentials: true
+      // withCredentials: true
     }
   );
 

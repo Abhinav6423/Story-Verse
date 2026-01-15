@@ -1,10 +1,10 @@
 import axios from "axios";
+import api from "../api/api.js";
 export const openUserShortStory = async ({ storyId }) => {
     try {
-        const res = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL
-            }/api/story/me/${storyId}`,
-            { withCredentials: true }
+        const res = await api.get(
+            `/api/story/me/${storyId}`,
+            // { withCredentials: true }
         );
 
         // console.log(res?.data?.ShortStory);

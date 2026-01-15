@@ -1,13 +1,12 @@
 import axios from "axios";
-
+import api from "../api/api.js";
 export const listFeedShortStory = async ({ category, title }) => {
   console.log(category)
-  const res = await axios.get(
-    `${import.meta.env.VITE_BACKEND_URL
-    }/api/story/list`,
+  const res = await api.get(
+    `/api/story/list`,
     {
       params: { category, title },
-      withCredentials: true,
+      // withCredentials: true,
     }
   );
 
