@@ -90,6 +90,17 @@ const ViewShortStory = () => {
     }
   };
 
+  const answerQuestion = async () => {
+    try {
+      const result = await answerQuestionShortStory({ storyId, answer });
+      if (!result?.success) throw new Error();
+      toast.success("Your answer is correct you are rewarded with 20 xp points");
+      setQuestionPopup(false);
+    } catch {
+      toast.error("Action failed");
+    }
+  }
+
   if (loading) return <Loader />;
 
   return (

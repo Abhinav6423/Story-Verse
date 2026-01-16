@@ -1,7 +1,9 @@
-// import React from "react";
-// import { useEffect, useState, useCallback } from "react";
-// import AuthContext from "./Authcontext.js";
-// import { meRoute } from "../Api-calls/meRoute.js";
+import React from "react";
+import { useEffect, useState, useCallback } from "react";
+import AuthContext from "./Authcontext.js";
+import { meRoute } from "../Api-calls/meRoute.js";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase.js";
 
 // const AuthProvider = ({ children }) => {
 //   const [userData, setUserData] = useState(null);
@@ -47,21 +49,14 @@
 // export default AuthProvider;
 
 
-import { useEffect, useState, useCallback } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
-import AuthContext from "./Authcontext.js";
-import { meRoute } from "../Api-calls/meRoute.js";
-
 const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);        // backend loading
-  const [authReady, setAuthReady] = useState(false);  // 🔥 firebase ready
+  const [loading, setLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(false);
 
   const fetchUserData = useCallback(async () => {
     try {
       const result = await meRoute();
-
       if (result?.success) {
         setUserData(result.user);
       } else {
@@ -74,25 +69,21 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // 🔐 WAIT FOR FIREBASE FIRST
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (!firebaseUser) {
-        // user genuinely logged out
         setUserData(null);
-        setLoading(false);
+        setLoading(false);   // 🔥 IMPORTANT
         setAuthReady(true);
         return;
       }
 
-      // firebase restored session
       setAuthReady(true);
     });
 
-    return () => unsubscribe();
+    return unsubscribe;
   }, []);
 
-  // 🚀 CALL BACKEND ONLY AFTER FIREBASE IS READY
   useEffect(() => {
     if (authReady) {
       fetchUserData();
@@ -108,10 +99,9 @@ const AuthProvider = ({ children }) => {
         reloadUserData: fetchUserData,
       }}
     >
-      {!loading && children}
+      {children} {/* ✅ NEVER BLOCK */}
     </AuthContext.Provider>
   );
 };
 
 export default AuthProvider;
-

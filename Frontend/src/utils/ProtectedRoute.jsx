@@ -1,26 +1,26 @@
-import React, { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/Authcontext.js';
-import Loader from '../components/Loader.jsx';
+import { Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "../context/Authcontext.js";
+import Loader from "../components/Loader.jsx";
+
 const ProtectedRoute = () => {
-    const { userData, loading } = useAuth();
-    const navigate = useNavigate();
+  const { userData, loading } = useAuth();
 
-    useEffect(() => {
-        if (!loading && !userData) {
-            navigate('/');
-        }
-    }, [loading, userData, navigate]);
+  // 1️⃣ Wait for auth resolution
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
-    if (loading) {
-        return <Loader />;
-    }
+  // 2️⃣ Redirect declaratively
+  if (!userData) {
+    return <Navigate to="/" replace />;
+  }
 
-    if (!userData) {
-        return null; // or splash screen
-    }
-
-    return <Outlet />;
+  // 3️⃣ Allow access
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

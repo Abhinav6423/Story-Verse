@@ -2,7 +2,7 @@ import axios from "axios";
 import api from "../api/api";
 export const updateProfile = async (data) => {
     try {
-        const res = await axios.put(
+        const res = await api.put(
             `/api/profile/updateProfile`,
             data,
             {
