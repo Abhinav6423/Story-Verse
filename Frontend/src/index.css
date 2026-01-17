@@ -177,50 +177,46 @@ body {
   animation: flip 1.6s infinite ease-in-out;
 }
 
-/* Individual page delays + angles */
+/* Only delays here */
 .page-0 {
   animation-delay: 0s;
-  transform: rotate(-40deg);
 }
 .page-1 {
-  animation-delay: 0.15s;
-  transform: rotate(-25deg);
+  animation-delay: 0.12s;
 }
 .page-2 {
-  animation-delay: 0.3s;
-  transform: rotate(-10deg);
+  animation-delay: 0.24s;
 }
 .page-3 {
-  animation-delay: 0.45s;
-  transform: rotate(0deg);
+  animation-delay: 0.36s;
 }
 .page-4 {
-  animation-delay: 0.6s;
-  transform: rotate(10deg);
+  animation-delay: 0.48s;
 }
 .page-5 {
-  animation-delay: 0.75s;
-  transform: rotate(25deg);
+  animation-delay: 0.6s;
 }
 .page-6 {
-  animation-delay: 0.9s;
-  transform: rotate(40deg);
+  animation-delay: 0.72s;
 }
 
 @keyframes flip {
   0% {
     opacity: 0;
-    transform: rotate(-50deg);
+    transform: rotate(10deg) scaleY(0.9);
   }
-  30% {
+
+  20% {
     opacity: 1;
   }
+
   60% {
     opacity: 1;
-    transform: rotate(50deg);
+    transform: rotate(60deg) scaleY(1);
   }
+
   100% {
     opacity: 0;
-    transform: rotate(60deg);
+    transform: rotate(90deg) scaleY(0.95);
   }
 }
