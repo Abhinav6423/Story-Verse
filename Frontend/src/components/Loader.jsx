@@ -31,7 +31,9 @@ const Loader = () => {
       <div className="relative w-24 h-16">
 
         {/* BOOK BASE */}
-        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-emerald-400 rounded-full" />
+        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-emerald-400 rounded-full" >
+          <div className="book-base"></div>
+        </div>
 
         {/* PAGES */}
         {[...Array(7)].map((_, i) => (
