@@ -4,7 +4,7 @@ import { useAuth } from "../../context/Authcontext.js";
 import { loginUser } from "../../Api-calls/login.js";
 import { toast } from "react-toastify";
 import AuthImg from "../../Assets/AuthImg.png";
-
+import Loader from "../../components/Loader.jsx";
 const Login = () => {
   const { reloadUserData, user } = useAuth();
   const navigate = useNavigate();
@@ -43,6 +43,8 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  if (loading) return <Loader />
 
   return (
     <div className="h-screen w-full bg-[#0b1f1a] overflow-hidden relative">
@@ -110,7 +112,7 @@ const Login = () => {
                 disabled={loading}
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg py-2.5 text-sm font-medium transition disabled:opacity-60 mt-2"
               >
-                {loading ? "Signing in..." : "Log in"}
+                Login User
               </button>
             </form>
 
