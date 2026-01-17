@@ -24,7 +24,7 @@ const CategoryShortStoryResultsGrid = () => {
   return (
     <>
       {/* PAGE WRAPPER */}
-      <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#0f2a24] via-[#0b1412] to-black">
+      <div className="min-h-screen relative overflow-hidden ">
 
         {/* GREEN LIGHT GLOW */}
         <div
@@ -37,7 +37,8 @@ const CategoryShortStoryResultsGrid = () => {
           w-[900px]
           h-[900px]
           rounded-full
-          bg-[radial-gradient(circle,_rgba(16,185,129,0.25)_0%,_rgba(16,185,129,0.15)_25%,_rgba(16,185,129,0.06)_45%,_transparent_70%)]
+          bg-transparent
+          blur-3xl
         "
         />
 
@@ -58,7 +59,7 @@ const CategoryShortStoryResultsGrid = () => {
 
           {/* STORIES GRID */}
           {stories.length === 0 ? (
-            <div className="text-center text-gray-400 mt-20">
+            <div className="text-center text-gray-400 mt-10">
               No stories found in this category.
             </div>
           ) : (
