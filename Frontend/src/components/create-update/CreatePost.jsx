@@ -131,24 +131,58 @@ const CreatePost = () => {
                     </div>
                 </div>
 
-                <div className="border-b border-gray-200 mb-6 sm:mb-8" />
+                {/* <div className="border-b border-gray-200 mb-6 sm:mb-8" /> */}
+
 
                 {/* ================= STEP INDICATOR ================= */}
-                <div className="flex flex-wrap gap-3 mb-8 sm:mb-10">
-                    <div
-                        className={`px-4 py-2 rounded-full text-sm font-medium 
-            ${step === 1 ? "bg-emerald-600 text-white" : "bg-white/10 text-gray-400"}`}
-                    >
-                        Step 01
+
+                <div className="mb-12">
+                    {/* Steps */}
+                    <div className="flex items-center justify-between max-w-sm mx-auto mb-4">
+                        <div
+                            className={`
+        px-6 py-2 rounded-full text-sm font-semibold
+        transition-all
+        ${step === 1
+                                    ? "bg-emerald-600/25 text-emerald-300 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.35)]"
+                                    : "bg-white/5 text-gray-400 border border-white/10"}
+      `}
+                        >
+                            Step 1
+                        </div>
+
+                        <div
+                            className={`
+        px-6 py-2 rounded-full text-sm font-semibold
+        transition-all
+        ${step === 2
+                                    ? "bg-emerald-600/25 text-emerald-300 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.35)]"
+                                    : "bg-white/5 text-gray-400 border border-white/10"}
+      `}
+                        >
+                            Step 2
+                        </div>
                     </div>
 
-                    <div
-                        className={`px-4 py-2 rounded-full text-sm font-medium 
-            ${step === 2 ? "bg-emerald-600 text-white" : "bg-white/10 text-gray-400"}`}
-                    >
-                        Step 02
+                    {/* Progress Line */}
+                    <div className="relative max-w-sm mx-auto">
+                        {/* Base line */}
+                        <div className="h-[4px] bg-white/10 rounded-full" />
+
+                        {/* Active line */}
+                        <div
+                            className={`
+        absolute top-0 left-0 h-[4px] rounded-full
+        bg-emerald-500
+        shadow-[0_0_10px_rgba(16,185,129,0.6)]
+        transition-all duration-300
+        ${step === 1 ? "w-1/2" : "w-full"}
+      `}
+                        />
                     </div>
                 </div>
+
+
 
                 {/* ================= STEP 1 ================= */}
                 {step === 1 && (
