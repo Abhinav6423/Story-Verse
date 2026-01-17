@@ -76,7 +76,6 @@ body {
   color: #e5e7eb !important;
 }
 
-
 /* =====================================================
    FORM INPUTS
 ===================================================== */
@@ -160,4 +159,68 @@ body {
 .reader-area p {
   font-size: 1.05rem;
   line-height: 1.75;
+}
+
+/* ===============================
+   BOOK PAGE LOADER
+================================ */
+
+.page {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 2px;
+  height: 42px;
+  background: white;
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: flip 1.6s infinite ease-in-out;
+}
+
+/* Individual page delays + angles */
+.page-0 {
+  animation-delay: 0s;
+  transform: rotate(-40deg);
+}
+.page-1 {
+  animation-delay: 0.15s;
+  transform: rotate(-25deg);
+}
+.page-2 {
+  animation-delay: 0.3s;
+  transform: rotate(-10deg);
+}
+.page-3 {
+  animation-delay: 0.45s;
+  transform: rotate(0deg);
+}
+.page-4 {
+  animation-delay: 0.6s;
+  transform: rotate(10deg);
+}
+.page-5 {
+  animation-delay: 0.75s;
+  transform: rotate(25deg);
+}
+.page-6 {
+  animation-delay: 0.9s;
+  transform: rotate(40deg);
+}
+
+@keyframes flip {
+  0% {
+    opacity: 0;
+    transform: rotate(-50deg);
+  }
+  30% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(50deg);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(60deg);
+  }
 }
