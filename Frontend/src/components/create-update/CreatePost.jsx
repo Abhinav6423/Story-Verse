@@ -93,23 +93,24 @@ const CreatePost = () => {
     if (loading) return <Loader />
 
     return (
-        <div className="min-h-screen border-black/70 border text-black bg-[#eef1f6] pb-16">
+        <div className="min-h-screen border-black/70 border  bg-gradient-to-b from-[#0f2a24] via-[#0b1412] to-black text-gray-200 pb-16">
 
 
             <div
                 className="
-        max-w-5xl mx-auto mt-6 sm:mt-10 
-        bg-white rounded-2xl sm:rounded-3xl 
-        shadow-lg border border-gray-200 
-        p-4 sm:p-6 md:p-8
+        max-w-5xl mx-auto mt-6 sm:mt-10
+          bg-[#141a18] rounded-2xl sm:rounded-3xl
+          shadow-xl border border-white/10
+          p-4 sm:p-6 md:p-8
+
       "
             >
                 {/* ================= HEADER ================= */}
                 <div className="mb-6 sm:mb-8">
                     {/* Centered Title */}
                     <div className="flex justify-center">
-                        <h1 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-900 text-center">
-                            Write Story
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-200 text-center">
+                            Write Your Story
                         </h1>
                     </div>
 
@@ -119,9 +120,10 @@ const CreatePost = () => {
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
                             className="
-              px-3 py-2 sm:px-4 
-              text-sm border border-gray-300 rounded-lg
-            "
+                px-3 py-2 sm:px-4 text-sm
+                bg-[#005c48] text-white font-bold
+                border border-white/20 rounded-lg
+              "
                         >
                             <option value="draft">Draft</option>
                             <option value="published">Publish</option>
@@ -135,14 +137,14 @@ const CreatePost = () => {
                 <div className="flex flex-wrap gap-3 mb-8 sm:mb-10">
                     <div
                         className={`px-4 py-2 rounded-full text-sm font-medium 
-          ${step === 1 ? "bg-green-700 text-white" : "bg-gray-200 text-gray-600"}`}
+            ${step === 1 ? "bg-emerald-600 text-white" : "bg-white/10 text-gray-400"}`}
                     >
                         Step 01
                     </div>
 
                     <div
                         className={`px-4 py-2 rounded-full text-sm font-medium 
-          ${step === 2 ? "bg-green-700 text-white" : "bg-gray-200 text-gray-600"}`}
+            ${step === 2 ? "bg-emerald-600 text-white" : "bg-white/10 text-gray-400"}`}
                     >
                         Step 02
                     </div>
@@ -156,7 +158,7 @@ const CreatePost = () => {
                             <span className="text-xs font-medium px-3 py-1 rounded-full bg-green-100 text-green-700">
                                 Step 1
                             </span>
-                            <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                            <h2 className="text-base sm:text-lg font-semibold text-gray-200">
                                 Story Content
                             </h2>
                         </div>
@@ -164,16 +166,15 @@ const CreatePost = () => {
                         <div className="border-b mb-4 sm:mb-6" />
 
                         {/* ================= EDITOR ================= */}
-                        <div className="flex flex-col">
+                        <div className="blog-editor">
                             <RichTextEditor
                                 editor={editor}
                                 styles={{
                                     root: {
-                                        "--rte-text-color": "#111827",
-                                        "--rte-heading-color": "#111827",
+                                        borderRadius: "16px",
                                     },
                                     content: {
-                                        minHeight: 320,        // mobile
+                                        minHeight: 320,
                                         fontSize: "15px",
                                         lineHeight: "1.7",
                                         padding: "16px",
@@ -214,6 +215,7 @@ const CreatePost = () => {
                                 <RichTextEditor.Content />
                             </RichTextEditor>
                         </div>
+
 
                         <Field label="Title of the Story">
                             <textarea
@@ -283,13 +285,33 @@ const CreatePost = () => {
                         </Field>
 
                         <Field label="Cover Image">
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => setCoverImg(e.target.files[0])}
-                                className="field-input"
-                            />
+                            <label
+                                className="
+      block w-full cursor-pointer
+      rounded-xl border border-dashed
+      border-emerald-500/40
+      bg-[#0b1412]
+      px-4 py-3
+      text-sm
+      hover:border-emerald-400
+      hover:bg-emerald-500/5
+      transition
+    "
+                            >
+                                <span className="block text-center text-emerald-400">
+                                    {coverImg ? coverImg.name : "Upload image"}
+                                </span>
+
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setCoverImg(e.target.files[0])}
+                                    className="hidden"
+                                />
+                            </label>
                         </Field>
+
+
 
 
                         <Field label="Final Question">
@@ -345,7 +367,7 @@ const CreatePost = () => {
 
 const Field = ({ label, children }) => (
     <div className="mb-6">
-        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <label className="text-sm font-medium text-gray-200">{label}</label>
         <div className="mt-2">{children}</div>
     </div>
 );

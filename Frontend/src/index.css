@@ -86,37 +86,61 @@ body {
   border-radius: 12px;
   font-size: 14px;
   outline: none;
-  background: #eaeaea;
-  color: #374151;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #0b1412;
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.field-input::placeholder {
+  color: #6b7280;
 }
 
 .field-input:focus {
-  border-color: #e50914;
+  border-color: #10b981;
 }
 
 /* =====================================================
    MANTINE + TIPTAP (EDITOR ONLY)
 ===================================================== */
 
+/* =====================================================
+   FORCE DARK THEME FOR BLOG EDITOR (OVERRIDE)
+===================================================== */
+
 .blog-editor .mantine-RichTextEditor-root {
-  border-radius: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: #ffffff;
+  background: #0b1412 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 .blog-editor .mantine-RichTextEditor-toolbar {
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  background: #141a18 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.blog-editor .mantine-RichTextEditor-control {
+  background: transparent !important;
+  color: #e5e7eb !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.blog-editor .mantine-RichTextEditor-control:hover {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+.blog-editor .mantine-RichTextEditor-control[data-active="true"] {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  color: #ffffff !important;
 }
 
 .blog-editor .mantine-RichTextEditor-content {
-  min-height: 360px;
-  padding: 24px 26px;
-  font-size: 1.05rem;
-  line-height: 1.75;
-  background: #ffffff;
-  color: #111827;
+  background: #0b1412 !important;
+  color: #e5e7eb !important;
+}
+
+.blog-editor .mantine-RichTextEditor-control svg {
+  stroke: currentColor !important;
 }
 
 /* TipTap typography (EDITOR) */
@@ -146,6 +170,61 @@ body {
   border-left: 4px solid #e50914;
   padding-left: 1rem;
   font-style: italic;
+}
+
+/* =====================================================
+   REQUIRED FINAL FIXES (DO NOT REMOVE)
+===================================================== */
+
+/* Ensure ALL editor icons are visible */
+.blog-editor .mantine-RichTextEditor-control svg {
+  stroke: currentColor !important;
+  fill: currentColor !important;
+}
+
+/* Ensure active button is never overridden */
+.blog-editor .mantine-RichTextEditor-control[data-active="true"] {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  color: #ffffff !important;
+}
+
+/* =====================================================
+   FINAL FIX: ALL TOOLBAR BUTTON STATES
+===================================================== */
+
+/* Base control */
+.blog-editor .mantine-RichTextEditor-control {
+  background-color: black !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* SVG icons */
+.blog-editor .mantine-RichTextEditor-control svg {
+  stroke: currentColor !important;
+  fill: currentColor !important;
+}
+
+/* Disabled (ALL buttons: icon + text) */
+.blog-editor .mantine-RichTextEditor-control:disabled,
+.blog-editor .mantine-RichTextEditor-control[data-disabled="true"] {
+  background-color: black !important;
+  color: #9ca3af !important; /* gray-400 */
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  opacity: 1 !important;
+}
+
+/* Hover */
+.blog-editor .mantine-RichTextEditor-control:hover:not(:disabled) {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Active */
+.blog-editor .mantine-RichTextEditor-control[data-active="true"] {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  color: #ffffff !important;
 }
 
 /* =====================================================

@@ -20,7 +20,7 @@ const Register = () => {
       const result = await signupUser(email, password);
 
       if (result?.success) {
-        toast.success("Account created successfully 🎉");
+        toast.success("Please verify your email before logging in , check your spam folder if you can't find the email.");
         navigate("/home");
 
         setUsername("");
@@ -138,7 +138,7 @@ const Register = () => {
               </Link>
             </p>
 
-            
+
 
           </div>
         </div>
