@@ -285,7 +285,7 @@ const CreatePost = () => {
                             <span className="text-xs font-medium px-3 py-1 rounded-full bg-green-100 text-green-700">
                                 Step 2
                             </span>
-                            <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                            <h2 className="text-base sm:text-lg font-semibold text-gray-200">
                                 Story Details
                             </h2>
                         </div>
