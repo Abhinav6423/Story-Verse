@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ThumbsUp, Bookmark, X } from "lucide-react";
 import { toast } from "react-toastify";
-
+import DOMpurify from "dompurify";
 import Loader from "../Loader.jsx";
 import { OpenFeedShortStory } from "../../Api-calls/OpenFeedShortStory.js";
 import { likeShortStory } from "../../Api-calls/likeShortStory.js";
@@ -197,10 +197,16 @@ const ViewShortStory = () => {
         <hr className="my-10 border-gray-700/60" />
 
         {/* STORY CONTENT */}
-        <div
-          className="prose prose-invert prose-lg max-w-full leading-relaxed text-gray-300"
-          dangerouslySetInnerHTML={{ __html: story.story }}
-        />
+        <div className="reader-area">
+          <div
+            className="prose prose-invert prose-lg max-w-full"
+            dangerouslySetInnerHTML={{
+              __html: DOMpurify.sanitize(story.story || ""),
+            }}
+          />
+        </div>
+
+
       </div>
 
     </div>

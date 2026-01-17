@@ -37,7 +37,7 @@ function TopTrendStoryGrid() {
 
                 {/* GRID */}
                 <div
-                    className="
+                    className=" p-5
           grid
           grid-cols-2
           sm:grid-cols-3

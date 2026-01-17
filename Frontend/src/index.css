@@ -1,7 +1,10 @@
 /* Tailwind must come AFTER external imports */
 @import "tailwindcss";
 
-/* Hide scrollbar globally */
+/* =====================================================
+   GLOBAL
+===================================================== */
+
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;
@@ -11,20 +14,26 @@ html,
 body {
   -ms-overflow-style: none;
   scrollbar-width: none;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 body {
   font-family: "Poppins", sans-serif;
 }
 
-html,
-body {
-  width: 100%;
-  overflow-x: hidden;
-}
+/* =====================================================
+   PROSE SAFETY (DO NOT TOUCH HEADINGS)
+===================================================== */
 
-/* 🔒 FORCE STORY CONTENT TO RESPECT MOBILE WIDTH */
-.prose * {
+/* Only protect content that can overflow */
+.prose p,
+.prose img,
+.prose video,
+.prose iframe,
+.prose table,
+.prose pre,
+.prose code {
   max-width: 100%;
   box-sizing: border-box;
   word-wrap: break-word;
@@ -33,18 +42,43 @@ body {
 
 .prose img,
 .prose video,
-.prose iframe,
-.prose table,
-.prose pre,
-.prose code {
-  max-width: 100%;
+.prose iframe {
   height: auto;
   display: block;
-  overflow-x: auto;
 }
 
 /* =====================================================
-   INPUTS
+   READER TYPOGRAPHY (FORCE HEADING VISIBILITY)
+===================================================== */
+
+.reader-area h1 {
+  font-size: 2.25rem !important;
+  font-weight: 800 !important;
+  margin-top: 2.5rem !important;
+  margin-bottom: 1.5rem !important;
+  color: #ffffff !important;
+  font-family: serif;
+}
+
+.reader-area h2 {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  margin-top: 2rem !important;
+  margin-bottom: 1rem !important;
+  color: #ffffff !important;
+}
+
+.reader-area h3 {
+  font-size: 1.4rem !important;
+  font-weight: 600 !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+  color: #e5e7eb !important;
+}
+
+
+/* =====================================================
+   FORM INPUTS
 ===================================================== */
 
 .field-input {
@@ -63,99 +97,67 @@ body {
 }
 
 /* =====================================================
-   MANTINE RICH TEXT EDITOR (FIXED)
+   MANTINE + TIPTAP (EDITOR ONLY)
 ===================================================== */
 
 .blog-editor .mantine-RichTextEditor-root {
-  border-radius: 16px !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  background: #ffffff !important;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
 }
 
-/* Toolbar */
 .blog-editor .mantine-RichTextEditor-toolbar {
-  background: #f9fafb !important;
-  border-bottom: 1px solid #e5e7eb !important;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-/* Toolbar icons */
-.blog-editor .mantine-RichTextEditor-toolbar button {
-  color: #111827 !important;
-}
-
-/* Content */
 .blog-editor .mantine-RichTextEditor-content {
-  min-height: 360px !important;
-  padding: 24px 26px !important;
-  font-size: 1.05rem !important;
-  line-height: 1.75 !important;
-  background: #ffffff !important;
-  color: #111827 !important; /* ✅ FIX */
+  min-height: 360px;
+  padding: 24px 26px;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  background: #ffffff;
+  color: #111827;
 }
 
-/* =====================================================
-   TIPTAP TYPOGRAPHY (FIXED)
-===================================================== */
-
+/* TipTap typography (EDITOR) */
 .blog-editor .tiptap p {
   margin-bottom: 1.25rem;
-  color: #374151;
-}
-
-.blog-editor ::placeholder {
-  color: #374151;
 }
 
 .blog-editor .tiptap h1 {
   font-size: 2.1rem;
   font-weight: 800;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  color: #111827;
+  margin: 2rem 0 1rem;
 }
 
 .blog-editor .tiptap h2 {
   font-size: 1.6rem;
   font-weight: 700;
-  margin-top: 1.8rem;
-  margin-bottom: 0.9rem;
-  color: #111827;
+  margin: 1.8rem 0 0.9rem;
 }
 
 .blog-editor .tiptap h3 {
   font-size: 1.3rem;
   font-weight: 700;
-  margin-top: 1.6rem;
-  margin-bottom: 0.8rem;
-  color: #111827;
+  margin: 1.6rem 0 0.8rem;
 }
 
 .blog-editor .tiptap blockquote {
   border-left: 4px solid #e50914;
   padding-left: 1rem;
-  color: #6b7280;
   font-style: italic;
 }
 
 /* =====================================================
-   READER AREA
+   READER AREA (VIEW STORY)
 ===================================================== */
 
 .reader-area {
-  color: #111827;
+  color: #e5e7eb;
 }
 
 .reader-area p {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   line-height: 1.75;
-  margin-bottom: 1.25rem;
 }
-
-:root {
-  --mobile-bottom-nav-height: 10px;
-}
-
-.prose * {
-  background-color: transparent !important;
-}
-

@@ -23,34 +23,34 @@ const CategoryShortStoryResultsGrid = () => {
   if (isError) return <div className="p-6 text-red-500">{isError}</div>
   return (
     <>
-     
-
       {/* PAGE WRAPPER */}
-      <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#e9f7f1] to-white">
+      <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#0f2a24] via-[#0b1412] to-black">
 
         {/* GREEN LIGHT GLOW */}
         <div
           className="
-            pointer-events-none
-            absolute
-            top-[-200px]
-            left-1/2
-            -translate-x-1/2
-            w-[900px]
-            h-[900px]
-            rounded-full
-            bg-[radial-gradient(circle,_rgba(16,185,129,0.25)_0%,_rgba(16,185,129,0.15)_30%,_rgba(16,185,129,0.05)_50%,_transparent_70%)]
-          "
+          pointer-events-none
+          absolute
+          top-[-250px]
+          left-1/2
+          -translate-x-1/2
+          w-[900px]
+          h-[900px]
+          rounded-full
+          bg-[radial-gradient(circle,_rgba(16,185,129,0.25)_0%,_rgba(16,185,129,0.15)_25%,_rgba(16,185,129,0.06)_45%,_transparent_70%)]
+        "
         />
 
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 relative z-10">
 
           {/* HEADER */}
           <div className="flex flex-col gap-4 mb-8">
-            <span className="text-sm text-gray-500">Category</span>
+            <span className="text-sm text-emerald-400/80">
+              Category
+            </span>
 
             <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-white">
                 {category?.toUpperCase()}
               </h1>
             </div>
@@ -58,19 +58,19 @@ const CategoryShortStoryResultsGrid = () => {
 
           {/* STORIES GRID */}
           {stories.length === 0 ? (
-            <div className="text-center text-gray-500 mt-20">
+            <div className="text-center text-gray-400 mt-20">
               No stories found in this category.
             </div>
           ) : (
             <div
               className="
-                grid
-                grid-cols-2
-                sm:grid-cols-3
-                md:grid-cols-4
-                lg:grid-cols-5
-                gap-6
-              "
+              grid
+              grid-cols-2
+              sm:grid-cols-3
+              md:grid-cols-4
+              lg:grid-cols-5
+              gap-6
+            "
             >
               {stories.map((story) => (
                 <Link key={story._id} to={`/story/${story._id}`}>
@@ -83,6 +83,7 @@ const CategoryShortStoryResultsGrid = () => {
       </div>
     </>
   );
+
 };
 
 export default CategoryShortStoryResultsGrid;
