@@ -19,7 +19,7 @@ import UpdateShortStory from "./components/Profile/UpdateShortStory.jsx";
 import AuthSuccess from "./pages/Authentication/AuthSucess"; // ✅ ADD THIS
 import { ToastContainer } from "react-toastify";
 import UpdateProfile from "./components/Profile/UpdateProfile.jsx";
-
+import Landing from "./pages/Landing/Landing.jsx";
 const App = () => {
   return (
     <>
@@ -35,12 +35,14 @@ const App = () => {
 
       <Routes>
         {/* ---------- PUBLIC ROUTES ---------- */}
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
 
         {/* ✅ GOOGLE OAUTH CALLBACK SUCCESS */}
         <Route path="/auth/success" element={<AuthSuccess />} />
+
+        <Route  path="/" element={<Landing />}/>
 
         {/* ---------- PROTECTED ROUTES ---------- */}
         <Route element={<ProtectedRoute />}>
