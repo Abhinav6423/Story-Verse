@@ -36,13 +36,14 @@ const Landing = () => {
                         src={person1}
                         alt="Reader"
                         className="
-        absolute
-        -left-4 sm:left-8 lg:left-12
-        bottom-36 sm:bottom-10 lg:bottom-40
-        w-44 sm:w-52 lg:w-72
-        opacity-90
-        pointer-events-none
-      "
+    hidden lg:block
+    absolute
+    -left-4 lg:left-12
+    bottom-40
+    w-72
+    opacity-90
+    pointer-events-none
+  "
                     />
 
                     {/* RIGHT CHARACTER */}
@@ -50,14 +51,16 @@ const Landing = () => {
                         src={person2}
                         alt="Writer"
                         className="
-         absolute
-        -right-9 sm:right-8 lg:right-12
-        bottom-36 sm:bottom-10 lg:bottom-40
-        w-64 sm:w-64 lg:w-72
-        opacity-90
-        pointer-events-none
-      "
+    hidden lg:block
+    absolute
+    -right-9 lg:right-12
+    bottom-40
+    w-72
+    opacity-90
+    pointer-events-none
+  "
                     />
+
 
                     {/* Tag */}
                     <span className="mb-6 px-4 py-1.5 rounded-full text-xs border border-emerald-500/30">
