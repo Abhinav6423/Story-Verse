@@ -4,7 +4,7 @@ import { Menu, Plus, LayoutGrid, User, LogOut } from "lucide-react";
 import CategoryPopup from "./CategoryPopup";
 import { logoutUser } from "../../Api-calls/logout";
 import { toast } from "react-toastify";
-
+import logo from "../../Assets/logo.png";
 const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -83,7 +83,7 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
                         to="/home"
                         className="font-serif italic text-2xl font-light tracking-tight text-gray-100"
                     >
-                        StoryFlix
+                        <img src={logo} alt="logo" className="w-22 sm:w-28" />
                     </Link>
 
                     {/* DESKTOP ACTIONS */}

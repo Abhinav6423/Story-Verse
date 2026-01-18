@@ -7,7 +7,8 @@ import phone2 from "../../Assets/phone2.png";
 import discoverStories from "../../Assets/discoverStories.png";
 import { Flame, Pencil, User, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import logo from "../../Assets/logo.png";
+import phone2Small from "../../Assets/phone2small.png";
 const Landing = () => {
     return (
         <div className="min-h-screen text-white overflow-hidden bg-[#133F31]">
@@ -19,7 +20,7 @@ const Landing = () => {
                 {/* Navbar */}
                 <nav className="flex items-center justify-between px-6 md:px-8 py-6">
                     <h1 className="text-lg font-semibold tracking-wide">
-                        Story<span className="font-light">Flix</span>
+                        <img src={logo} alt="logo" className="w-22 sm:w-28" />
                     </h1>
                     <Link to={"/register"}>
                         <button className="px-4 py-2 text-sm rounded-full bg-emerald-500/90 hover:bg-emerald-500 transition">
@@ -148,24 +149,37 @@ const Landing = () => {
                 <div
                     className="
     mt-12 md:mt-5
-     
     rounded-[2rem] md:rounded-[2.5rem]
     shadow-2xl
     overflow-hidden
     aspect-[5/5] md:aspect-auto
   "
                 >
+                    {/* Mobile image */}
                     <img
-                        src={phone2}
-                        alt="Story UI"
+                        src={phone2Small}
+                        alt="Story UI mobile"
                         className="
+      block md:hidden
       w-full
       h-full
-      object-cover 
-      md:object-cover
+      object-cover
+    "
+                    />
+
+                    {/* Desktop image (existing one) */}
+                    <img
+                        src={phone2}
+                        alt="Story UI desktop"
+                        className="
+      hidden md:block
+      w-full
+      h-auto
+      object-cover
     "
                     />
                 </div>
+
 
 
                 <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">

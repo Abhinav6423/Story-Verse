@@ -70,7 +70,7 @@ const CreatePost = () => {
 
 
             if (result?.success) {
-                toast.success("Story created successfully");
+                toast.success("Story created successfully, you recieved reward of 30 xp points ");
                 setTitle("");
                 setStory("");
                 setDescription("");
