@@ -44,31 +44,31 @@ const Register = () => {
   return (
     <div className="h-screen w-full bg-[#0b1f1a] overflow-hidden relative">
       {/* LOGO */}
-      <div className="absolute top-6 left-[2%]  z-20">
+      <div className="absolute top-6 left-[2%] z-20">
         <Link to="/" className="text-white text-xl font-serif font-semibold">
           StoryFlix
         </Link>
       </div>
 
       <div className="h-full flex">
-        {/* LEFT LOGIN PANEL */}
-        <div className="w-full md:w-[50%] flex items-center justify-center px-6">
-          <div className="w-full max-w-md p-5  ">
+        {/* LEFT SIGNUP PANEL */}
+        <div className="w-full lg:w-[45%] flex items-center justify-center px-4 sm:px-6 lg:px-10">
+          <div className="w-full max-w-md lg:max-w-lg p-5 lg:p-10">
 
             {/* Heading */}
-            <h2 className="text-[30px] text-center font-medium text-white tracking-tight">
+            <h2 className="text-[26px] sm:text-[30px] lg:text-[32px] text-center font-medium text-white tracking-tight">
               Create your account
             </h2>
 
-            <p className="mt-1 text-center text-sm text-white/70 mb-10">
+            <p className="mt-1 text-center text-sm sm:text-base text-white/70 mb-8 sm:mb-10">
               Join a community of readers and writers shaping new worlds
             </p>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
 
               {/* Username */}
               <div>
-                <label className="block text-[11px] text-gray-400 mb-2">
+                <label className="block text-[11px] sm:text-[12px] text-gray-400 mb-2">
                   Username
                 </label>
                 <input
@@ -77,13 +77,13 @@ const Register = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
-                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-3 py-2.5 sm:py-3 text-sm sm:text-[15px] text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-[11px] text-gray-400 mb-2">
+                <label className="block text-[11px] sm:text-[12px] text-gray-400 mb-2">
                   Email address
                 </label>
                 <input
@@ -92,13 +92,13 @@ const Register = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-3 py-2.5 sm:py-3 text-sm sm:text-[15px] text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               {/* Password */}
               <div>
-                <label className="block text-[11px] text-gray-400 mb-2">
+                <label className="block text-[11px] sm:text-[12px] text-gray-400 mb-2">
                   Password
                 </label>
                 <input
@@ -107,13 +107,13 @@ const Register = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-3 py-2.5 sm:py-3 text-sm sm:text-[15px] text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
                 />
 
-                <div className="text-right ">
+                <div className="text-right mt-1">
                   <Link
                     to="/forgot-password"
-                    className="text-[11px] text-gray-400 hover:text-emerald-400 transition"
+                    className="text-[11px] sm:text-[12px] text-gray-400 hover:text-emerald-400 transition"
                   >
                     Forgot password?
                   </Link>
@@ -124,39 +124,35 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg py-2 text-sm font-medium transition disabled:opacity-60 mt-2"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg py-2.5 sm:py-3 text-sm sm:text-[15px] font-medium transition disabled:opacity-60 mt-2"
               >
                 {loading ? "Signing up..." : "Sign up"}
               </button>
             </form>
 
             {/* Login link */}
-            <p className="text-center text-[11px] text-gray-400 mt-2">
+            <p className="text-center text-[11px] sm:text-[12px] text-gray-400 mt-3">
               Already have an account?{" "}
               <Link to="/login" className="text-emerald-400 font-medium">
                 Login User
               </Link>
             </p>
 
-
-
           </div>
         </div>
 
-
-
-
-        {/* RIGHT IMAGE GRID */}
-        <div className="hidden md:block md:w-[50%] ">
+        {/* RIGHT IMAGE GRID (ONLY LAPTOP & BIG SCREENS) */}
+        <div className="hidden lg:block lg:w-[55%]">
           <img
             src={AuthImg}
             alt="Story covers"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-right"
           />
         </div>
       </div>
     </div>
   );
+
 
 };
 

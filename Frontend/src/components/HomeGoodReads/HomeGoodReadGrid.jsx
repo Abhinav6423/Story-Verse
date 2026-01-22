@@ -7,38 +7,7 @@ import { listTopGoodReadsShortStory } from "../../Api-calls/TopGoodreadsShortSto
 import Loader from "../Loader.jsx";
 
 function HomeGoodReadGrid() {
-    const stories = [
-        {
-            _id: "gr1",
-            title: "The Tenant",
-            coverImage: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f",
-            totalGoodReads: "10.6k",
-            author: {
-                username: "Aleen Kizoff",
-                profilePic: "https://randomuser.me/api/portraits/men/32.jpg",
-            },
-        },
-        {
-            _id: "gr2",
-            title: "Cut to the Bone",
-            coverImage: "https://images.unsplash.com/photo-1512820790803-83ca734da794",
-            totalGoodReads: "8.1k",
-            author: {
-                username: "Ellison Cooper",
-                profilePic: "https://randomuser.me/api/portraits/women/44.jpg",
-            },
-        },
-        {
-            _id: "gr3",
-            title: "Eritis: The Silver Legacy",
-            coverImage: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c",
-            totalGoodReads: "7.4k",
-            author: {
-                username: "T.E. Stoyer",
-                profilePic: "https://randomuser.me/api/portraits/men/65.jpg",
-            },
-        },
-    ];
+
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["topGoodReadsShortStory"],
@@ -58,68 +27,67 @@ function HomeGoodReadGrid() {
     return (
         <section className="relative text-white overflow-hidden">
             {/* ===== DESKTOP GRADIENT ===== */}
-            <div
-                className="
-          hidden md:block
-          absolute inset-0 bg-transparent
-        "
-            />
+            <div className="hidden lg:block absolute inset-0 bg-transparent" />
 
-            {/* ===== MOBILE GRADIENT ===== */}
-            <div
-                className="
-          md:hidden
-          absolute inset-0
-        "
-
-            />
+            {/* ===== MOBILE + TABLET GRADIENT ===== */}
+            <div className="lg:hidden absolute inset-0" />
 
             {/* ===== CONTENT ===== */}
             <div
                 className="
-          relative z-10
-          px-4 py-6
-          md:px-10 md:py-8
-          flex flex-col
-          md:flex-row
-          gap-6 sm:gap-26
-          md:items-center 
-        "
+        relative z-10
+        px-4 py-6
+        sm:px-6 sm:py-8
+        md:px-8 md:py-10
+        lg:px-16 lg:py-12
+        xl:px-24 xl:py-14
+        flex flex-col
+        lg:flex-row
+        gap-6 sm:gap-8 md:gap-10 lg:gap-20
+        lg:items-center
+      "
             >
                 {/* LEFT INFO */}
-                <div className="max-w-[280px] space-y-4">
-                    <div className="flex items-center gap-2">
-                        <BookOpen size={20} strokeWidth={3} className="relative top-[1px]" />
-                        <h2 className="text-xl md:text-2xl font-medium leading-none">
+                <div className="max-w-[300px] sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px] space-y-4 sm:space-y-5">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <BookOpen
+                            size={18}
+                            strokeWidth={3}
+                            className="relative top-[1px] sm:size-[22px] lg:size-[24px]"
+                        />
+                        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium leading-none">
                             Good reads
                         </h2>
                     </div>
 
-                    <p className="text-sm text-white/80 leading-snug font-normal">
-                        Stories that stood out to readers and <br /> earned their place through
-                        votes and  appreciation.
+                    <p className="text-sm sm:text-[15px] md:text-base text-white/80 leading-snug font-normal">
+                        Stories that stood out to readers and <br />
+                        earned their place through votes and appreciation.
                     </p>
                 </div>
 
                 {/* RIGHT CARDS */}
                 <div
                     className="
-    flex gap-4
-    w-full
-    overflow-x-auto
-    md:overflow-visible
-    scrollbar-hide
-    py-2
-    px-4 md:px-0
-  "
+          flex
+          gap-4 sm:gap-5 md:gap-6
+          w-full
+          overflow-x-auto
+          lg:overflow-visible
+          scrollbar-hide
+          snap-x snap-mandatory
+          py-3
+          px-2 sm:px-4 md:px-6 lg:px-0
+        "
                 >
                     {shortStories.map((story, index) => (
                         <Link
                             key={story._id}
                             to={`/story/${story._id}`}
                             className="
-        
-      "
+              flex-shrink-0
+              snap-start
+            "
                         >
                             <HomeGoodReadCard
                                 story={story}
@@ -127,33 +95,25 @@ function HomeGoodReadGrid() {
                             />
                         </Link>
                     ))}
-
-
                 </div>
-
-
-
-
-
             </div>
 
+            {/* ===== BOTTOM DIVIDER ===== */}
             <div
                 className="
-    absolute
-    bottom-0
-    left-0
-    w-full
-    h-px
-   bg-white/70
-   mx-4 
-          md:mx-10 
-    
-  "
+        absolute
+        bottom-0
+        left-0
+        w-full
+        h-px
+        bg-white/70
+        mx-4 sm:mx-6 md:mx-8 lg:mx-16 xl:mx-24
+      "
             />
-
-
         </section>
     );
+
+
 }
 
 export default HomeGoodReadGrid;
