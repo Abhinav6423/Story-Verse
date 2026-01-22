@@ -14,62 +14,59 @@ const Landing = () => {
         <div className="min-h-screen text-white overflow-hidden bg-[#133F31]">
             {/* HERO */}
             <div
-                className="relative w-full  h-screen bg-cover bg-center overflow-hidden"
+                className="relative w-full min-h-screen bg-cover bg-center overflow-hidden"
                 style={{ backgroundImage: `url(${hero})` }}
             >
                 {/* Navbar */}
-                <nav className="flex items-center justify-between px-6 md:px-8 py-6">
-                    <h1 className="text-lg font-semibold tracking-wide">
-                        <img src={logo} alt="logo" className="w-22 sm:w-28" />
-                    </h1>
+                <nav className="flex items-center justify-between px-4 sm:px-6 md:px-10 lg:px-20 2xl:px-32 py-5">
+                    <img src={logo} alt="logo" className="w-24 sm:w-28 md:w-32" />
                     <Link to={"/register"}>
-                        <button className="px-4 py-2 text-sm rounded-full bg-emerald-500/90 hover:bg-emerald-500 transition">
+                        <button className="px-4 sm:px-5 py-2 text-sm rounded-full bg-emerald-500/90 hover:bg-emerald-500 transition">
                             Go to app →
                         </button>
                     </Link>
                 </nav>
 
                 {/* Hero Content */}
-                <section className="  flex flex-col items-center text-center px-4 sm:px-6 mt-6 md:mt-2 pb-28 md:pb-40">
+                <section className="relative isolate flex flex-col items-center text-center px-4 sm:px-6 md:px-10 lg:px-20 2xl:px-32 mt-6 sm:mt-10 md:mt-14 pb-24 sm:pb-28 lg:pb-44 2xl:pb-52">
 
-                    {/* LEFT CHARACTER */}
+                    {/* LEFT CHARACTER (DESKTOP ONLY) */}
                     <img
                         src={person1}
                         alt="Reader"
                         className="
-    hidden lg:block
-    absolute
-    -left-4 lg:left-12
-    bottom-40
-    w-72
-    opacity-90
-    pointer-events-none
-  "
+        hidden lg:block
+        absolute
+        left-6 lg:left-12 2xl:left-24
+        bottom-[240px] lg:bottom-[205px] 2xl:bottom-[240px]
+        w-72 lg:w-80 2xl:w-96
+        opacity-95
+        pointer-events-none
+      "
                     />
 
-                    {/* RIGHT CHARACTER */}
+                    {/* RIGHT CHARACTER (DESKTOP ONLY) */}
                     <img
                         src={person2}
                         alt="Writer"
                         className="
-    hidden lg:block
-    absolute
-    -right-9 lg:right-12
-    bottom-40
-    w-72
-    opacity-90
-    pointer-events-none
-  "
+        hidden lg:block
+        absolute
+        right-6 lg:right-12 2xl:right-24
+        bottom-[240px] lg:bottom-[205px] 2xl:bottom-[240px]
+        w-72 lg:w-80 2xl:w-96
+        opacity-95
+        pointer-events-none
+      "
                     />
 
-
                     {/* Tag */}
-                    <span className="mb-6 px-4 py-1.5 rounded-full text-xs border border-emerald-500/30">
+                    <span className="mb-4 sm:mb-6 px-4 py-1.5 rounded-full text-xs sm:text-sm border border-emerald-500/30">
                         Built for readers and writers
                     </span>
 
                     {/* Heading */}
-                    <h2 className="text-3xl sm:text-4xl md:text-6xl font-serif leading-tight max-w-3xl">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl font-serif leading-tight max-w-4xl 2xl:max-w-5xl">
                         Read and write short <br />
                         stories, all in{" "}
                         <span className="italic text-emerald-400 relative">
@@ -90,14 +87,14 @@ const Landing = () => {
                     </h2>
 
                     {/* Subheading */}
-                    <p className="mt-6 max-w-xl text-gray-400 text-sm sm:text-base">
+                    <p className="mt-4 sm:mt-6 max-w-2xl 2xl:max-w-3xl text-gray-300 text-sm sm:text-base lg:text-lg 2xl:text-xl">
                         Discover original short stories from emerging writers, save your
                         favorites, and publish your own stories in a clean, easy-to-use
                         reading experience.
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                    <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                         <Link to={"/login"}>
                             <button className="w-full sm:w-auto px-6 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-gray-200 transition">
                                 Publish a Story →
@@ -113,11 +110,14 @@ const Landing = () => {
             </div>
 
 
+
+
+
             {/* MID SECTION */}
-            <section className="px-4 sm:px-6 md:px-20  ">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-10 md:gap-14">
+            <section className="px-4 sm:px-6 md:px-10 lg:px-20 py-20">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-10 md:gap-16">
                     <div className="flex justify-center md:justify-end">
-                        <div className="rounded-[2.5rem] md:rounded-[3rem]  md:p-6 shadow-2xl max-w-xs sm:max-w-sm md:max-w-lg w-full">
+                        <div className="rounded-[2.5rem] md:rounded-[3rem] md:p-6 shadow-2xl max-w-xs sm:max-w-sm md:max-w-lg w-full">
                             <img src={phone1} className="w-full h-auto" alt="Phone" />
                         </div>
                     </div>
@@ -127,7 +127,7 @@ const Landing = () => {
                             A platform built <br />
                             around <span className="italic text-emerald-400">stories</span>.
                         </h3>
-                        <p className="mt-6 text-gray-400 text-sm sm:text-base leading-relaxed">
+                        <p className="mt-6 text-gray-300 text-sm sm:text-base leading-relaxed">
                             A simple modern platform where short stories are easy to publish,
                             easy to discover and enjoyable to read.
                         </p>
@@ -141,68 +141,35 @@ const Landing = () => {
             </section>
 
             {/* BOTH SIDES */}
-            <section className="px-4 sm:px-6 md:px-20 py-14 text-center">
+            <section className="px-4 sm:px-6 md:px-10 lg:px-20 py-20 text-center">
                 <h2 className="text-3xl md:text-4xl font-serif">
                     Both Sides of the <span className="italic text-emerald-400">Story</span>
                 </h2>
 
-                <div
-                    className="
-    mt-12 md:mt-5
-    rounded-[2rem] md:rounded-[2.5rem]
-    shadow-2xl
-    overflow-hidden
-    aspect-[5/5] md:aspect-auto
-  "
-                >
-                    {/* Mobile image */}
+                <div className="mt-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto">
                     <img
                         src={phone2Small}
                         alt="Story UI mobile"
-                        className="
-      block md:hidden
-      w-full
-      h-full
-      object-cover
-    "
+                        className="block md:hidden w-full h-auto object-cover"
                     />
-
-                    {/* Desktop image (existing one) */}
                     <img
                         src={phone2}
                         alt="Story UI desktop"
-                        className="
-      hidden md:block
-      w-full
-      h-auto
-      object-cover
-    "
+                        className="hidden md:block w-full h-auto object-cover"
                     />
                 </div>
 
-
-
                 <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                    {[
-                        { icon: Flame, title: "Discover & Read" },
-                        { icon: Pencil, title: "Write & Shape Your Story" },
-                        { icon: User, title: "Publish & Reach Readers" }
-                    ].map(({ icon: Icon, title }) => (
-                        <div
-                            key={title}
-                            className="bg-[#0F2F25] rounded-3xl px-6 sm:px-8 py-8 md:py-10 text-center"
-                        >
+                    {[{ icon: Flame, title: "Discover & Read" }, { icon: Pencil, title: "Write & Shape Your Story" }, { icon: User, title: "Publish & Reach Readers" }].map(({ icon: Icon, title }) => (
+                        <div key={title} className="bg-[#0F2F25] rounded-3xl px-6 sm:px-8 py-8 md:py-10 text-center">
                             <div className="flex justify-center mb-6">
                                 <div className="w-12 h-12 rounded-full bg-white text-emerald-600 flex items-center justify-center">
                                     <Icon size={22} />
                                 </div>
                             </div>
-                            <h4 className="font-serif font-bold text-xl sm:text-2xl mb-3">
-                                {title}
-                            </h4>
-                            <p className="text-gray-400 text-sm leading-relaxed">
-                                Built to support readers and writers with a clean, focused
-                                storytelling experience.
+                            <h4 className="font-serif font-bold text-xl sm:text-2xl mb-3">{title}</h4>
+                            <p className="text-gray-300 text-sm leading-relaxed">
+                                Built to support readers and writers with a clean, focused storytelling experience.
                             </p>
                         </div>
                     ))}
@@ -210,31 +177,32 @@ const Landing = () => {
             </section>
 
             {/* FINAL CTA */}
-            <section className="px-4 sm:px-6 md:px-20 py-12  text-center" style={{ backgroundImage: `url(${discoverStories})` }} >
+            <section
+                className="px-4 sm:px-6 md:px-10 lg:px-20 py-20 text-center bg-cover bg-center"
+                style={{ backgroundImage: `url(${discoverStories})` }}
+            >
                 <h2 className="text-3xl sm:text-4xl md:text-6xl font-serif">
                     Discover stories.
                     <br />
                     <span className="italic text-emerald-400">Share yours</span>.
                 </h2>
-                <p className="mt-6 text-gray-400 text-sm sm:text-base">
+                <p className="mt-6 text-gray-300 text-sm sm:text-base">
                     Join readers and writers discovering <br />great stories every day.
                 </p>
                 <Link to={"/login"}>
-                    <button className="mt-6 w-full sm:w-auto px-10 py-4 rounded-full bg-white text-black text-sm">
+                    <button className="mt-8 w-full sm:w-auto px-10 py-4 rounded-full bg-white text-black text-sm">
                         Go to app →
                     </button>
                 </Link>
             </section>
 
             {/* FOOTER */}
-            <footer className="px-6 md:px-20 py-14 bg-[#0A1614] border-t border-white/10">
-                {/* Top (Logo + Home) */}
+            <footer className="px-4 sm:px-6 md:px-10 lg:px-20 py-16 bg-[#0A1614] border-t border-white/10">
                 <div className="flex flex-col items-center text-center">
                     <h3 className="text-3xl italic font-serif">StoryFlix</h3>
                     <p className="text-xs text-gray-400 mt-2">Home</p>
                 </div>
 
-                {/* Middle (Follow us) */}
                 <div className="mt-10 flex justify-center">
                     <div className="flex items-center gap-3 text-xs text-gray-400">
                         <span>Follow us on:</span>
@@ -244,19 +212,14 @@ const Landing = () => {
                     </div>
                 </div>
 
-                {/* Bottom (Policies) */}
                 <div className="mt-10 flex flex-col md:flex-row items-center justify-between text-xs text-gray-400 gap-4">
-                    <span className="cursor-pointer hover:text-white transition">
-                        Privacy policy
-                    </span>
-                    <span className="cursor-pointer hover:text-white transition">
-                        Terms of conditions
-                    </span>
+                    <span className="cursor-pointer hover:text-white transition">Privacy policy</span>
+                    <span className="cursor-pointer hover:text-white transition">Terms of conditions</span>
                 </div>
             </footer>
-
         </div>
     );
+
 };
 
 export default Landing;
