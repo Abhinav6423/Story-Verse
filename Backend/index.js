@@ -22,7 +22,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://story-verse-gamma.vercel.app",
+      "https://preface.vercel.app/",
     ],
   })
 );
