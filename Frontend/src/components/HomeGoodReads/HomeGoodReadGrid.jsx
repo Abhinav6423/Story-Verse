@@ -20,21 +20,23 @@ function HomeGoodReadGrid() {
 
     return (
         <section className="relative text-white overflow-hidden py-8 md:py-12">
-            {/* Optional: Background gradient or color here if needed */}
-
+            
             {/* ===== CONTENT CONTAINER ===== */}
-            {/* Uses max-w-7xl and mx-auto to center content and align with other sections */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
 
-                <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 lg:items-center">
+                {/* FLEX CONTAINER UPDATES:
+                   1. justify-center: This pushes the entire group (Text + Cards) to the center of the screen.
+                   2. max-w-[1600px] mx-auto: Keeps it contained on super-wide screens.
+                */}
+                <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row gap-8 lg:gap-16 lg:items-center justify-center">
 
                     {/* LEFT INFO */}
-                    <div className="max-w-md space-y-4 lg:flex-shrink-0">
+                    <div className="max-w-md space-y-4 lg:flex-shrink-0 text-left">
                         <div className="flex items-center gap-3">
                             <BookOpen
                                 size={24}
                                 strokeWidth={3}
-                                className="text-emerald-400" // Added color to match reference
+                                className="text-emerald-400"
                             />
                             <h2 className="text-2xl md:text-3xl font-bold leading-none">
                                 Good reads
@@ -48,15 +50,19 @@ function HomeGoodReadGrid() {
                     </div>
 
                     {/* RIGHT CARDS - SCROLLABLE */}
+                    {/* UPDATED: 
+                        - 'lg:w-auto': On desktop, let it be only as wide as the cards, so it centers with the text.
+                        - 'w-full': On mobile, keep it full width for scrolling.
+                    */}
                     <div
                         className="
                             flex
                             gap-4
-                            w-full
+                            w-full lg:w-auto
                             overflow-x-auto
                             scrollbar-hide
                             snap-x snap-mandatory
-                            pb-4 // Add padding-bottom for scrollbar space if needed
+                            pb-4
                         "
                     >
                         {shortStories.map((story, index) => (
@@ -75,6 +81,8 @@ function HomeGoodReadGrid() {
                 </div>
 
             </div>
+            
+            {/* BOTTOM BORDER */}
             <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
         </section>
     );
