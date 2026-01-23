@@ -75,6 +75,7 @@ function HomeGoodReadGrid() {
                 </div>
 
             </div>
+            <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
         </section>
     );
 }
