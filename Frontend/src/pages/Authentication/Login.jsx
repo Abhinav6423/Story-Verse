@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/Authcontext.js";
 import { loginUser } from "../../Api-calls/login.js";
 import { toast } from "react-toastify";
-import { Loader2 } from "lucide-react"; // Import spinner icon
-import AuthImg from "../../Assets/AuthImg.png";
+import AuthImg from "../../Assets/AuthImg.webp";
 import logo from "../../Assets/logo.png";
+import Loader from "../../components/Loader.jsx"; // Ensure this is your Book Loader
+
 const Login = () => {
   const { reloadUserData, user } = useAuth();
   const navigate = useNavigate();
@@ -26,12 +27,19 @@ const Login = () => {
     e.preventDefault();
     if (loading) return;
 
-    setLoading(true);
+    setLoading(true); // 🟢 Triggers the full screen Loader
+
     try {
-      const result = await loginUser(email, password);
+      // Add a minimum delay (e.g., 800ms) so the book animation 
+      // has time to play at least once, making it feel smoother.
+      const [result] = await Promise.all([
+        loginUser(email, password),
+        new Promise(resolve => setTimeout(resolve, 800))
+      ]);
 
       if (!result?.success) {
         toast.error(result?.message || "Login failed");
+        setLoading(false); // 🔴 Turn off loader if failed so form comes back
         return;
       }
 
@@ -40,16 +48,19 @@ const Login = () => {
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong");
-    } finally {
       setLoading(false);
     }
   };
 
   /* ---------------- GOOGLE LOGIN (Optional) ---------------- */
   const handleGoogleLogin = () => {
-    // Ensure this matches your Backend API route for Google OAuth
     window.location.href = "http://localhost:5000/api/auth/google";
   };
+
+  // ✅ SHOW LOADER IF LOGGING IN
+  if (loading) {
+    return <Loader text="Opening Story-Verse..." />;
+  }
 
   return (
     <div className="h-screen w-full bg-[#0b1f1a] overflow-hidden relative flex">
@@ -64,14 +75,14 @@ const Login = () => {
             src={logo}
             alt="Preface Logo"
             className="
-        w-16 h-16 sm:w-20 sm:h-20
-        object-contain
-        filter brightness-110 contrast-125
-        drop-shadow-[0_5px_15px_rgba(0,0,0,0.6)]
-        transition-all duration-500
-        group-hover:rotate-6
-        group-hover:drop-shadow-[0_0_20px_rgba(52,211,153,0.6)]
-      "
+                w-16 h-16 sm:w-20 sm:h-20
+                object-contain
+                filter brightness-110 contrast-125
+                drop-shadow-[0_5px_15px_rgba(0,0,0,0.6)]
+                transition-all duration-500
+                group-hover:rotate-6
+                group-hover:drop-shadow-[0_0_20px_rgba(52,211,153,0.6)]
+            "
           />
         </Link>
       </div>
@@ -133,19 +144,17 @@ const Login = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading}
               className={`
                 w-full flex items-center justify-center gap-2
                 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3.5 
                 text-sm font-bold tracking-wide transition-all shadow-lg shadow-emerald-900/20
-                ${loading ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-0.5"}
+                hover:-translate-y-0.5 active:scale-95
               `}
             >
-              {loading && <Loader2 className="animate-spin" size={18} />}
-              {loading ? "Signing in..." : "Sign in"}
+              Sign in
             </button>
 
-            {/* Google Button (Optional - Uncomment if backend is ready) */}
+            {/* Optional Google Button */}
             {/* <button
               type="button"
               onClick={handleGoogleLogin}
@@ -153,8 +162,7 @@ const Login = () => {
             >
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
               Sign in with Google
-            </button> 
-            */}
+            </button> */}
 
           </form>
 

@@ -4,7 +4,7 @@ import { signupUser } from "../../Api-calls/register.js";
 import { toast } from "react-toastify";
 import { Loader2 } from "lucide-react"; // Import spinner
 import { useAuth } from "../../context/Authcontext.js"; // Import Auth for redirect check
-import AuthImg from "../../Assets/AuthImg.png";
+import AuthImg from "../../Assets/AuthImg.webp";
 import logo from "../../Assets/logo.png";
 const Register = () => {
   const navigate = useNavigate();
