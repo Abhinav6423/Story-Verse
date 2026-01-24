@@ -2,6 +2,8 @@ import React, { memo } from "react";
 import { ThumbsUp } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+// 1. Import your optimization helper
+import { getOptimizedUrl, getBlurPlaceholder } from "../../utils/cloudinaryHelper";
 
 const GoodReadShortStoryCard = ({ story }) => {
     return (
@@ -22,9 +24,12 @@ const GoodReadShortStoryCard = ({ story }) => {
                 >
                     {story?.coverImage ? (
                         <LazyLoadImage
-                            src={story.coverImage}
+                            // 2. OPTIMIZE: Resize to 400px (standard card width)
+                            src={getOptimizedUrl(story.coverImage, 400)}
                             alt={story.title}
                             effect="blur"
+                            // 3. OPTIMIZE: Tiny 30px blur placeholder
+                            placeholderSrc={getBlurPlaceholder(story.coverImage)}
                             /* CRITICAL FIX: Forces wrapper to fill the aspect ratio container */
                             wrapperClassName="w-full h-full !block"
                             className="
@@ -82,7 +87,8 @@ const GoodReadShortStoryCard = ({ story }) => {
                     {/* AUTHOR */}
                     <div className="flex items-center gap-2">
                         <img
-                            src={story?.author?.profilePic}
+                            // 4. OPTIMIZE: Resize avatar to 50px
+                            src={getOptimizedUrl(story?.author?.profilePic, 50) || "default-avatar.png"}
                             alt={story?.author?.username || "Author"}
                             /* Performance: Explicit dimensions */
                             width="20"

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { memo } from "react";
 import { ThumbsUp } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+// 1. Import your optimization helper
+import { getOptimizedUrl, getBlurPlaceholder } from "../../utils/cloudinaryHelper";
 
 function HomeGoodReadCard({ story, rank }) {
   return (
@@ -20,15 +22,17 @@ function HomeGoodReadCard({ story, rank }) {
       "
     >
       {/* COVER IMAGE CONTAINER */}
-      {/* Fixed width/height ensures no layout shift (CLS) */}
+      {/* Fixed width (80px) / height (100px) */}
       <div className="w-[80px] h-[100px] flex-shrink-0 rounded-lg overflow-hidden bg-gray-800">
         {story?.coverImage ? (
           <LazyLoadImage
-            src={story.coverImage}
+            // 2. OPTIMIZE: Fetch only 150px width (2x for retina sharpness)
+            src={getOptimizedUrl(story.coverImage, 150)}
             alt={story.title}
             effect="blur"
-            /* IMPORTANT: This library creates a wrapper <span>. 
-               We must force that wrapper to fill the parent div. */
+            // 3. OPTIMIZE: Tiny 30px blur placeholder
+            placeholderSrc={getBlurPlaceholder(story.coverImage)}
+            /* Force wrapper to fill parent */
             wrapperClassName="w-full h-full !block"
             className="
               w-full
@@ -53,7 +57,7 @@ function HomeGoodReadCard({ story, rank }) {
 
         {/* TOP section */}
         <div className="space-y-1.5">
-          {/* TITLE: Use CSS truncate instead of JS slice for better performance */}
+          {/* TITLE */}
           <h3 className="text-sm font-semibold text-white leading-[1.25] truncate">
             {story.title}
           </h3>
@@ -61,9 +65,9 @@ function HomeGoodReadCard({ story, rank }) {
           {/* AUTHOR */}
           <div className="flex items-center gap-2">
             <img
-              src={story.author?.profilePic}
+              // 4. OPTIMIZE: Fetch tiny 50px avatar
+              src={getOptimizedUrl(story.author?.profilePic, 50) || "default-avatar.png"}
               alt={story.author?.username || "Author"}
-              /* PERFORMANCE: Explicit width/height prevents layout shift */
               width="20"
               height="20"
               loading="lazy"
@@ -85,4 +89,5 @@ function HomeGoodReadCard({ story, rank }) {
   );
 }
 
-export default HomeGoodReadCard;
+// 5. Use memo to prevent re-renders in long lists
+export default memo(HomeGoodReadCard);

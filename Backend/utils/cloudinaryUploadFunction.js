@@ -16,6 +16,12 @@ export const uploadToCloudinary = async (file, folder = "uploads") => {
 
   const result = await cloudinary.uploader.upload(dataUri, {
     folder,
+    // Optimization during upload:
+    transformation: [
+      { width: 1000, crop: "limit" }, // Resize only if larger than 1000px
+      { quality: "auto" },            // Apply auto-compression
+      { fetch_format: "auto" }        // Convert to modern formats
+    ]
   });
 
   return {
