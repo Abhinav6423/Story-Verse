@@ -1,8 +1,8 @@
-# 🚀 Booki — Turning Stories into Learning Experiences
+# 🚀 Preface — Turning Stories into Learning Experiences
 
 > A story platform that rewards comprehension, not scrolling.
 
-Booki is a learning-driven story media platform designed to solve a fundamental problem in today’s content economy:  
+Preface is a learning-driven story media platform designed to solve a fundamental problem in today’s content economy:  
 **people consume a lot of content, but retain very little from it.**
 
 Instead of rewarding time spent or endless scrolling, Booki rewards **understanding**.
@@ -29,7 +29,7 @@ Stories are powerful — but today, they are consumed **without reflection**.
 
 ## ✅ The Solution
 
-**Booki transforms storytelling into an active learning experience.**
+**Preface transforms storytelling into an active learning experience.**
 
 Every story ends with a simple question.
 Readers earn progress **only if they understand what they read**.
@@ -42,7 +42,7 @@ This creates:
 
 ---
 
-## 🎯 How Booki Works
+## 🎯 How Preface Works
 
 1. **Creators** write short stories and attach a final question
 2. **Readers** read the story and submit an answer
@@ -57,7 +57,7 @@ Only progress through comprehension.
 
 ## 🎮 Gamification Engine
 
-Booki uses lightweight but powerful gamification:
+Preface uses lightweight but powerful gamification:
 
 - XP-based progression
 - Level thresholds
@@ -77,13 +77,13 @@ Gamification is not decorative — it’s **functional and behavioral**.
 | Vanity metrics               | Learning metrics          |
 | Engagement without retention | Engagement with retention |
 
-Booki doesn’t fight attention spans — it **respects them**.
+Preface doesn’t fight attention spans — it **respects them**.
 
 ---
 
 ## 🧩 Product Vision
 
-Booki is designed to evolve into:
+Preface is designed to evolve into:
 
 - A **learning-first content platform**
 - A **story-based microlearning system**
@@ -100,7 +100,7 @@ Potential verticals:
 
 ## 🛠️ Technology & Architecture
 
-Booki is built on a scalable, production-ready stack:
+Preface is built on a scalable, production-ready stack:
 
 ### Frontend
 
@@ -146,7 +146,7 @@ The system is designed to scale from **portfolio → MVP → startup**.
 **Abhinav Pandey**  
 Full-Stack Developer
 
-Built Booki as:
+Built Preface as:
 
 - A product experiment
 - A learning system
@@ -154,13 +154,13 @@ Built Booki as:
 
 ---
 
-## ⭐ Why Booki Matters
+## ⭐ Why Prefcae Matters
 
 Booki is not a reading app.  
 It’s not a quiz app.  
 It’s not a social platform.
 
-**Booki is a system designed to make learning unavoidable — in a good way.**
+**Preface is a system designed to make learning unavoidable — in a good way.**
 
 This repository represents:
 
