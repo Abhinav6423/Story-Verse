@@ -1,13 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Pencil } from "lucide-react";
+import { Pencil, User, BookOpen, Star, Trophy, Layers } from "lucide-react";
 import { toast } from "react-toastify";
 
 import { useAuth } from "../../context/Authcontext.js";
 import { getUserProfileData } from "../../Api-calls/getUserProfileData.js";
 
-import Loader from "../../components/Loader.jsx";
 import MyStories from "../../components/Profile/MyStories.jsx";
 import UpdateProfile from "../../components/Profile/UpdateProfile.jsx";
+import books from "../../Assets/books aesthetic.jpg"
+// 1. Skeleton Component for smoother loading
+const ProfileSkeleton = () => (
+    <div className="min-h-screen bg-[#1A1A1A] animate-pulse">
+        <div className="h-36 sm:h-56 w-full bg-gray-800" /> {/* Cover */}
+        <div className="px-4 sm:px-10 max-w-7xl mx-auto -mt-20">
+            <div className="flex flex-col items-center lg:flex-row lg:items-end lg:gap-8">
+                <div className="w-40 h-40 rounded-full bg-gray-700 border-4 border-[#1A1A1A]" /> {/* Avatar */}
+                <div className="mt-4 lg:mb-4 space-y-2 text-center lg:text-left">
+                    <div className="h-8 w-48 bg-gray-700 rounded mx-auto lg:mx-0" />
+                    <div className="h-4 w-32 bg-gray-800 rounded mx-auto lg:mx-0" />
+                </div>
+            </div>
+            <div className="mt-8 flex gap-4 justify-center lg:justify-start">
+                {[1, 2, 3, 4].map(i => <div key={i} className="h-16 w-20 bg-gray-800 rounded" />)}
+            </div>
+        </div>
+    </div>
+);
 
 const UserProfile = () => {
     const { userData, loading: authLoading } = useAuth();
@@ -17,7 +35,11 @@ const UserProfile = () => {
     const [showUpdateProfile, setShowUpdateProfile] = useState(false);
 
     useEffect(() => {
-        if (authLoading || !userData) return; // ⛔ WAIT
+        if (authLoading) return;
+        if (!userData) {
+            setLoading(false);
+            return;
+        }
 
         const fetchProfile = async () => {
             try {
@@ -38,82 +60,100 @@ const UserProfile = () => {
     }, [authLoading, userData]);
 
 
-    if (loading) return <Loader />;
+    if (loading || authLoading) return <ProfileSkeleton />;
 
     return (
         <>
             {/* ================= PROFILE PAGE ================= */}
             <div
-                className="min-h-screen bg-[#1A1A1A]  text-white"
-                style={{ paddingBottom: "var(--mobile-bottom-nav-height)" }}
+                className="min-h-screen bg-[#1A1A1A] text-white pb-20 md:pb-8"
             >
-                {/* COVER */}
-                <div className="relative h-36 sm:h-56 w-full">
+                {/* COVER IMAGE */}
+                <div className="relative h-40 sm:h-60 w-full bg-gray-800">
                     <img
-                        src={
-                            userData?.coverPic ||
-                            "https://i.pinimg.com/1200x/9e/23/f0/9e23f0e8bacb5f03ad6418a3bdd1727b.jpg"
-                        }
-                        alt="cover"
-                        className="w-full h-full object-cover"
+                        src={books}
+                        alt="Cover"
+                        className="w-full h-full object-cover opacity-80"
                     />
+                    {/* Gradient Overlay for text readability if you add cover text later */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
                 </div>
 
                 {/* PROFILE CONTENT */}
-                <div className="px-4 sm:px-10 max-w-7xl mx-auto">
-                    {/* PROFILE HEADER */}
-                    <div className="relative -mt-20 flex flex-col items-center text-center lg:grid lg:grid-cols-[auto_1fr] lg:items-end lg:text-left lg:gap-24">
+                <div className="px-4 sm:px-10 max-w-7xl mx-auto relative z-10">
 
-                        {/* AVATAR + NAME */}
-                        <div className="flex flex-col items-center lg:items-start">
-                            <div className="relative w-40 h-40">
-                                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-[#1A1A1A] shadow-md">
+                    {/* PROFILE HEADER LAYOUT */}
+                    <div className="flex flex-col items-center lg:flex-row lg:items-end lg:justify-between -mt-20 mb-8">
+
+                        {/* LEFT: AVATAR + NAME */}
+                        <div className="flex flex-col items-center lg:flex-row lg:items-end gap-4 lg:gap-8">
+
+                            {/* Avatar Circle */}
+                            <div className="relative group">
+                                <div className="w-36 h-36 sm:w-40 sm:h-40 rounded-full overflow-hidden border-[5px] border-[#1A1A1A] bg-[#2a2a2a] shadow-xl">
                                     <img
                                         src={userData?.profilePic}
-                                        alt="profile"
+                                        alt="Profile"
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
 
-                                {/* ✏️ EDIT ICON */}
+                                {/* Edit Button (Desktop hover / Mobile always visible) */}
                                 <button
                                     onClick={() => setShowUpdateProfile(true)}
-                                    className="absolute bottom-2 right-2 bg-emerald-500 p-2 rounded-full shadow-md hover:bg-emerald-400 transition"
+                                    className="
+                                        absolute bottom-2 right-2 
+                                        bg-emerald-600 text-white 
+                                        p-2.5 rounded-full shadow-lg border-4 border-[#1A1A1A]
+                                        hover:bg-emerald-500 hover:scale-110 transition-all
+                                        group-hover:opacity-100
+                                    "
                                     aria-label="Edit Profile"
                                 >
-                                    <Pencil size={16} className="text-black" />
+                                    <Pencil size={16} />
                                 </button>
                             </div>
 
-                            <h1 className="mt-4 text-2xl font-medium text-white">
-                                {userData?.username}
-                            </h1>
-
-                            <p className="text-white font-medium text-sm mt-1">
-                                Story Writer • Reader
-                            </p>
+                            {/* Name & Tagline */}
+                            <div className="text-center lg:text-left mb-2 lg:mb-4">
+                                <h1 className="text-3xl font-bold text-white tracking-tight">
+                                    {userData?.username || "StoryFlix User"}
+                                </h1>
+                                <p className="text-emerald-400/80 font-medium text-sm flex items-center justify-center lg:justify-start gap-1.5 mt-1">
+                                    <User size={14} />
+                                    <span>Writer & Reader</span>
+                                </p>
+                            </div>
                         </div>
 
-                        {/* STATS */}
-                        <div className="mt-6 grid grid-cols-3 gap-y-6 gap-x-10 lg:mt-0 lg:flex lg:items-center lg:gap-8">
-                            <Stat label="Stories" value={userStats?.totalShortStoriesCreated || 0} />
+                        {/* RIGHT: STATS GRID */}
+                        {/* Optimized grid for mobile: 2 rows of 3, or flex wrap */}
+                        <div className="
+                            mt-8 lg:mt-0 
+                            bg-white/5 border border-white/5 rounded-2xl 
+                            p-4 sm:p-6
+                            grid grid-cols-3 gap-x-8 gap-y-4
+                            lg:flex lg:gap-8
+                            backdrop-blur-sm
+                        ">
+                            <Stat icon={BookOpen} label="Created" value={userStats?.totalShortStoriesCreated} />
                             <Divider />
-                            <Stat label="Reads" value={userStats?.totalShortStoriesRead || 0} />
+                            <Stat icon={Layers} label="Reads" value={userStats?.totalShortStoriesRead} />
                             <Divider />
-                            <Stat label="Chapters+" value={userStats?.totalChaptersCreated || 0} />
+                            <Stat icon={Trophy} label="Level" value={userStats?.level} />
                             <Divider />
-                            <Stat label="Chapters-" value={userStats?.totalChaptersRead || 0} />
-                            <Divider />
-                            <Stat label="Level" value={userStats?.level || 0} />
-                            <Divider />
-                            <Stat label="XP" value={userStats?.xp || 0} />
+                            <Stat icon={Star} label="XP" value={userStats?.xp} />
                         </div>
                     </div>
 
-                    <div className="w-full h-px bg-gray-400 mt-9 sm:mt-15" />
+                    {/* DIVIDER */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-8" />
 
-                    {/* STORIES */}
-                    <MyStories />
+                    {/* STORIES SECTION */}
+                    {/* MyStories handles its own loading state */}
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <MyStories />
+                    </div>
                 </div>
             </div>
 
@@ -127,17 +167,22 @@ const UserProfile = () => {
 
 /* ---------- SUB COMPONENTS ---------- */
 
-const Stat = ({ label, value }) => (
-    <div className="min-w-[80px] flex flex-col items-center">
-        <p className="text-xl font-bold text-white">{value}</p>
-        <p className="text-xs font-semibold text-white uppercase tracking-wide mt-1">
+const Stat = ({ icon: Icon, label, value }) => (
+    <div className="flex flex-col items-center justify-center min-w-[60px]">
+        <div className="text-emerald-500/80 mb-1 lg:hidden">
+            {Icon && <Icon size={18} />}
+        </div>
+        <p className="text-xl sm:text-2xl font-bold text-white leading-none">
+            {value || 0}
+        </p>
+        <p className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider mt-1">
             {label}
         </p>
     </div>
 );
 
 const Divider = () => (
-    <div className="hidden lg:block h-8 w-px bg-gray-300" />
+    <div className="hidden lg:block h-10 w-px bg-white/10" />
 );
 
 export default UserProfile;

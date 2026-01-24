@@ -1,31 +1,56 @@
-import React from "react";
+import React, { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Compass } from "lucide-react";
+import { Compass, AlertCircle } from "lucide-react";
 import ShortStoryCard from "./ShortStoryCard.jsx";
 import { listFeedShortStory } from "../../Api-calls/homeFeedShortStoryList.js";
-import Loader from "../Loader.jsx";
 import { Link } from "react-router-dom";
+
+// 1. Skeleton Component to Prevent CLS
+const SkeletonGrid = () => (
+    <div className="mt-0 sm:mt-15 bg-transparent animate-pulse">
+        {/* Header Skeleton */}
+        <div className="mb-8 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-emerald-900/30" />
+            <div className="h-8 w-48 bg-emerald-900/30 rounded" />
+        </div>
+
+        {/* Grid Skeleton */}
+        <div className="
+      grid gap-4 
+      grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
+    ">
+            {/* Show 12 skeleton cards */}
+            {Array.from({ length: 12 }).map((_, i) => (
+                <div key={i} className="aspect-[2/3] bg-gray-800 rounded-xl" />
+            ))}
+        </div>
+    </div>
+);
 
 const ShortStoryGrid = () => {
     /* ================= DATA FETCH ================= */
     const { isLoading, data, error } = useQuery({
         queryKey: ["shortStories"],
         queryFn: listFeedShortStory,
+        /* 'placeholderData: (prev) => prev' is the modern replacement 
+           for 'keepPreviousData: true' in TanStack Query v5.
+           If you are on v4, keep 'keepPreviousData: true'.
+        */
         keepPreviousData: true,
         refetchOnWindowFocus: false,
-        staleTime: 5000,
+        staleTime: 1000 * 60 * 5, // 5 minutes (increased from 5s to reduce fetch frequency)
     });
-
-    console.log(data?.shortStory)
 
     const stories = data?.shortStory || [];
 
-    if (isLoading) return <Loader />;
+    // 2. Use Skeleton instead of Spinner
+    if (isLoading) return <SkeletonGrid />;
 
     if (error) {
         return (
-            <div className="text-center text-red-500 py-10">
-                {error.message}
+            <div className="text-center text-red-400 py-10 flex flex-col items-center gap-2">
+                <AlertCircle size={24} />
+                <p>Unable to load stories.</p>
             </div>
         );
     }
@@ -34,45 +59,46 @@ const ShortStoryGrid = () => {
         <div className="mt-0 sm:mt-15 bg-transparent">
             {/* ================= SECTION HEADER ================= */}
             <div className="mb-8 flex items-center gap-3">
-                <span
-                    className="
-      w-10 h-10
-      rounded-full
-      bg-emerald-500/15
-      flex items-center justify-center
-    "
-                >
+                <span className="
+                    w-10 h-10
+                    rounded-full
+                    bg-emerald-500/15
+                    flex items-center justify-center
+                ">
                     <Compass size={22} className="text-emerald-400" />
                 </span>
 
-                <h2
-                    className="
-      text-2xl font-medium text-white tracking-tight
-    "
-                >
+                <h2 className="text-2xl font-medium text-white tracking-tight">
                     Fresh Reads
                 </h2>
             </div>
 
-
             {/* ================= STORY GRID ================= */}
-            <div
-                className="
-          grid
-          gap-2 
-          grid-cols-2
-          sm:grid-cols-3
-          md:grid-cols-4
-          lg:grid-cols-5
-          xl:grid-cols-6
-        "
-            >
+            <div className="
+                grid
+                gap-4 
+                grid-cols-2
+                sm:grid-cols-3
+                md:grid-cols-4
+                lg:grid-cols-5
+                xl:grid-cols-6
+            ">
                 {stories.map((story) => (
-                    <Link to={`/story/${story?._id}`} key={story?.id}><ShortStoryCard story={story} /></Link>
+                    <Link
+                        to={`/story/${story?._id}`}
+                        /* KEY FIX: Ensure this is unique. Use _id from Mongo */
+                        key={story?._id}
+                        className="block" // specific fix for Link layout issues
+                    >
+                        {/* Ensure ShortStoryCard has optimized images 
+                           (width/height attributes) 
+                        */}
+                        <ShortStoryCard story={story} />
+                    </Link>
                 ))}
             </div>
         </div>
     );
 };
 
-export default ShortStoryGrid;
+export default memo(ShortStoryGrid);

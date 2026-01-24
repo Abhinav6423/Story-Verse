@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/Authcontext.js";
 import { loginUser } from "../../Api-calls/login.js";
 import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react"; // Import spinner icon
 import AuthImg from "../../Assets/AuthImg.png";
-import Loader from "../../components/Loader.jsx";
-
+import logo from "../../Assets/logo.png";
 const Login = () => {
   const { reloadUserData, user } = useAuth();
   const navigate = useNavigate();
@@ -45,110 +45,151 @@ const Login = () => {
     }
   };
 
-  if (loading) return <Loader />
+  /* ---------------- GOOGLE LOGIN (Optional) ---------------- */
+  const handleGoogleLogin = () => {
+    // Ensure this matches your Backend API route for Google OAuth
+    window.location.href = "http://localhost:5000/api/auth/google";
+  };
 
   return (
-    <div className="h-screen w-full bg-[#0b1f1a] overflow-hidden relative">
+    <div className="h-screen w-full bg-[#0b1f1a] overflow-hidden relative flex">
+
       {/* LOGO */}
-      <div className="absolute top-6 left-[2%] z-20">
-        <Link to="/" className="text-white text-xl font-serif font-semibold">
-          StoryFlix
+      <div className="absolute top-6 right-6 z-30">
+        <Link
+          to="/"
+          className="block group transition-transform duration-300 hover:scale-110"
+        >
+          <img
+            src={logo}
+            alt="Preface Logo"
+            className="
+        w-16 h-16 sm:w-20 sm:h-20
+        object-contain
+        filter brightness-110 contrast-125
+        drop-shadow-[0_5px_15px_rgba(0,0,0,0.6)]
+        transition-all duration-500
+        group-hover:rotate-6
+        group-hover:drop-shadow-[0_0_20px_rgba(52,211,153,0.6)]
+      "
+          />
         </Link>
       </div>
 
-      <div className="h-full flex">
-        {/* LEFT LOGIN PANEL */}
-        <div className="w-full lg:w-[45%] flex items-center justify-center px-4 sm:px-6 lg:px-10">
-          <div className="w-full max-w-md lg:max-w-lg rounded-2xl backdrop-blur-xl px-6 lg:px-10 py-8 lg:py-10">
+      {/* LEFT LOGIN PANEL */}
+      <div className="w-full lg:w-[45%] flex items-center justify-center px-4 sm:px-6 lg:px-10 relative z-10">
+        <div className="w-full max-w-md lg:max-w-lg">
 
-            {/* Heading */}
-            <h2 className="text-[26px] sm:text-[30px] lg:text-[32px] text-center font-medium text-white mb-6 sm:mb-8 tracking-tight">
+          {/* Heading */}
+          <div className="mb-8 text-center lg:text-left">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-2">
               Welcome back
             </h2>
-
-            <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
-              {/* Email */}
-              <div>
-                <label className="block text-[11px] sm:text-[12px] text-gray-400 mb-2">
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  placeholder="Enter email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-4 py-2.5 sm:py-3 text-sm sm:text-[15px] text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
-                />
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="block text-[11px] sm:text-[12px] text-gray-400 mb-2">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full bg-transparent border border-gray-600/70 rounded-lg px-4 py-2.5 sm:py-3 text-sm sm:text-[15px] text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
-                />
-
-                {/* Forgot password */}
-                <div className="text-right mt-2">
-                  <Link
-                    to="/forgot-password"
-                    className="text-[11px] sm:text-[12px] text-gray-400 hover:text-emerald-400 transition"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-              </div>
-
-              {/* Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg py-2.5 sm:py-3 text-sm sm:text-[15px] font-medium transition disabled:opacity-60 mt-2"
-              >
-                Login User
-              </button>
-            </form>
-
-            {/* Register */}
-            <p className="text-center text-[11px] sm:text-[12px] text-gray-400 mt-5">
-              Don’t have an account?{" "}
-              <Link to="/register" className="text-emerald-400 font-medium">
-                Register User
-              </Link>
+            <p className="text-gray-400 text-sm">
+              Please enter your details to sign in.
             </p>
+          </div>
 
-            {/* Verification Info */}
-            <div className="mt-5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-3">
-              <p className="text-[11px] sm:text-[12px] text-emerald-200 leading-relaxed">
-                A verification email has been sent to your registered email address.
-                If you don’t see it in your inbox, please check your spam or junk folder.
-              </p>
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            {/* Email */}
+            <div>
+              <label className="block text-xs font-medium text-gray-300 mb-1.5 uppercase tracking-wide">
+                Email address
+              </label>
+              <input
+                type="email"
+                placeholder="Enter email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full bg-[#081612] border border-gray-700 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+              />
             </div>
 
-          </div>
-        </div>
+            {/* Password */}
+            <div>
+              <label className="block text-xs font-medium text-gray-300 mb-1.5 uppercase tracking-wide">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full bg-[#081612] border border-gray-700 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+              />
 
-        {/* RIGHT IMAGE GRID (ONLY LAPTOP & BIG SCREENS) */}
-        <div className="hidden lg:block lg:w-[55%]">
-          <img
-            src={AuthImg}
-            alt="Story covers"
-            className="w-full h-full object-cover object-right"
-          />
+              <div className="text-right mt-2">
+                <Link
+                  to="/forgot-password"
+                  className="text-xs text-gray-400 hover:text-emerald-400 transition font-medium"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`
+                w-full flex items-center justify-center gap-2
+                bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl py-3.5 
+                text-sm font-bold tracking-wide transition-all shadow-lg shadow-emerald-900/20
+                ${loading ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-0.5"}
+              `}
+            >
+              {loading && <Loader2 className="animate-spin" size={18} />}
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+
+            {/* Google Button (Optional - Uncomment if backend is ready) */}
+            {/* <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center gap-2 bg-white text-black rounded-xl py-3.5 text-sm font-bold transition-transform hover:-translate-y-0.5"
+            >
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
+              Sign in with Google
+            </button> 
+            */}
+
+          </form>
+
+          {/* Footer */}
+          <p className="text-center text-sm text-gray-400 mt-8">
+            Don’t have an account?{" "}
+            <Link to="/register" className="text-emerald-400 font-semibold hover:text-emerald-300 transition">
+              Sign up for free
+            </Link>
+          </p>
+
+          {/* Verification Warning */}
+          <div className="mt-8 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex gap-3 items-start">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
+            <p className="text-xs text-emerald-200/80 leading-relaxed">
+              If you just registered, please check your inbox (and spam folder) for the verification link before logging in.
+            </p>
+          </div>
+
         </div>
       </div>
+
+      {/* RIGHT IMAGE GRID (Lazy Loaded) */}
+      <div className="hidden lg:block lg:w-[55%] h-full relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1a] to-transparent z-10" />
+        <img
+          src={AuthImg}
+          loading="lazy"
+          alt="Story covers collage"
+          className="w-full h-full object-cover object-right opacity-90"
+        />
+      </div>
+
     </div>
   );
-
-
 };
 
 export default Login;

@@ -1,121 +1,89 @@
+import React, { useMemo } from "react";
 import { Home, PlusCircle, Grid, User } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import CategoryPopup from "./CategoryPopup.jsx";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const MobileBottomNav = ({ showBrowse, setShowBrowse, onAnyNavClick }) => {
+const MobileBottomNav = ({ showBrowse, setShowBrowse, onCloseBrowse }) => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const navItems = [
-        { label: "Home", icon: Home, path: "/home" },
-        { label: "Write", icon: PlusCircle, path: "/create" },
+    const navItems = useMemo(() => [
+        { label: "Home", icon: Home, path: "/home", action: "navigate" },
+        { label: "Write", icon: PlusCircle, path: "/create", action: "navigate" },
         { label: "Browse", icon: Grid, action: "browse" },
-        { label: "Profile", icon: User, path: "/profile" },
-    ];
+        { label: "Profile", icon: User, path: "/profile", action: "navigate" },
+    ], []);
 
-    const handleBrowseClick = () => {
-        setShowBrowse((prev) => !prev);
-    };
-
-    const handleNavClick = (path) => {
-        setShowBrowse(false);
-        navigate(path);
+    const handleNavClick = (item) => {
+        if (item.action === "browse") {
+            // Toggle popup
+            setShowBrowse();
+        } else {
+            // Force close popup for all other tabs
+            onCloseBrowse();
+            navigate(item.path);
+        }
     };
 
     return (
-        <>
-            {/* MOBILE BOTTOM NAV */}
-            <nav
-                className="
-        fixed bottom-0 left-0 right-0
-        z-50 md:hidden
-        bg-[#0b1412]
-        border-t border-[#1f3d36]
-        shadow-[0_-10px_30px_rgba(0,0,0,0.6)]
-      "
-            >
-                <div className="flex justify-around items-center h-16">
-                    {navItems.map(({ label, icon: Icon, path, action }) => {
-                        const isActive = path && location.pathname === path;
+        <nav
+            className="
+                fixed bottom-0 left-0 right-0
+                z-50 md:hidden
+                bg-[#0b1412]
+                border-t border-[#1f3d36]
+                shadow-[0_-10px_30px_rgba(0,0,0,0.6)]
+                h-16
+                pb-safe 
+            "
+        >
+            <div className="flex justify-between items-center h-full w-full">
+                {navItems.map((item) => {
+                    const isActive = item.path && location.pathname === item.path;
+                    const isActiveBrowse = item.action === "browse" && showBrowse;
+                    const active = isActive || isActiveBrowse;
 
-                        const active = isActive || (action === "browse" && showBrowse);
+                    return (
+                        <button
+                            key={item.label}
+                            onClick={(e) => {
+                                if (item.action === "browse") e.stopPropagation();
+                                handleNavClick(item);
+                            }}
+                            className="
+                                group relative w-full h-full
+                                flex flex-col items-center justify-center gap-1
+                                active:scale-95 transition-transform duration-100
+                            "
+                        >
+                            {active && (
+                                <span className="absolute top-2 w-1 h-1 bg-emerald-400 rounded-full shadow-[0_0_8px_#34d399]" />
+                            )}
 
-                        // BROWSE BUTTON
-                        if (action === "browse") {
-                            return (
-                                <button
-                                    key={label}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleBrowseClick();
-                                    }}
-                                    className="flex flex-col items-center gap-1 text-xs"
-                                >
-                                    <Icon
-                                        size={22}
-                                        strokeWidth={2}
-                                        className={
-                                            active
-                                                ? "text-emerald-400 drop-shadow-[0_0_6px_rgba(52,211,153,0.6)]"
-                                                : "text-[#6b8f83]"
-                                        }
-                                    />
-                                    <span
-                                        className={
-                                            active
-                                                ? "text-emerald-400"
-                                                : "text-[#6b8f83]"
-                                        }
-                                    >
-                                        {label}
-                                    </span>
-                                </button>
-                            );
-                        }
-
-                        // NORMAL NAV BUTTON
-                        return (
-                            <button
-                                key={label}
-                                onClick={() => handleNavClick(path)}
-                                className="flex flex-col items-center gap-1 text-xs"
+                            <item.icon
+                                size={24}
+                                strokeWidth={active ? 2.5 : 2}
+                                className={`
+                                    transition-colors duration-300
+                                    ${active
+                                        ? "text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"
+                                        : "text-[#6b8f83] group-hover:text-gray-300"
+                                    }
+                                `}
+                            />
+                            <span
+                                className={`
+                                    text-[10px] font-medium tracking-wide transition-colors duration-300
+                                    ${active ? "text-emerald-400" : "text-[#6b8f83] group-hover:text-gray-300"}
+                                `}
                             >
-                                <Icon
-                                    size={22}
-                                    strokeWidth={2}
-                                    className={
-                                        active
-                                            ? "text-emerald-400 drop-shadow-[0_0_6px_rgba(52,211,153,0.6)]"
-                                            : "text-[#6b8f83]"
-                                    }
-                                />
-                                <span
-                                    className={
-                                        active
-                                            ? "text-emerald-400"
-                                            : "text-[#6b8f83]"
-                                    }
-                                >
-                                    {label}
-                                </span>
-                            </button>
-                        );
-                    })}
-                </div>
-            </nav>
-
-            {/* CATEGORY POPUP */}
-            <CategoryPopup
-                open={showBrowse}
-                onClose={() => setShowBrowse(false)}
-                onSelect={(category) => {
-                    setShowBrowse(false);
-                    navigate(`/home?category=${category}`);
-                }}
-            />
-        </>
+                                {item.label}
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
+        </nav>
     );
-
 };
 
 export default MobileBottomNav;

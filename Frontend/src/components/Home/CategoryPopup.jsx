@@ -1,44 +1,48 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { categories } from "../../utils/Categories.jsx";
 
 const CategoryPopup = ({ open, onClose, onSelect }) => {
-  const popupRef = useRef(null);
 
-  /* BODY SCROLL LOCK */
+  /* LOCK BODY SCROLL */
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => (document.body.style.overflow = "");
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
   if (!open) return null;
 
-  
-  return (
+  return createPortal(
     <>
       {/* BACKDROP */}
       <div
-        className="fixed inset-0 z-40 bg-black/10 backdrop-blur-sm"
+        className="fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      {/* POPUP */}
+      {/* POPUP CONTAINER */}
       <div
-        ref={popupRef}
         className="
-        fixed z-50
-        bottom-16 sm:bottom-auto
-        left-0 sm:left-auto
-        right-0 sm:right-6
-        sm:top-20
-        w-full sm:w-[420px]
-        bg-[#0b1412]
-        rounded-t-3xl sm:rounded-2xl
-        p-4
-        border border-[#1f3d36]
-        shadow-[0_0_40px_rgba(16,185,129,0.15)]
-        animate-popup
-      "
+          fixed z-[70]
+          bottom-20 sm:bottom-auto
+          left-4 sm:left-auto
+          right-4 sm:right-6
+          sm:top-20
+          w-auto sm:w-[420px]
+          bg-[#0b1412]
+          rounded-2xl
+          p-4
+          border border-[#1f3d36]
+          shadow-[0_0_40px_rgba(16,185,129,0.15)]
+          
+          /* USE THE CUSTOM CSS CLASS HERE */
+          popup-animation
+        "
       >
         <div className="grid grid-cols-3 gap-3">
           {categories.map((cat) => {
@@ -53,34 +57,40 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
                   onClose();
                 }}
                 className="
-                group
-                flex flex-col items-center justify-center
-                gap-1
-                p-4
-                rounded-xl
-                bg-[#0f2a24]
-                border border-[#1f3d36]
-                hover:bg-[#143b33]
-                hover:border-emerald-400/40
-                hover:shadow-[0_0_20px_rgba(52,211,153,0.25)]
-                transition-all duration-200
-              "
+                  group
+                  flex flex-col items-center justify-center
+                  gap-2
+                  p-4
+                  rounded-xl
+                  bg-[#0f2a24]
+                  border border-[#1f3d36]
+                  
+                  /* HOVER EFFECTS */
+                  hover:bg-[#143b33]
+                  hover:border-emerald-400/40
+                  hover:shadow-[0_0_15px_rgba(52,211,153,0.15)]
+                  active:scale-95
+                  transition-all duration-200
+                "
               >
                 <Icon
-                  size={22}
+                  size={24}
+                  strokeWidth={2}
                   className="
-                  text-emerald-400
-                  group-hover:text-emerald-300
-                  transition
-                "
+                    text-emerald-400
+                    group-hover:text-emerald-300
+                    group-hover:scale-110
+                    transition-transform duration-200
+                  "
                 />
 
                 <span
                   className="
-                  text-sm font-medium
-                  text-emerald-100
-                  group-hover:text-emerald-50
-                "
+                    text-xs sm:text-sm font-medium
+                    text-emerald-100
+                    group-hover:text-white
+                    text-center
+                  "
                 >
                   {cat.name}
                 </span>
@@ -89,10 +99,9 @@ const CategoryPopup = ({ open, onClose, onSelect }) => {
           })}
         </div>
       </div>
-    </>
+    </>,
+    document.body
   );
-
 };
-
 
 export default CategoryPopup;

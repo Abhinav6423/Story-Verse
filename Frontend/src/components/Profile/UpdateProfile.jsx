@@ -1,45 +1,60 @@
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, Camera, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 
 import { updateProfile } from "../../Api-calls/updateProfile.js";
 import { useAuth } from "../../context/Authcontext.js";
-import Loading from "../Loader.jsx";
 
 const UpdateProfile = ({ onClose }) => {
-
+    const { userData, setUserData } = useAuth();
 
     const [profilePic, setProfilePic] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(userData?.profilePic || null);
+    const [username, setUsername] = useState(userData?.username || "");
     const [loading, setLoading] = useState(false);
 
-    const { userData, setUserData } = useAuth();
-    const [username, setUsername] = useState(() => userData?.username || "");
+    // MEMORY CLEANUP: Revoke object URL to avoid memory leaks
+    useEffect(() => {
+        return () => {
+            if (previewUrl && previewUrl !== userData?.profilePic) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl, userData]);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setProfilePic(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (loading) return;
 
         if (!username.trim() && !profilePic) {
-            toast.error("At least one field is required");
-            return;
+            return toast.error("No changes detected");
         }
 
         try {
             setLoading(true);
-
             const formData = new FormData();
-            if (username.trim()) formData.append("username", username.trim());
-            if (profilePic) formData.append("profilePic", profilePic);
+            if (username.trim() !== userData.username) {
+                formData.append("username", username.trim());
+            }
+            if (profilePic) {
+                formData.append("profilePic", profilePic);
+            }
 
             const res = await updateProfile(formData);
 
-            // ✅ always validate response
             if (!res?.user) {
-                toast.error(res?.message || "Update failed");
-                return;
+                throw new Error(res?.message || "Update failed");
             }
 
-            toast.success(res?.message || "Profile updated successfully");
+            toast.success("Profile updated successfully");
 
             setUserData((prev) => ({
                 ...prev,
@@ -47,100 +62,122 @@ const UpdateProfile = ({ onClose }) => {
             }));
 
             onClose();
-            return; // ✅ critical
         } catch (error) {
-            toast.error(
-                error?.message || "Something went wrong teri amma ka bhi"
-            );
+            console.error(error);
+            toast.error(error?.message || "Something went wrong");
         } finally {
             setLoading(false);
         }
     };
 
-
-    if (loading) return <Loading />
-
-
     return (
-        <>
-            {/* 🔮 Overlay */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* OVERLAY */}
             <div
-                className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-                onClick={onClose}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+                onClick={!loading ? onClose : undefined}
             />
 
-            {/* 🟢 Modal */}
-            <div className="fixed inset-0 flex items-center justify-center z-50">
-                <div
-                    className="w-full max-w-md rounded-2xl bg-[#0b1f16]
-          border border-emerald-500/30 shadow-2xl p-6 relative"
-                    onClick={(e) => e.stopPropagation()}
+            {/* MODAL */}
+            <div
+                className="
+                    relative w-full max-w-md 
+                    bg-[#0f1c18] border border-emerald-500/20 
+                    rounded-2xl shadow-2xl overflow-hidden
+                    animate-in fade-in zoom-in-95 duration-200
+                "
+            >
+                {/* CLOSE BUTTON */}
+                <button
+                    onClick={onClose}
+                    disabled={loading}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-white disabled:opacity-50 transition-colors z-10"
                 >
-                    {/* ❌ Close */}
-                    <button
-                        onClick={onClose}
-                        className="absolute top-4 right-4 text-gray-400 hover:text-white"
-                    >
-                        <X size={20} />
-                    </button>
+                    <X size={20} />
+                </button>
 
-                    {/* Header */}
-                    <h2 className="text-2xl font-semibold text-emerald-400 mb-1">
-                        Update Profile
-                    </h2>
-                    <p className="text-sm text-gray-400 mb-6">
-                        Change your username or profile picture
-                    </p>
+                <div className="p-6 sm:p-8">
+                    <div className="text-center mb-8">
+                        <h2 className="text-2xl font-bold text-emerald-400">Edit Profile</h2>
+                        <p className="text-sm text-gray-400 mt-1">Update your personal details</p>
+                    </div>
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Username */}
+                    <form onSubmit={handleSubmit} className="space-y-6">
+
+                        {/* IMAGE UPLOAD - PREVIEW CIRCLE */}
+                        <div className="flex justify-center">
+                            <div className="relative group">
+                                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-emerald-500/30 bg-[#0b1412]">
+                                    {previewUrl ? (
+                                        <img
+                                            src={previewUrl}
+                                            alt="Preview"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-emerald-600 font-bold text-2xl">
+                                            {username?.[0]?.toUpperCase()}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Hover Overlay / Click Area */}
+                                <label className="
+                                    absolute inset-0 flex items-center justify-center 
+                                    bg-black/50 opacity-0 group-hover:opacity-100 
+                                    transition-opacity cursor-pointer rounded-full
+                                ">
+                                    <Camera className="text-white" size={24} />
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        className="hidden"
+                                    />
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* USERNAME INPUT */}
                         <div>
-                            <label className="block text-sm text-gray-300 mb-1">
+                            <label className="block text-xs font-medium text-emerald-500/80 uppercase tracking-wider mb-2">
                                 Username
                             </label>
                             <input
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Enter new username"
-                                className="w-full rounded-lg bg-[#102a1f]
-                border border-emerald-500/30 px-4 py-2 text-white
-                focus:ring-2 focus:ring-emerald-500"
+                                placeholder="Enter username"
+                                className="
+                                    w-full bg-[#0b1412] text-white rounded-xl 
+                                    border border-emerald-500/20 px-4 py-3
+                                    focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50
+                                    placeholder:text-gray-600 transition-all
+                                "
                             />
                         </div>
 
-                        {/* Profile Pic */}
-                        <div>
-                            <label className="block text-sm text-gray-300 mb-1">
-                                Profile Picture
-                            </label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => setProfilePic(e.target.files[0])}
-                                className="w-full text-sm text-gray-300
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-lg file:border-0
-                  file:bg-emerald-500 file:text-black
-                  hover:file:bg-emerald-400"
-                            />
-                        </div>
-
-                        {/* Submit */}
+                        {/* SUBMIT BUTTON */}
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full mt-4 rounded-lg bg-emerald-500
-              py-2 font-semibold text-black hover:bg-emerald-400
-              transition disabled:opacity-60"
+                            className={`
+                                w-full flex items-center justify-center gap-2
+                                py-3 rounded-xl font-semibold text-black
+                                transition-all active:scale-[0.98]
+                                ${loading
+                                    ? "bg-emerald-700/50 cursor-not-allowed text-white/50"
+                                    : "bg-emerald-500 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                                }
+                            `}
                         >
-                            {loading ? "Saving..." : "Save Changes"}
+                            {loading && <Loader2 className="animate-spin" size={18} />}
+                            {loading ? "Saving Changes..." : "Save Changes"}
                         </button>
                     </form>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

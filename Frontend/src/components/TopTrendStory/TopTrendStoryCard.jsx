@@ -1,107 +1,114 @@
+import React, { memo } from "react";
 import { ThumbsUp, Bookmark } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 
-const StoryCard = ({ story, idx }) => {
+const TopTrendStoryCard = ({ story, idx }) => {
     return (
-        <>
-            {/* OUTER WRAPPER */}
-            <div className="relative w-full">
-                {/* RANK — RESPONSIVE BACKGROUND */}
-                <div
-                    className="
-        absolute
-        hidden sm:block
-        bottom-0
-        sm:-left-9
-        text-[4.5rem]
-        sm:text-[7rem]
-        font-extrabold
-        text-white/70
-        leading-none
-        select-none
-        pointer-events-none
-        z-0
-      "
-                >
-                    {idx + 1}
-                </div>
+        <div className="relative w-full group">
+            {/* RANK — RESPONSIVE BACKGROUND NUMBER */}
+            <div
+                className="
+                    absolute
+                    hidden sm:block
+                    bottom-0
+                    sm:-left-10
+                    text-[4.5rem]
+                    sm:text-[7rem]
+                    font-extrabold
+                    text-white/25
+                    leading-none
+                    select-none
+                    pointer-events-none
+                    z-0
+                "
+            >
+                {idx + 1}
+            </div>
 
-                {/* CARD */}
-                <div className="relative z-10 w-full bg-[#212121] rounded-xl p-2 sm:p-3">
-                    {/* POSTER */}
-                    <div
-                        className="
-          relative
-          aspect-[2/3]
-          w-full
-          rounded-xl
-          overflow-hidden
-          bg-black
-          shadow-lg
-          group
-        "
-                    >
-                        {story?.isGoodRead && (
-                            <div className="absolute top-2 right-2 z-20 bg-emerald-600 p-1.5 rounded-md">
-                                <Bookmark size={14} fill="currentColor" className="text-white" />
-                            </div>
-                        )}
+            {/* CARD */}
+            <div className="relative z-10 w-full bg-[#212121] rounded-xl p-2 sm:p-3 border border-white/5 hover:border-white/10 transition-colors">
 
-                        {story?.coverImage ? (
-                            <LazyLoadImage
-                                src={story.coverImage}
-                                alt={story.title}
-                                effect="blur"
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
-                        ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-zinc-900 text-white px-3 text-center">
-                                <h3 className="text-base sm:text-lg font-semibold line-clamp-4">
-                                    {story?.title}
-                                </h3>
-                            </div>
-                        )}
+                {/* POSTER IMAGE */}
+                <div className="
+                    relative
+                    aspect-[2/3]
+                    w-full
+                    rounded-xl
+                    overflow-hidden
+                    bg-gray-800
+                    shadow-lg
+                ">
+                    {/* Good Read Badge */}
+                    {story?.isGoodRead && (
+                        <div className="absolute top-2 right-2 z-20 bg-emerald-600 p-1.5 rounded-md shadow-md">
+                            <Bookmark size={14} fill="currentColor" className="text-white" />
+                        </div>
+                    )}
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-                    </div>
-
-                    {/* INFO */}
-                    <div className="mt-2 sm:mt-3 space-y-1">
-                        <div className="flex items-start justify-between gap-2">
-                            <h3 className="text-sm sm:text-base font-semibold text-white truncate">
+                    {story?.coverImage ? (
+                        <LazyLoadImage
+                            src={story.coverImage}
+                            alt={story.title}
+                            effect="blur"
+                            /* CLS FIX: Force wrapper to fill container */
+                            wrapperClassName="w-full h-full !block"
+                            className="
+                                w-full h-full 
+                                object-cover 
+                                transition-transform duration-500 
+                                group-hover:scale-105
+                            "
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-zinc-900 text-zinc-500 px-3 text-center">
+                            <h3 className="text-sm font-semibold line-clamp-3">
                                 {story?.title}
                             </h3>
-
-                            <div className="flex items-center gap-1 text-xs sm:text-sm text-emerald-400 shrink-0">
-                                <ThumbsUp fill="green" size={14} />
-                                <span>{story?.likes}</span>
-                            </div>
                         </div>
+                    )}
 
-                        <div className="flex items-center gap-2">
-                            <img
-                                src={story?.author?.profilePic}
-                                className="w-4 h-4 rounded-full object-cover"
-                            />
-                            <p className="text-xs sm:text-sm text-gray-400 truncate">
-                                {story?.author?.username || "Aleen Kizoff"}
-                            </p>
+                    {/* Gradient Overlay for Text Visibility */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                </div>
+
+                {/* INFO SECTION */}
+                <div className="mt-2 sm:mt-3 space-y-1.5">
+
+                    {/* Title & Likes */}
+                    <div className="flex items-start justify-between gap-2">
+                        <h3
+                            className="text-sm sm:text-base font-semibold text-white truncate"
+                            title={story?.title}
+                        >
+                            {story?.title}
+                        </h3>
+
+                        <div className="flex items-center gap-1 text-xs sm:text-sm text-emerald-400 shrink-0 font-medium">
+                            <ThumbsUp fill="currentColor" size={14} />
+                            <span>{story?.likes || 0}</span>
                         </div>
+                    </div>
+
+                    {/* Author Info */}
+                    <div className="flex items-center gap-2">
+                        <img
+                            src={story?.author?.profilePic}
+                            alt={story?.author?.username || "Author"}
+                            /* CLS FIX: Explicit width/height */
+                            width="16"
+                            height="16"
+                            loading="lazy"
+                            className="w-4 h-4 rounded-full object-cover bg-gray-700"
+                        />
+                        <p className="text-xs sm:text-sm text-gray-400 truncate">
+                            {story?.author?.username || "Unknown Author"}
+                        </p>
                     </div>
                 </div>
             </div>
-        </>
-
-
+        </div>
     );
-
-
-
-
-
-
-
 };
 
-export default StoryCard;
+export default memo(TopTrendStoryCard);

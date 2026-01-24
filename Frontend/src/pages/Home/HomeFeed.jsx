@@ -1,39 +1,43 @@
-import React from "react";
-import Navbar from "../../components/Home/Navbar.jsx";
+import React, { memo } from "react";
 import TopTrendStoryGrid from "../../components/TopTrendStory/TopTrendStoryGrid.jsx";
 import ShortStoryGrid from "../../components/ShortStory/ShortStoryGrid.jsx";
 import HomeGoodReadGrid from "../../components/HomeGoodReads/HomeGoodReadGrid.jsx";
-import MobileBottomNav from "../../components/Home/MobileBottomNav.jsx";
-import Homebg from "../../Assets/Homebg.jpeg";
+
 const HomeFeed = () => {
   return (
-    <div className="min-h-screen bg-transparent text-white">
+    <div className="min-h-screen bg-transparent text-white relative">
 
+      {/* PERFORMANCE NOTE: 
+         If you want a background image, ensure it is a small WebP file 
+         or use a CSS Gradient (recommended for speed).
+      */}
+      {/* <div className="fixed inset-0 z-[-1] bg-gradient-to-b from-[#0f2a24] via-[#0b1412] to-black" /> */}
 
-
-      {/* GOOD READS STRIP */}
-      <HomeGoodReadGrid />
+      {/* SECTION 1: GOOD READS (Usually the LCP element) */}
+      <section aria-label="Curated Good Reads">
+        <HomeGoodReadGrid />
+      </section>
 
       {/* MAIN CONTENT */}
-      <main className="space-y-3 sm:space-y-1 pb-3 md:pb-0">
-        {/* HERO */}
-        <section>
+      {/* Added pb-20 to prevent content being hidden behind MobileBottomNav */}
+      <main className="space-y-6 pb-20 md:pb-8">
+
+        {/* SECTION 2: TRENDING */}
+        <section aria-label="Trending Stories">
           <TopTrendStoryGrid />
         </section>
 
-        {/* STORY GRID */}
-        <section className="px-4 md:px-6 mb-5 "
-          // style={{
-          //   backgroundImage: `url(${Homebg})`,
-          // }}
+        {/* SECTION 3: ALL STORIES */}
+        <section
+          aria-label="Fresh Reads"
+          className="px-4 md:px-6"
         >
           <ShortStoryGrid />
         </section>
       </main>
-
-
     </div>
   );
 };
 
-export default HomeFeed;
+// Memoize to prevent re-renders if parent Layout updates props unrelated to this feed
+export default memo(HomeFeed);

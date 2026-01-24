@@ -1,342 +1,164 @@
-/* Tailwind must come AFTER external imports */
 @import "tailwindcss";
 
 /* =====================================================
-   GLOBAL
+   LAYER: BASE (Global Resets)
 ===================================================== */
+@layer base {
+  html, body {
+    @apply font-sans text-gray-200 bg-[#0b1412] w-full overflow-x-hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none;
-}
-
-html,
-body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  width: 100%;
-  overflow-x: hidden;
-}
-
-body {
-  font-family: "Poppins", sans-serif;
-}
-
-@layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .scrollbar-hide::-webkit-scrollbar {
+  /* Hide Scrollbar (Chrome/Safari/Opera) */
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
     display: none;
   }
+}
 
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+/* =====================================================
+   LAYER: COMPONENTS (Custom UI Elements)
+===================================================== */
+@layer components {
+
+  /* --- 1. Form Inputs --- */
+  .field-input {
+    @apply w-full px-4 py-3 rounded-xl text-sm outline-none transition-colors border;
+    @apply bg-[#0b1412] text-gray-200 border-white/15;
+    @apply placeholder:text-gray-500 focus:border-emerald-500;
+  }
+
+  /* --- 2. Reader Area (Typography for Viewing Stories) --- */
+  .reader-area h1 {
+    @apply text-4xl font-extrabold mt-10 mb-6 text-white font-serif leading-tight;
+  }
+
+  .reader-area h2 {
+    @apply text-3xl font-bold mt-8 mb-4 text-white leading-snug;
+  }
+
+  .reader-area h3 {
+    @apply text-2xl font-semibold mt-6 mb-3 text-gray-200;
+  }
+
+  .reader-area p {
+    @apply text-lg leading-relaxed text-gray-300 mb-5;
+  }
+
+  /* --- 3. Prose Safety (Prevent Content Overflow) --- */
+  .prose :is(p, img, video, iframe, table, pre, code) {
+    @apply max-w-full box-border break-words;
+    overflow-wrap: break-word;
+  }
+  
+  .prose :is(img, video, iframe) {
+    @apply h-auto block;
+  }
+
+  /* --- 4. Mantine / Tiptap Editor Overrides (Dark Mode Force) --- */
+  /* FIXED: Used !class syntax instead of @apply ... !important */
+  
+  .blog-editor .mantine-RichTextEditor-root {
+    @apply !bg-[#0b1412] !border-white/15 rounded-xl overflow-hidden;
+  }
+
+  .blog-editor .mantine-RichTextEditor-toolbar {
+    @apply !bg-[#141a18] !border-b !border-white/10;
+  }
+
+  .blog-editor .mantine-RichTextEditor-content {
+    @apply !bg-[#0b1412] !text-gray-200 min-h-[300px] p-4;
+  }
+
+  /* Editor Typography */
+  .blog-editor .tiptap h1 { @apply text-4xl font-bold mt-8 mb-4 text-white; }
+  .blog-editor .tiptap h2 { @apply text-2xl font-bold mt-6 mb-3 text-white; }
+  .blog-editor .tiptap h3 { @apply text-xl font-bold mt-5 mb-2 text-gray-200; }
+  .blog-editor .tiptap p  { @apply mb-5 leading-7 text-gray-300; }
+  .blog-editor .tiptap blockquote {
+    @apply border-l-4 border-emerald-500 pl-4 italic text-gray-400 my-4;
+  }
+
+  /* Toolbar Buttons */
+  .blog-editor .mantine-RichTextEditor-control {
+    @apply !bg-transparent !text-gray-200 !border-white/15 transition-colors duration-200;
+  }
+
+  .blog-editor .mantine-RichTextEditor-control:hover:not(:disabled) {
+    @apply !bg-emerald-500/15 !border-emerald-500/40;
+  }
+
+  .blog-editor .mantine-RichTextEditor-control[data-active="true"] {
+    @apply !bg-emerald-500/25 !border-emerald-500/60 !text-white;
+  }
+
+  .blog-editor .mantine-RichTextEditor-control:disabled {
+    @apply text-gray-600 border-white/5 cursor-not-allowed;
+  }
+
+  /* SVG Icon Fixes */
+  .blog-editor .mantine-RichTextEditor-control svg {
+    @apply !stroke-current !fill-current;
   }
 }
 
 /* =====================================================
-   PROSE SAFETY (DO NOT TOUCH HEADINGS)
+   LAYER: UTILITIES (Animations & Helpers)
 ===================================================== */
+@layer utilities {
+  
+  /* Scrollbar Hide Utility */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Only protect content that can overflow */
-.prose p,
-.prose img,
-.prose video,
-.prose iframe,
-.prose table,
-.prose pre,
-.prose code {
-  max-width: 100%;
-  box-sizing: border-box;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
+  /* --- Popup Animation --- */
+  .popup-animation {
+    animation: slideUpFade 0.3s ease-out forwards;
+    will-change: transform, opacity;
+  }
 
-.prose img,
-.prose video,
-.prose iframe {
-  height: auto;
-  display: block;
+  /* --- Book Loader Animation --- */
+  .book-base {
+    @apply relative w-full h-[3px] bg-emerald-400 rounded-full;
+  }
+
+  .book-base::after {
+    content: "";
+    @apply absolute left-1/2 top-full -translate-x-1/2 w-4 h-1.5 bg-emerald-400;
+    border-bottom-left-radius: 999px;
+    border-bottom-right-radius: 999px;
+  }
+
+  .page {
+    @apply absolute bottom-[3px] left-1/2 w-[2px] h-[42px] bg-white opacity-0;
+    transform-origin: bottom center;
+    animation: flip 1.6s infinite ease-in-out;
+    will-change: transform, opacity;
+  }
+
+  /* Page Delays */
+  .page-0 { animation-delay: 0s; }
+  .page-1 { animation-delay: 0.15s; }
+  .page-2 { animation-delay: 0.3s; }
+  .page-3 { animation-delay: 0.45s; }
+  .page-4 { animation-delay: 0.6s; }
+  .page-5 { animation-delay: 0.75s; }
+  .page-6 { animation-delay: 0.9s; }
 }
 
 /* =====================================================
-   READER TYPOGRAPHY (FORCE HEADING VISIBILITY)
+   KEYFRAMES
 ===================================================== */
 
-.reader-area h1 {
-  font-size: 2.25rem !important;
-  font-weight: 800 !important;
-  margin-top: 2.5rem !important;
-  margin-bottom: 1.5rem !important;
-  color: #ffffff !important;
-  font-family: serif;
-}
-
-.reader-area h2 {
-  font-size: 1.75rem !important;
-  font-weight: 700 !important;
-  margin-top: 2rem !important;
-  margin-bottom: 1rem !important;
-  color: #ffffff !important;
-}
-
-.reader-area h3 {
-  font-size: 1.4rem !important;
-  font-weight: 600 !important;
-  margin-top: 1.5rem !important;
-  margin-bottom: 0.75rem !important;
-  color: #e5e7eb !important;
-}
-
-/* =====================================================
-   FORM INPUTS
-===================================================== */
-
-.field-input {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-size: 14px;
-  outline: none;
-  background: #0b1412;
-  color: #e5e7eb;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.field-input::placeholder {
-  color: #6b7280;
-}
-
-.field-input:focus {
-  border-color: #10b981;
-}
-
-/* =====================================================
-   MANTINE + TIPTAP (EDITOR ONLY)
-===================================================== */
-
-/* =====================================================
-   FORCE DARK THEME FOR BLOG EDITOR (OVERRIDE)
-===================================================== */
-
-.blog-editor .mantine-RichTextEditor-root {
-  background: #0b1412 !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-.blog-editor .mantine-RichTextEditor-toolbar {
-  background: #141a18 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.blog-editor .mantine-RichTextEditor-control {
-  background: transparent !important;
-  color: #e5e7eb !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-.blog-editor .mantine-RichTextEditor-control:hover {
-  background: rgba(16, 185, 129, 0.15) !important;
-  border-color: rgba(16, 185, 129, 0.4) !important;
-}
-
-.blog-editor .mantine-RichTextEditor-control[data-active="true"] {
-  background: rgba(16, 185, 129, 0.25) !important;
-  border-color: rgba(16, 185, 129, 0.6) !important;
-  color: #ffffff !important;
-}
-
-.blog-editor .mantine-RichTextEditor-content {
-  background: #0b1412 !important;
-  color: #e5e7eb !important;
-}
-
-.blog-editor .mantine-RichTextEditor-control svg {
-  stroke: currentColor !important;
-}
-
-/* TipTap typography (EDITOR) */
-.blog-editor .tiptap p {
-  margin-bottom: 1.25rem;
-}
-
-.blog-editor .tiptap h1 {
-  font-size: 2.1rem;
-  font-weight: 800;
-  margin: 2rem 0 1rem;
-}
-
-.blog-editor .tiptap h2 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin: 1.8rem 0 0.9rem;
-}
-
-.blog-editor .tiptap h3 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin: 1.6rem 0 0.8rem;
-}
-
-.blog-editor .tiptap blockquote {
-  border-left: 4px solid #e50914;
-  padding-left: 1rem;
-  font-style: italic;
-}
-
-/* =====================================================
-   REQUIRED FINAL FIXES (DO NOT REMOVE)
-===================================================== */
-
-/* Ensure ALL editor icons are visible */
-.blog-editor .mantine-RichTextEditor-control svg {
-  stroke: currentColor !important;
-  fill: currentColor !important;
-}
-
-/* Ensure active button is never overridden */
-.blog-editor .mantine-RichTextEditor-control[data-active="true"] {
-  background: rgba(16, 185, 129, 0.25) !important;
-  border-color: rgba(16, 185, 129, 0.6) !important;
-  color: #ffffff !important;
-}
-
-/* =====================================================
-   FINAL FIX: ALL TOOLBAR BUTTON STATES
-===================================================== */
-
-/* Base control */
-.blog-editor .mantine-RichTextEditor-control {
-  background-color: black !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-/* SVG icons */
-.blog-editor .mantine-RichTextEditor-control svg {
-  stroke: currentColor !important;
-  fill: currentColor !important;
-}
-
-/* Disabled (ALL buttons: icon + text) */
-.blog-editor .mantine-RichTextEditor-control:disabled,
-.blog-editor .mantine-RichTextEditor-control[data-disabled="true"] {
-  background-color: black !important;
-  color: #9ca3af !important; /* gray-400 */
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  opacity: 1 !important;
-}
-
-/* Hover */
-.blog-editor .mantine-RichTextEditor-control:hover:not(:disabled) {
-  background-color: rgba(16, 185, 129, 0.15) !important;
-}
-
-/* Active */
-.blog-editor .mantine-RichTextEditor-control[data-active="true"] {
-  background-color: rgba(16, 185, 129, 0.25) !important;
-  border-color: rgba(16, 185, 129, 0.6) !important;
-  color: #ffffff !important;
-}
-
-/* =====================================================
-   READER AREA (VIEW STORY)
-===================================================== */
-
-.reader-area {
-  color: #e5e7eb;
-}
-
-.reader-area p {
-  font-size: 1.05rem;
-  line-height: 1.75;
-}
-
-/* ===============================
-   BOOK PAGE LOADER
-================================ */
-
-.page {
-  position: absolute;
-  bottom: 3px;
-  left: 50%;
-  width: 2px;
-  height: 42px;
-  background: white;
-  transform-origin: bottom center;
-  opacity: 0;
-  animation: flip 1.6s infinite ease-in-out;
-}
-
-/* Individual page delays + angles */
-.page-0 {
-  animation-delay: 0s;
-  transform: rotate(-40deg);
-}
-.page-1 {
-  animation-delay: 0.15s;
-  transform: rotate(-25deg);
-}
-.page-2 {
-  animation-delay: 0.3s;
-  transform: rotate(-10deg);
-}
-.page-3 {
-  animation-delay: 0.45s;
-  transform: rotate(0deg);
-}
-.page-4 {
-  animation-delay: 0.6s;
-  transform: rotate(10deg);
-}
-.page-5 {
-  animation-delay: 0.75s;
-  transform: rotate(25deg);
-}
-.page-6 {
-  animation-delay: 0.9s;
-  transform: rotate(40deg);
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes flip {
-  0% {
-    opacity: 0;
-    transform: rotate(-50deg);
-  }
-  30% {
-    opacity: 1;
-  }
-  60% {
-    opacity: 1;
-    transform: rotate(50deg);
-  }
-  100% {
-    opacity: 0;
-    transform: rotate(60deg);
-  }
-}
-
-.book-base {
-  position: relative;
-  width: 100%;
-  height: 3px;
-  background: #10b981; /* emerald-400 */
-  border-radius: 999px;
-}
-
-/* Center notch */
-.book-base::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  transform: translateX(-50%);
-
-  width: 16px;
-  height: 6px;
-  background: #10b981;
-
-  border-bottom-left-radius: 999px;
-  border-bottom-right-radius: 999px;
+  0% { opacity: 0; transform: rotate(-50deg); }
+  20% { opacity: 1; }
+  60% { opacity: 1; transform: rotate(50deg); }
+  100% { opacity: 0; transform: rotate(60deg); }
 }

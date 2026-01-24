@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { ThumbsUp, Bookmark, X } from "lucide-react";
+import { ThumbsUp, Bookmark } from "lucide-react";
 import { toast } from "react-toastify";
 import DOMpurify from "dompurify";
 import Loader from "../Loader.jsx";
@@ -8,9 +8,6 @@ import { OpenFeedShortStory } from "../../Api-calls/OpenFeedShortStory.js";
 import { likeShortStory } from "../../Api-calls/likeShortStory.js";
 import { addShortStoryToGoodReads } from "../../Api-calls/addShortStoryToGoodReads.js";
 import { answerQuestionShortStory } from "../../Api-calls/answerQuestionShortStory.js";
-
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
 
 const ViewShortStory = () => {
   const { storyId } = useParams();
@@ -24,39 +21,38 @@ const ViewShortStory = () => {
   const [addedToGoodReads, setAddedToGoodReads] = useState(false);
   const [goodReadsCount, setGoodReadsCount] = useState(0);
 
-  const [questionPopup, setQuestionPopup] = useState(false);
-  const [answer, setAnswer] = useState("");
-  const [alreadyAnswered, setAlreadyAnswered] = useState(false);
+  // OPTIMIZATION: Memoize sanitized HTML
+  const sanitizedContent = useMemo(() => {
+    if (!story.story) return "";
+    return DOMpurify.sanitize(story.story);
+  }, [story.story]);
 
   /* ---------------- FETCH STORY ---------------- */
-  const fetchStory = async () => {
-    try {
-      const result = await OpenFeedShortStory({ storyId });
-
-      if (result?.success) {
-        const data = result.data.ShortStory;
-        setStory(data);
-        setLiked(data.isLiked);
-        setAddedToGoodReads(data.isGoodRead);
-        setLikesCount(data.likes);
-        setGoodReadsCount(data.totalGoodReads);
-        setAlreadyAnswered(data.isQuestionAnswered === true);
-      }
-    } catch (error) {
-      console.error("Error fetching story:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchStory = async () => {
+      try {
+        const result = await OpenFeedShortStory({ storyId });
+
+        if (result?.success) {
+          const data = result.data.ShortStory;
+          setStory(data);
+          setLiked(data.isLiked);
+          setAddedToGoodReads(data.isGoodRead);
+          setLikesCount(data.likes);
+          setGoodReadsCount(data.totalGoodReads);
+        }
+      } catch (error) {
+        console.error("Error fetching story:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchStory();
   }, [storyId]);
 
   /* ---------------- LIKE ---------------- */
   const handleLike = async () => {
     const wasLiked = liked;
-
     setLiked(!wasLiked);
     setLikesCount((p) => (wasLiked ? p - 1 : p + 1));
 
@@ -73,7 +69,6 @@ const ViewShortStory = () => {
   /* ---------------- GOOD READ ---------------- */
   const handleGoodReads = async () => {
     const wasAdded = addedToGoodReads;
-
     setAddedToGoodReads(!wasAdded);
     setGoodReadsCount((p) => (wasAdded ? p - 1 : p + 1));
 
@@ -90,29 +85,17 @@ const ViewShortStory = () => {
     }
   };
 
-  const answerQuestion = async () => {
-    try {
-      const result = await answerQuestionShortStory({ storyId, answer });
-      if (!result?.success) throw new Error();
-      toast.success("Your answer is correct you are rewarded with 20 xp points");
-      setQuestionPopup(false);
-    } catch {
-      toast.error("Action failed");
-    }
-  }
-
   if (loading) return <Loader />;
 
   return (
-    <div className="min-h-screen bg-[#0b1412] text-gray-200 ">
-      {/* COVER */}
-      <div className="relative w-full h-[260px] sm:h-[380px]">
+    <div className="min-h-screen bg-[#0b1412] text-gray-200">
+      {/* COVER IMAGE */}
+      <div className="relative w-full h-[260px] sm:h-[380px] bg-gray-900">
         {story?.coverImage ? (
-          <LazyLoadImage
+          <img
             src={story.coverImage}
             alt={story.title}
-            effect="blur"
-            wrapperClassName="w-full h-full"
+            fetchPriority="high"
             className="w-full h-full object-cover"
           />
         ) : (
@@ -121,97 +104,95 @@ const ViewShortStory = () => {
           </div>
         )}
 
-        {/* DARK GRADIENT OVERLAY */}
-        {/* <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-[#0b1412]" /> */}
-
-        {/* CATEGORY */}
-        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-emerald-600 text-white px-6 py-2 rounded-full shadow-lg border-[4px] border-[#0b1412] text-sm">
+        {/* CATEGORY TAG */}
+        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-emerald-600 text-white px-6 py-2 rounded-full shadow-lg border-[4px] border-[#0b1412] text-sm font-medium z-10 whitespace-nowrap">
           {story.category}
         </span>
       </div>
 
       {/* CONTENT */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-10 pt-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-10 pt-16 pb-20">
 
         {/* HEADER ROW */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
 
-          {/* LEFT: Title + Author + Description */}
+          {/* LEFT: Title + Author */}
           <div className="max-w-2xl">
-            <h1 className="text-3xl sm:text-4xl font-serif text-white">
+            <h1 className="text-3xl sm:text-4xl font-serif text-white leading-tight">
               {story.title}
             </h1>
 
             {/* AUTHOR */}
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mt-3">
               <img
                 src={story.author?.profilePic}
                 alt={story.author?.username}
-                loading="lazy"
-                className="w-6 h-6 rounded-full object-cover"
+                className="w-6 h-6 rounded-full object-cover bg-gray-700"
               />
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-gray-400 font-medium">
                 {story.author?.username}
               </p>
             </div>
-
-
           </div>
 
           {/* RIGHT: ACTION BUTTONS */}
-          <div className="flex md:flex gap-3 md:items-end">
+          <div className="flex gap-3 mt-2 md:mt-0">
+            {/* LIKE BUTTON */}
             <button
               onClick={handleLike}
-              className={`px-4 py-2 rounded-full text-sm font-medium border transition ${liked
-                ? "bg-white text-black border-white"
-                : "bg-transparent text-gray-300 border-gray-500 hover:border-white"
-                }`}
+              className={`
+                flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border transition-colors
+                ${liked
+                  ? "bg-white text-black border-white"
+                  : "bg-transparent text-gray-300 border-gray-600 hover:border-gray-400"
+                }
+              `}
             >
-              <ThumbsUp size={14} className="inline mr-1" />
-              {likesCount} Likes
+              <ThumbsUp size={14} className={liked ? "fill-black" : ""} />
+              <span>{likesCount} Likes</span>
             </button>
 
+            {/* GOOD READS BUTTON */}
             <button
               onClick={handleGoodReads}
-              className={`px-4 py-2 rounded-full text-sm font-medium border transition ${addedToGoodReads
-                ? "bg-emerald-600 text-white border-emerald-600"
-                : "bg-transparent text-emerald-400 border-emerald-500/60 hover:bg-emerald-600/10"
-                }`}
+              className={`
+                 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border transition-colors
+                ${addedToGoodReads
+                  ? "bg-emerald-600 text-white border-emerald-600"
+                  : "bg-transparent text-emerald-400 border-emerald-500/60 hover:bg-emerald-500/10"
+                }
+              `}
             >
-              <Bookmark size={14} className="inline mr-1" />
-              {goodReadsCount} Good Reads
+              <Bookmark size={14} className={addedToGoodReads ? "fill-white" : ""} />
+              <span>{goodReadsCount} Good Reads</span>
             </button>
           </div>
         </div>
 
         {/* DESCRIPTION */}
         {story.description && (
-          <p className="mt-11 text-sm text-gray-400 leading-relaxed ">
-            <span className="text-emerald-400 font-medium block mb-2">
+          <div className="mt-10 p-4 rounded-xl bg-white/5 border border-white/5">
+            <span className="text-emerald-400 text-xs uppercase tracking-wider font-bold block mb-1">
               Description
             </span>
-            {story.description}
-          </p>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              {story.description}
+            </p>
+          </div>
         )}
 
-        <hr className="my-10 border-gray-700/60" />
+        <hr className="my-10 border-gray-800" />
 
         {/* STORY CONTENT */}
         <div className="reader-area">
           <div
-            className="prose prose-invert prose-lg max-w-full"
-            dangerouslySetInnerHTML={{
-              __html: DOMpurify.sanitize(story.story || ""),
-            }}
+            className="prose prose-invert prose-lg max-w-full prose-emerald"
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
         </div>
-
-
       </div>
-
     </div>
   );
-
 };
 
 export default ViewShortStory;

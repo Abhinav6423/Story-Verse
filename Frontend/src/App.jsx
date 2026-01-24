@@ -1,25 +1,39 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-
-import Login from "./pages/Authentication/Login.jsx";
-import Register from "./pages/Authentication/Register.jsx";
-import VerifyEmail from "./pages/VerifyEmail.jsx";
-
-import ProtectedRoute from "./utils/ProtectedRoute.jsx";
-import Layout from "./pages/Layout/Layout.jsx";
-
-import HomeFeed from "./pages/Home/HomeFeed.jsx";
-import ViewShortStory from "./components/ShortStory/ViewShortStory.jsx";
-import UserProfile from "./pages/profile/UserProfile.jsx";
-import CreatePost from "./components/create-update/CreatePost.jsx";
-import GoodReadsShortStoryGrid from "./components/GoodReadsShortStory/GoodReadsShortStoryGrid.jsx";
-import CategoryShortStoryResultsGrid from "./components/categoryShortStoryResults/CategoryShortStoryResultsGrid.jsx";
-import UpdateShortStory from "./components/Profile/UpdateShortStory.jsx";
-
-import AuthSuccess from "./pages/Authentication/AuthSucess"; // ✅ ADD THIS
 import { ToastContainer } from "react-toastify";
-import UpdateProfile from "./components/Profile/UpdateProfile.jsx";
-import Landing from "./pages/Landing/Landing.jsx";
+import "react-toastify/dist/ReactToastify.css"; // Ensure CSS is imported
+
+// Keep lightweight, critical components static
+import ProtectedRoute from "./utils/ProtectedRoute.jsx";
+import Loader from "./components/Loader.jsx"; // Use your new Book Loader here!
+
+// ================= LAZY LOAD PAGES (Code Splitting) =================
+// These will only load when the URL is visited, saving massive bundle size.
+
+// Public / Landing
+const Landing = lazy(() => import("./pages/Landing/Landing.jsx"));
+const Login = lazy(() => import("./pages/Authentication/Login.jsx"));
+const Register = lazy(() => import("./pages/Authentication/Register.jsx"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail.jsx"));
+const AuthSuccess = lazy(() => import("./pages/Authentication/AuthSucess.jsx"));
+
+// Layout
+const Layout = lazy(() => import("./pages/Layout/Layout.jsx"));
+
+// Core Features
+const HomeFeed = lazy(() => import("./pages/Home/HomeFeed.jsx"));
+const ViewShortStory = lazy(() => import("./components/ShortStory/ViewShortStory.jsx"));
+const CreatePost = lazy(() => import("./components/create-update/CreatePost.jsx"));
+
+// Profile & User
+const UserProfile = lazy(() => import("./pages/profile/UserProfile.jsx"));
+const UpdateProfile = lazy(() => import("./components/Profile/UpdateProfile.jsx"));
+const UpdateShortStory = lazy(() => import("./components/Profile/UpdateShortStory.jsx"));
+
+// Grids / Lists
+const GoodReadsShortStoryGrid = lazy(() => import("./components/GoodReadsShortStory/GoodReadsShortStoryGrid.jsx"));
+const CategoryShortStoryResultsGrid = lazy(() => import("./components/categoryShortStoryResults/CategoryShortStoryResultsGrid.jsx"));
+
 const App = () => {
   return (
     <>
@@ -30,44 +44,48 @@ const App = () => {
         newestOnTop
         closeOnClick
         pauseOnHover
-        theme="light"
+        theme="dark" // Switched to dark to match your theme
       />
 
-      <Routes>
-        {/* ---------- PUBLIC ROUTES ---------- */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
+      {/* SUSPENSE WRAPPER:
+         Shows your animated <Loader /> while the specific page chunk is downloading.
+      */}
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          {/* ---------- PUBLIC ROUTES ---------- */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/auth/success" element={<AuthSuccess />} />
 
-        {/* ✅ GOOGLE OAUTH CALLBACK SUCCESS */}
-        <Route path="/auth/success" element={<AuthSuccess />} />
+          {/* ---------- PROTECTED ROUTES ---------- */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout />}>
+              <Route path="/home" element={<HomeFeed />} />
+              <Route path="/story/:storyId" element={<ViewShortStory />} />
+              <Route path="/profile" element={<UserProfile />} />
 
-        <Route  path="/" element={<Landing />}/>
+              {/* Heavy components like CreatePost now load on demand! */}
+              <Route path="/create" element={<CreatePost />} />
 
-        {/* ---------- PROTECTED ROUTES ---------- */}
-        <Route element={<ProtectedRoute />}>
-          <Route element={<Layout />}>
-            <Route path="/home" element={<HomeFeed />} />
-            <Route path="/story/:storyId" element={<ViewShortStory />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/create" element={<CreatePost />} />
-            <Route
-              path="/goodReads/ShortStory"
-              element={<GoodReadsShortStoryGrid />}
-            />
-            <Route
-              path="/category/:category"
-              element={<CategoryShortStoryResultsGrid />}
-            />
-            <Route
-              path="/update/shortStory/:storyId"
-              element={<UpdateShortStory />}
-            />
-            <Route path="/profile/update" element={<UpdateProfile />} />
+              <Route
+                path="/goodReads/ShortStory"
+                element={<GoodReadsShortStoryGrid />}
+              />
+              <Route
+                path="/category/:category"
+                element={<CategoryShortStoryResultsGrid />}
+              />
+              <Route
+                path="/update/shortStory/:storyId"
+                element={<UpdateShortStory />}
+              />
+              <Route path="/profile/update" element={<UpdateProfile />} />
+            </Route>
           </Route>
-
-        </Route>
-      </Routes>
+        </Routes>
+      </Suspense>
     </>
   );
 };
