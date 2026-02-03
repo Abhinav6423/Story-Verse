@@ -13,7 +13,7 @@ const router = express.Router();
 router.post("/firebase-login", firebaseLogin);
 
 /* ================= AUTH UTILS ================= */
-router.get("/me", verifyFirebaseToken , getLoggedInUser);
+router.get("/me", verifyFirebaseToken, getLoggedInUser);
 // router.get("/logout", verifyToken, logoutUser);
 
 export default router;

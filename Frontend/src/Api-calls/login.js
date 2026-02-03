@@ -1,47 +1,26 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
-// import axios from "axios";            // ❌ not needed for header auth
-// import api from "../api/api";          // ❌ not needed for login in header auth
+import api from "../api/api"; // 👈 axios instance with interceptor
 
 export const loginUser = async (email, password) => {
     try {
-        // 1️⃣ Firebase login (PRIMARY AUTH)
+        // 1️⃣ Firebase login
         const { user } = await signInWithEmailAndPassword(
             auth,
             email,
             password
         );
 
-        // 2️⃣ Email verification check
+        // 2️⃣ Email verification
         if (!user.emailVerified) {
             throw new Error("Please verify your email first");
         }
 
-        /*
-        ======================================================
-        🧁 COOKIE-BASED AUTH (FOR FUTURE USE)
-        ------------------------------------------------------
-        // 3️⃣ Get Firebase ID token
-        const firebaseToken = await user.getIdToken();
-    
-        // 4️⃣ Send token to backend → backend sets HTTP-only cookie
-        const res = await api.post(
-          `${import.meta.env.VITE_BACKEND_URL}/api/auth/firebase-login`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${firebaseToken}`,
-            },
-            withCredentials: true,
-          }
-        );
-        ======================================================
-        */
+        // 🔥 3️⃣ BACKEND LOGIN ROUTE — YAHIN CALL HOGA
+        // token automatically interceptor se lagega
+        await api.post("/api/auth/firebase-login");
 
-        // 🔐 HEADER-BASED AUTH (CURRENT SETUP)
-        // Firebase automatically manages auth state.
-        // Axios interceptor will attach the token to every request.
-
+        // 4️⃣ success
         return {
             success: true,
             message: "User logged in successfully",

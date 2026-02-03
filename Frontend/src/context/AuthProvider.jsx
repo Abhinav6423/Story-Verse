@@ -5,49 +5,6 @@ import { meRoute } from "../Api-calls/meRoute.js";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase.js";
 
-// const AuthProvider = ({ children }) => {
-//   const [userData, setUserData] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   const fetchUserData = useCallback(async () => {
-//     try {
-//       const result = await meRoute();
-
-//       if (result?.success) {
-//         setUserData(result.user);
-//       } else {
-//         setUserData(null);
-//       }
-//     } catch {
-//       setUserData(null);
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     fetchUserData();
-//   }, [fetchUserData]);
-
-
-
-
-//   return (
-//     <AuthContext.Provider
-//       value={{
-//         userData,
-//         setUserData,
-//         loading,
-//         reloadUserData: fetchUserData,
-//       }}
-//     >
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// export default AuthProvider;
-
 
 const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
