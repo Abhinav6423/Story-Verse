@@ -67,8 +67,8 @@ const HomeGoodReadGrid = () => {
                             ${isAnimating ? 'opacity-0 scale-[1.02]' : 'opacity-90 scale-100'}
                         `}
                         style={{
-                            maskImage: 'linear-gradient(to right, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 50%, transparent 100%)',
-                            WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 50%, transparent 100%)'
+                            // maskImage: 'linear-gradient(to right, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 50%, transparent 100%)',
+                            // WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 50%, transparent 100%)'
                         }}
                     />
                 </div>
@@ -101,7 +101,7 @@ const HomeGoodReadGrid = () => {
                             </div>
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.05] text-white drop-shadow-2xl">
+                        <h1 className="text-5xl md:text-7xl lg:text-6xl font-extrabold tracking-tight leading-[1.05] text-white drop-shadow-2xl">
                             {activeStory.title}
                         </h1>
 
