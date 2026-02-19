@@ -41,18 +41,39 @@ function TopTrendStoryGrid() {
     if (!stories.length) return null;
 
     return (
-        <div className="mt-0 px-4 md:px-6 bg-transparent text-white min-h-[200px]">
+        <div className="mt-0 px-4 md:px-8 bg-transparent text-white min-h-[200px]">
             {/* ================= TRENDING SECTION ================= */}
             <section className="py-6">
                 {/* HEADER */}
-                <div className="mb-4 flex items-center gap-2">
-                    <FlameIcon
-                        size={25}
-                        className="text-emerald-400 fill-emerald-400 drop-shadow-[0_0_6px_rgba(52,211,153,0.6)]"
-                    />
-                    <h2 className="text-2xl font-medium tracking-tight">
-                        The Hottest Reads
-                    </h2>
+                
+                <div className="mb-8 flex items-end justify-between w-full">
+                    <div className="flex items-center gap-3 md:gap-4">
+
+                        {/* Premium Glassmorphic Flame Badge */}
+                        <div className="relative flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-[#050505] border border-emerald-500/30 shadow-[0_0_15px_rgba(52,211,153,0.15)] backdrop-blur-md shrink-0">
+                            <FlameIcon
+                                size={22}
+                                className="text-emerald-400 fill-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.8)] animate-pulse md:w-6 md:h-6"
+                            />
+                            {/* Ambient background glow behind the flame */}
+                            <div className="absolute inset-0 bg-emerald-400/20 blur-md rounded-xl z-[-1]"></div>
+                        </div>
+
+                        {/* Personalized Typography Stack */}
+                        <div className="flex flex-col justify-center">
+                            {/* Psychological Hook (Micro-copy) */}
+                            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-emerald-500 mb-0.5 md:mb-1 drop-shadow-sm">
+                                Curated For You
+                            </span>
+
+                            {/* Premium Gradient Title */}
+                            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white drop-shadow-md leading-none">
+                                Your Next <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">Obsession</span>
+                            </h2>
+                        </div>
+                    </div>
+
+                    
                 </div>
 
                 {/* GRID */}

@@ -9,6 +9,7 @@ import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Loader2, UploadCloud, X } from "lucide-react"; // Icons for better UX
 import { categories } from "../../utils/Categories.jsx";
+import imageCompression from "browser-image-compression";
 
 const CreatePost = () => {
     const navigate = useNavigate();
@@ -29,6 +30,8 @@ const CreatePost = () => {
     // UI State
     const [loading, setLoading] = useState(false);
     const [step, setStep] = useState(1);
+    const [compressing, setCompressing] = useState(false);
+
 
     /* ================= PREVENT ACCIDENTAL CLOSE ================= */
     useEffect(() => {
@@ -56,13 +59,57 @@ const CreatePost = () => {
     });
 
     /* ================= IMAGE HANDLER ================= */
-    const handleImageChange = (e) => {
+    const handleImageChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
+        if (!file) return;
+
+        // Skip compression for small images (<1.2MB)
+        if (file.size / 1024 / 1024 < 1.2) {
             setCoverImg(file);
             setPreviewUrl(URL.createObjectURL(file));
+            return;
+        }
+
+        setCompressing(true);
+
+        try {
+            const options = {
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1280,
+                useWebWorker: true,
+                fileType: "image/webp",
+            };
+
+            const compressedFile = await imageCompression(file, options);
+
+            const webpFile = new File(
+                [compressedFile],
+                file.name.replace(/\.(jpg|jpeg|png)$/i, ".webp"),
+                { type: "image/webp" }
+            );
+
+            setCoverImg(webpFile);
+            setPreviewUrl(URL.createObjectURL(webpFile));
+
+            console.log(
+                "Image optimized:",
+                (file.size / 1024 / 1024).toFixed(2),
+                "MB →",
+                (webpFile.size / 1024 / 1024).toFixed(2),
+                "MB"
+            );
+
+        } catch (error) {
+            console.error("Image compression error:", error);
+            toast.error("Failed to process image");
+        } finally {
+            setCompressing(false);
         }
     };
+
+
+
+
 
     const removeImage = (e) => {
         e.preventDefault();
@@ -76,6 +123,12 @@ const CreatePost = () => {
 
         if (!title.trim() || !story.trim()) return toast.error("Title and story content are required");
         if (!coverImg) return toast.error("Cover image is required");
+
+        if (compressing) {
+            toast.info("Processing image, please wait...");
+            return;
+        }
+
 
         try {
             setLoading(true);
@@ -332,16 +385,19 @@ const CreatePost = () => {
 
                             <button
                                 onClick={handleSave}
-                                disabled={loading}
+                                disabled={loading || compressing}
                                 className={`
-                                    px-8 py-3 rounded-xl font-bold text-white shadow-lg flex items-center gap-2
-                                    transition-all active:scale-95
-                                    ${loading ? "bg-gray-600 cursor-not-allowed" : "bg-emerald-600 hover:bg-emerald-500 hover:shadow-emerald-500/20"}
-                                `}
+        px-8 py-3 rounded-xl font-bold text-white shadow-lg flex items-center gap-2
+        transition-all active:scale-95
+        ${(loading || compressing)
+                                        ? "bg-gray-600 cursor-not-allowed"
+                                        : "bg-emerald-600 hover:bg-emerald-500 hover:shadow-emerald-500/20"}
+    `}
                             >
-                                {loading ? <Loader2 className="animate-spin" size={20} /> : null}
-                                {loading ? "Saving..." : "Publish Story"}
+                                {(loading || compressing) && <Loader2 className="animate-spin" size={20} />}
+                                {compressing ? "Optimizing image..." : loading ? "Saving..." : "Publish Story"}
                             </button>
+
                         </div>
                     </div>
                 )}

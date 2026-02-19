@@ -34,10 +34,11 @@ const ViewShortStory = () => {
         const result = await OpenFeedShortStory({ storyId });
 
         if (result?.success) {
-          const data = result.data.ShortStory;
+          const data = result.data.shortStory;
+          console.log(result.data.shortStory)
           setStory(data);
-          setLiked(data.isLiked);
-          setAddedToGoodReads(data.isGoodRead);
+          setLiked(data?.isLiked);
+          setAddedToGoodReads(data?.isGoodRead);
           setLikesCount(data.likes);
           setGoodReadsCount(data.totalGoodReads);
         }
