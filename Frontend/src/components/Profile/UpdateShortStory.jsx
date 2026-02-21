@@ -69,6 +69,7 @@ const UpdateShortStory = () => {
 
                 if (result?.success) {
                     const data = result.data;
+                    // console.log("Fetched story data:", result.data);
 
                     // Populate Form
                     setTitle(data.title);

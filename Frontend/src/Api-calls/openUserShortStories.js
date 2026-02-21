@@ -7,10 +7,10 @@ export const openUserShortStory = async ({ storyId }) => {
             // { withCredentials: true }
         );
 
-        // console.log(res?.data?.ShortStory);
+        console.log(res?.data?.shortStory);
         return {
             success: true,
-            data: res.data.ShortStory, // ✅ DIRECT ShortStory
+            data: res?.data?.shortStory // ✅ DIRECT ShortStory
         };
     } catch (error) {
         console.log(error)
