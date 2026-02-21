@@ -69,6 +69,9 @@ const HomeGoodReadGrid = () => {
                     />
                 </div>
 
+                {/* --- DARK TINT OVERLAY --- */}
+                <div className={`absolute inset-0 w-full h-full bg-black/50 transition-opacity duration-700 ${isAnimating ? 'opacity-0' : 'opacity-100'}`} />
+
                 {/* Layer C: Premium Gradients */}
                 <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#050505] via-[#050505]/80 lg:via-[#050505]/60 to-transparent" />
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#050505]/80 to-transparent" />
@@ -83,58 +86,63 @@ const HomeGoodReadGrid = () => {
             <div className="relative z-20 w-full h-full flex-1 max-w-[1920px] mx-auto flex flex-col lg:flex-row">
 
                 {/* --- LEFT COL: HERO TEXT --- */}
-                {/* Changed from justify-center to justify-end on mobile, and added pb-10 so it anchors beautifully to the bottom */}
                 <div className="flex-1 flex flex-col justify-end lg:justify-center px-6 md:px-12 lg:px-20 pt-32 pb-8 lg:pt-0 lg:pb-0 relative z-30">
-                    <div className={`space-y-5 md:space-y-8 max-w-3xl transition-all duration-700 ease-out ${isAnimating ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}>
+                    {/* Tighter space-y to keep elements connected but breathing */}
+                    <div className={`space-y-5 md:space-y-6 max-w-2xl transition-all duration-700 ease-out ${isAnimating ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}>
 
                         <div className="flex items-center gap-3">
-                            <div className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md flex items-center gap-2 shadow-lg">
-                                <Sparkles size={14} className="text-amber-400 fill-amber-400" />
-                                <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-zinc-100">
+                            <div className="px-3 md:px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2 shadow-lg">
+                                <Sparkles size={12} className="text-amber-400 fill-amber-400" />
+                                {/* Refined badge sizing and wider tracking */}
+                                <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-200">
                                     Editor's Choice #{activeIndex + 1}
                                 </span>
                             </div>
                         </div>
 
-                        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-6xl font-extrabold tracking-tight leading-[1.05] text-white drop-shadow-2xl">
+                        {/* Premium Title: Scaled down from 7xl/6xl to 5xl/4xl, tighter line-height, sophisticated weight */}
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-white drop-shadow-xl">
                             {activeStory.title}
                         </h1>
 
-                        <div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs sm:text-sm md:text-base font-medium text-zinc-300">
-                            <span className="text-amber-400 flex items-center gap-1.5 font-bold bg-amber-400/10 px-2 py-1 rounded-md">
-                                <Star size={14} fill="currentColor" /> 98% Match
+                        {/* Refined Metadata: Scaled down slightly, softer colors */}
+                        <div className="flex flex-wrap items-center gap-2.5 md:gap-3 text-xs md:text-sm font-medium text-zinc-400">
+                            <span className="text-amber-400 flex items-center gap-1.5 font-bold bg-amber-400/10 px-2 py-0.5 rounded-md">
+                                <Star size={12} fill="currentColor" /> 98% Match
                             </span>
-                            <span className="w-1 h-1 rounded-full bg-zinc-500" />
-                            <span className="text-zinc-100">{activeStory.genre || "Fiction"}</span>
-                            <span className="w-1 h-1 rounded-full bg-zinc-500" />
-                            <span className="text-zinc-100">5 min read</span>
+                            <span className="w-1 h-1 rounded-full bg-zinc-600" />
+                            <span className="text-zinc-200">{activeStory.genre || "Fiction"}</span>
+                            <span className="w-1 h-1 rounded-full bg-zinc-600" />
+                            <span className="text-zinc-200">5 min read</span>
                         </div>
 
-                        {/* Added overflow-hidden to ensure line-clamp never breaks out visually */}
-                        <p className="text-base sm:text-lg md:text-xl text-zinc-300 leading-relaxed max-w-2xl line-clamp-3 md:line-clamp-4 drop-shadow-md font-light overflow-hidden">
-                            {activeStory.description || activeStory.synopsis}
-                        </p>
+                        {/* Highly Visible Hook Line: Border accent, brighter text, elegant line-height */}
+                        <div className="pl-4 md:pl-5 border-l-2 border-emerald-500/60 py-1 mt-2">
+                            <p className="text-sm sm:text-base md:text-[1.1rem] text-zinc-100 leading-[1.7] md:leading-[1.8] line-clamp-3 md:line-clamp-4 drop-shadow-md overflow-hidden tracking-wide">
+                                {activeStory.description || activeStory.synopsis}
+                            </p>
+                        </div>
 
-                        <div className="flex items-center gap-3 md:gap-4 pt-2 md:pt-4">
+                        {/* Refined Buttons: Scaled down text (text-sm), elegant padding */}
+                        <div className="flex items-center gap-3 pt-3 md:pt-4">
                             <Link
                                 to={`/story/${activeStory._id}`}
-                                className="group flex items-center justify-center gap-2 md:gap-3 px-6 md:px-8 py-3 md:py-3.5 bg-white hover:bg-zinc-100 text-black rounded-full font-bold text-sm md:text-lg transition-all duration-300 shadow-[0_8px_30px_rgba(255,255,255,0.15)] hover:shadow-[0_8px_40px_rgba(255,255,255,0.25)] hover:-translate-y-0.5 w-full sm:w-auto"
+                                className="group flex items-center justify-center gap-2 px-6 md:px-8 py-2.5 md:py-3 bg-white hover:bg-zinc-100 text-black rounded-full font-semibold text-sm md:text-base transition-all duration-300 shadow-[0_8px_30px_rgba(255,255,255,0.15)] hover:shadow-[0_8px_40px_rgba(255,255,255,0.25)] hover:-translate-y-0.5 w-full sm:w-auto"
                             >
-                                <BookOpen size={20} className="text-black group-hover:scale-110 transition-transform duration-300" />
+                                <BookOpen size={18} className="text-black group-hover:scale-110 transition-transform duration-300" />
                                 <span>Start Reading</span>
                             </Link>
 
-                            <button className="p-3 md:p-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex-shrink-0">
-                                <Bookmark size={20} className="text-zinc-100" />
+                            <button className="p-2.5 md:p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex-shrink-0">
+                                <Bookmark size={18} className="text-zinc-200" />
                             </button>
                         </div>
                     </div>
 
                     {/* === MOBILE/TABLET ONLY: THUMBNAIL CAROUSEL === */}
-                    {/* Reduced margin-top and adjusted padding so it fits snuggly above the gradient bottom */}
-                    <div className="lg:hidden mt-8 md:mt-12 w-full pb-2 z-40">
+                    <div className="lg:hidden mt-8 md:mt-10 w-full pb-2 z-40">
                         <div className="flex items-center justify-between mb-3">
-                            <p className="text-[10px] md:text-xs font-bold text-zinc-300 uppercase tracking-widest drop-shadow-md">More Top Reads</p>
+                            <p className="text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] drop-shadow-md">More Top Reads</p>
                         </div>
                         <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x relative z-50">
                             {shortStories.map((story, index) => (
@@ -145,7 +153,7 @@ const HomeGoodReadGrid = () => {
                                     snap-start flex-shrink-0 relative w-24 h-36 md:w-28 md:h-40 rounded-xl overflow-hidden transition-all duration-500
                                     ${index === activeIndex
                                             ? 'ring-2 ring-emerald-400 scale-100 shadow-[0_8px_20px_rgba(16,185,129,0.3)] opacity-100'
-                                            : 'ring-1 ring-white/20 opacity-60 hover:opacity-100 scale-95'}
+                                            : 'ring-1 ring-white/10 opacity-50 hover:opacity-100 scale-95'}
                                 `}
                                 >
                                     <img
@@ -153,7 +161,7 @@ const HomeGoodReadGrid = () => {
                                         alt={story.title}
                                         className="w-full h-full object-cover"
                                     />
-                                    {index !== activeIndex && <div className="absolute inset-0 bg-black/40 transition-colors hover:bg-black/20" />}
+                                    {index !== activeIndex && <div className="absolute inset-0 bg-black/50 transition-colors hover:bg-black/20" />}
                                 </button>
                             ))}
                         </div>
@@ -163,7 +171,7 @@ const HomeGoodReadGrid = () => {
                 {/* --- DESKTOP RIGHT COL: SIDEBAR LIST --- */}
                 <div className="hidden lg:flex w-[420px] xl:w-[480px] h-full flex-col border-l border-white/5 bg-black/40 backdrop-blur-2xl pt-8 pb-12 px-8 overflow-y-auto scrollbar-hide relative z-30">
                     <div className="flex items-center justify-between mb-4 sticky top-0 z-40 py-4 bg-gradient-to-b from-black via-black/90 to-transparent">
-                        <h3 className="text-base font-bold text-zinc-100 uppercase tracking-widest flex items-center gap-2 drop-shadow-md">
+                        <h3 className="text-[11px] font-bold text-zinc-300 uppercase tracking-[0.2em] flex items-center gap-2 drop-shadow-md">
                             Top Trends
                         </h3>
                     </div>
