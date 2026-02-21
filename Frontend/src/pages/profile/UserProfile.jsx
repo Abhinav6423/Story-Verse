@@ -129,13 +129,13 @@ const UserProfile = () => {
                         {/* RIGHT: STATS GRID */}
                         {/* Optimized grid for mobile: 2 rows of 3, or flex wrap */}
                         <div className="
-                            mt-8 lg:mt-0 
-                            bg-white/5 border border-white/5 rounded-2xl 
-                            p-4 sm:p-6
-                            grid grid-cols-3 gap-x-8 gap-y-4
-                            lg:flex lg:gap-8
-                            backdrop-blur-sm
-                        ">
+    mt-6 lg:mt-0 
+    bg-white/[0.02] border border-white/5 rounded-2xl 
+    p-5 sm:p-6 md:px-8
+    grid grid-cols-4 gap-y-6 gap-x-4
+    md:flex md:flex-row md:items-center md:justify-center lg:justify-start md:gap-6 lg:gap-8
+    backdrop-blur-md
+">
                             <Stat icon={BookOpen} label="Created" value={userStats?.totalShortStoriesCreated} />
                             <Divider />
                             <Stat icon={Layers} label="Reads" value={userStats?.totalShortStoriesRead} />
@@ -168,16 +168,23 @@ const UserProfile = () => {
 /* ---------- SUB COMPONENTS ---------- */
 
 const Stat = ({ icon: Icon, label, value }) => (
-    <div className="flex flex-col items-center justify-center min-w-[60px]">
-        <div className="text-emerald-500/80 mb-1 lg:hidden">
-            {Icon && <Icon size={18} />}
+    <div className="flex flex-col items-center justify-center flex-1 min-w-[60px] group cursor-default">
+        
+        {/* ICON: Now visible on all screens. Shifts to Emerald on hover for a premium interactive feel */}
+        <div className="text-zinc-500 mb-1.5 transition-colors duration-300 group-hover:text-emerald-400">
+            {Icon && <Icon size={16} strokeWidth={2} />}
         </div>
-        <p className="text-xl sm:text-2xl font-bold text-white leading-none">
+        
+        {/* NUMBER: Tighter tracking and crisp zinc color that brightens on hover */}
+        <p className="text-lg sm:text-2xl font-bold text-zinc-200 tracking-tight leading-none mb-1 transition-colors duration-300 group-hover:text-white">
             {value || 0}
         </p>
-        <p className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider mt-1">
+        
+        {/* LABEL: Extremely wide tracking (0.2em) and tiny font size for high-end editorial contrast */}
+        <p className="text-[9px] sm:text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.2em] transition-colors duration-300 group-hover:text-zinc-400">
             {label}
         </p>
+        
     </div>
 );
 
