@@ -60,7 +60,6 @@ const createShortStory = async (req, res) => {
                 );
 
                 coverImageUrl = uploadResult?.url || null;
-                console.log("Image uploaded:", coverImageUrl);
 
             } catch (cloudError) {
                 console.error("Cloudinary Upload Error:", cloudError);
@@ -72,61 +71,48 @@ const createShortStory = async (req, res) => {
         }
 
         /* ================= CREATE STORY ================= */
-        let shortStory;
-        try {
-            shortStory = await ShortStory.create({
-                title,
-                story,
-                description,
-                coverImage: coverImageUrl,
-                finalQuestion,
-                category,
-                author: req.user._id,
-                status: status || "draft",
-                finalAnswer
-            });
-        } catch (dbError) {
-            console.error("Story Create DB Error:", dbError);
-            return res.status(500).json({
-                success: false,
-                message: "Failed to create story"
-            });
-        }
+        const shortStory = await ShortStory.create({
+            title,
+            story,
+            description,
+            coverImage: coverImageUrl,
+            finalQuestion,
+            category,
+            author: req.user._id,
+            status: status || "draft",
+            finalAnswer
+        });
 
         /* ================= UPDATE USER STATS ================= */
-        try {
-            await Userstats.updateOne(
-                { userId: req.user._id },
-                { $inc: { totalShortStoriesCreated: 1 } }
-            );
-        } catch (statsError) {
-            console.error("Userstats Update Error:", statsError);
-        }
-
-        /* ================= XP SYSTEM ================= */
-        if (shortStory.status === "published") {
-            try {
-                const stats = await Userstats.findOneAndUpdate(
-                    { userId: req.user._id },
-                    { $inc: { xp: 30 } },
-                    { new: true }
-                );
-
-                if (stats && stats.xp >= stats.xpToNextLevel) {
-                    await Userstats.findOneAndUpdate(
-                        { userId: req.user._id },
-                        {
-                            $inc: { level: 1 },
-                            $set: {
-                                xp: stats.xp - stats.xpToNextLevel,
-                                xpToNextLevel: stats.xpToNextLevel * 2
-                            }
-                        }
-                    );
+        const stats = await Userstats.findOneAndUpdate(
+            { userId: req.user._id },
+            {
+                $inc: {
+                    totalShortStoriesCreated: 1,
+                    xp: shortStory.status === "published" ? 30 : 0
                 }
-            } catch (xpError) {
-                console.error("XP Update Error:", xpError);
+            },
+            {
+                new: true,
+                upsert: true
             }
+        );
+
+        /* ================= LEVEL UP LOGIC (SAFE CONDITION) ================= */
+        if (shortStory.status === "published") {
+            await Userstats.updateOne(
+                {
+                    userId: req.user._id,
+                    xp: { $gte: stats.xpToNextLevel }
+                },
+                {
+                    $inc: { level: 1 },
+                    $set: {
+                        xp: stats.xp - stats.xpToNextLevel,
+                        xpToNextLevel: stats.xpToNextLevel * 2
+                    }
+                }
+            );
         }
 
         /* ================= SUCCESS ================= */
@@ -137,7 +123,7 @@ const createShortStory = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("CREATE STORY FATAL ERROR:", error);
+        console.error("CREATE STORY ERROR:", error);
 
         return res.status(500).json({
             success: false,
@@ -145,9 +131,6 @@ const createShortStory = async (req, res) => {
         });
     }
 };
-
-
-
 
 
 const listUserShortStory = async (req, res) => {
@@ -484,7 +467,10 @@ const updateShortStory = async (req, res) => {
             // published → draft
             if (previousStatus === "published" && shortStory.status === "draft") {
                 await Userstats.findOneAndUpdate(
-                    { userId: shortStory.author },
+                    {
+                        userId: shortStory.author,
+                        xp: { $gte: XP_REWARD }   // prevent double deduction
+                    },
                     [
                         {
                             $set: {
