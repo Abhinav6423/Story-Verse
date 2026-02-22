@@ -17,6 +17,26 @@
   }
 }
 
+html, body, #root {
+  background: #0B0F0E;   /* your dark app color */
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overscroll-behavior: none;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #0B0F0E;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* =====================================================
    LAYER: COMPONENTS (Custom UI Elements)
 ===================================================== */
