@@ -71,10 +71,10 @@ const CategoryShortStoryResultsGrid = () => {
 
         {/* HEADER */}
         <div className="flex flex-col gap-2 mb-10">
-          <span className="text-xs font-bold tracking-wider text-emerald-500 uppercase">
+          <span className="text-xs font-bold tracking-wider text-center text-emerald-500 uppercase">
             Category
           </span>
-          <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+          <h1 className="text-3xl md:text-4xl text-center font-bold text-white tracking-tight">
             {category?.toUpperCase()}
           </h1>
         </div>

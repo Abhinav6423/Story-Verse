@@ -1,10 +1,11 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap");
 /* =====================================================
    LAYER: BASE (Global Resets)
 ===================================================== */
 @layer base {
-  html, body {
+  html,
+  body {
     @apply font-sans text-gray-200 bg-[#0b1412] w-full overflow-x-hidden;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
@@ -17,20 +18,23 @@
   }
 }
 
-html, body, #root {
-  background: #0B0F0E;   /* your dark app color */
+html,
+body,
+#root {
+  background: #0b0f0e; /* your dark app color */
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html,
+body {
   overscroll-behavior: none;
 }
 
 body {
   min-height: 100vh;
-  background-color: #0B0F0E;
+  background-color: #0b0f0e;
 }
 
 * {
@@ -41,7 +45,6 @@ body {
    LAYER: COMPONENTS (Custom UI Elements)
 ===================================================== */
 @layer components {
-
   /* --- 1. Form Inputs --- */
   .field-input {
     @apply w-full px-4 py-3 rounded-xl text-sm outline-none transition-colors border;
@@ -71,14 +74,14 @@ body {
     @apply max-w-full box-border break-words;
     overflow-wrap: break-word;
   }
-  
+
   .prose :is(img, video, iframe) {
     @apply h-auto block;
   }
 
   /* --- 4. Mantine / Tiptap Editor Overrides (Dark Mode Force) --- */
   /* FIXED: Used !class syntax instead of @apply ... !important */
-  
+
   .blog-editor .mantine-RichTextEditor-root {
     @apply !bg-[#0b1412] !border-white/15 rounded-xl overflow-hidden;
   }
@@ -92,10 +95,18 @@ body {
   }
 
   /* Editor Typography */
-  .blog-editor .tiptap h1 { @apply text-4xl font-bold mt-8 mb-4 text-white; }
-  .blog-editor .tiptap h2 { @apply text-2xl font-bold mt-6 mb-3 text-white; }
-  .blog-editor .tiptap h3 { @apply text-xl font-bold mt-5 mb-2 text-gray-200; }
-  .blog-editor .tiptap p  { @apply mb-5 leading-7 text-gray-300; }
+  .blog-editor .tiptap h1 {
+    @apply text-4xl font-bold mt-8 mb-4 text-white;
+  }
+  .blog-editor .tiptap h2 {
+    @apply text-2xl font-bold mt-6 mb-3 text-white;
+  }
+  .blog-editor .tiptap h3 {
+    @apply text-xl font-bold mt-5 mb-2 text-gray-200;
+  }
+  .blog-editor .tiptap p {
+    @apply mb-5 leading-7 text-gray-300;
+  }
   .blog-editor .tiptap blockquote {
     @apply border-l-4 border-emerald-500 pl-4 italic text-gray-400 my-4;
   }
@@ -127,10 +138,14 @@ body {
    LAYER: UTILITIES (Animations & Helpers)
 ===================================================== */
 @layer utilities {
-  
   /* Scrollbar Hide Utility */
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
   /* --- Popup Animation --- */
   .popup-animation {
@@ -158,13 +173,27 @@ body {
   }
 
   /* Page Delays */
-  .page-0 { animation-delay: 0s; }
-  .page-1 { animation-delay: 0.15s; }
-  .page-2 { animation-delay: 0.3s; }
-  .page-3 { animation-delay: 0.45s; }
-  .page-4 { animation-delay: 0.6s; }
-  .page-5 { animation-delay: 0.75s; }
-  .page-6 { animation-delay: 0.9s; }
+  .page-0 {
+    animation-delay: 0s;
+  }
+  .page-1 {
+    animation-delay: 0.15s;
+  }
+  .page-2 {
+    animation-delay: 0.3s;
+  }
+  .page-3 {
+    animation-delay: 0.45s;
+  }
+  .page-4 {
+    animation-delay: 0.6s;
+  }
+  .page-5 {
+    animation-delay: 0.75s;
+  }
+  .page-6 {
+    animation-delay: 0.9s;
+  }
 }
 
 /* =====================================================
@@ -172,13 +201,30 @@ body {
 ===================================================== */
 
 @keyframes slideUpFade {
-  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes flip {
-  0% { opacity: 0; transform: rotate(-50deg); }
-  20% { opacity: 1; }
-  60% { opacity: 1; transform: rotate(50deg); }
-  100% { opacity: 0; transform: rotate(60deg); }
+  0% {
+    opacity: 0;
+    transform: rotate(-50deg);
+  }
+  20% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(50deg);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(60deg);
+  }
 }
