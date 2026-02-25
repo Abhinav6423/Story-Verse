@@ -57,14 +57,14 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.use(express.static("dist"));
+// app.use(express.static("dist"));
 
-app.get("*", (req, res, next) => {
-  if (req.path.startsWith("/api")) {
-    return next(); // let API 404 normally
-  }
-  res.sendFile(path.resolve("dist", "index.html"));
-});
+// app.get("*", (req, res, next) => {
+//   if (req.path.startsWith("/api")) {
+//     return next(); // let API 404 normally
+//   }
+//   res.sendFile(path.resolve("dist", "index.html"));
+// });
 
 // ================== ERROR HANDLER ==================
 app.use((err, req, res, next) => {
