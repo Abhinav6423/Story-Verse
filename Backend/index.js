@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
-
+import path from "path";
 import express from "express";
 import mongoose from "mongoose";
 // import cookieParser from "cookie-parser";
@@ -46,6 +46,8 @@ app.use("/api/story", shortStoryRoutes);
 app.use("/api/profile", userProfileRoutes);
 
 
+
+
 // ================== HEALTH CHECK ==================
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -55,8 +57,23 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.use(express.static("dist"));
 
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return next(); // let API 404 normally
+  }
+  res.sendFile(path.resolve("dist", "index.html"));
+});
 
+// ================== ERROR HANDLER ==================
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: "Server error",
+  });
+});
 
 
 // ================== START SERVER ==================
@@ -75,11 +92,4 @@ const startServer = async () => {
 
 startServer();
 
-// ================== ERROR HANDLER ==================
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: "Server error",
-  });
-});
+
