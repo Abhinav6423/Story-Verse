@@ -16,6 +16,7 @@ import {
    markGoodReadShortStory,
    listGoodReads,
    getTopGoodReads,
+   recommendShortStory
 } from "../controllers/ShorStory.controller.js";
 
 const router = express.Router();
@@ -46,11 +47,12 @@ router.get("/goodReads", verifyFirebaseToken, listGoodReads);
 router.get("/trending", verifyFirebaseToken, listTrendingShortStory);
 router.get("/list", verifyFirebaseToken, listShortStory);
 router.get("/topGoodReads", verifyFirebaseToken, getTopGoodReads);
-
+router.get("/recommend", verifyFirebaseToken, recommendShortStory);
 // 🔥 DYNAMIC ROUTES LAST
 router.get("/:storyId", verifyFirebaseToken, openShortStory);
 router.post("/:storyId/answer", verifyFirebaseToken, userAnswer);
 router.put("/:storyId/like", verifyFirebaseToken, likeShortStory);
 router.put("/:storyId/goodRead", verifyFirebaseToken, markGoodReadShortStory);
+
 
 export default router;

@@ -1666,5 +1666,42 @@ const getTopGoodReads = async (req, res) => {
 };
 
 
+const recommendShortStory = async (req, res) => {
+    try {
+        const { category, currentStoryId } = req.query;
 
-export { createShortStory, listShortStory, openShortStory, updateShortStory, deleteShortStory, listUserShortStory, openUserShortStory, userAnswer, likeShortStory, listTrendingShortStory, markGoodReadShortStory, listGoodReads, getTopGoodReads }; 
+        console.log("QUERY:", req.query);
+
+        if (!category || !currentStoryId) {
+            return res.status(400).json({
+                success: false,
+                message: "category and currentStoryId are required"
+            });
+        }
+
+        const stories = await ShortStory.find({
+            category,
+            status: "published",
+            _id: { $ne: new mongoose.Types.ObjectId(currentStoryId) }
+        })
+            .limit(5)
+            .populate("author", "username profilePic")
+            .sort({ likes: -1 })
+            .lean();
+        return res.status(200).json({
+            success: true,
+            count: stories.length,
+            stories
+        });
+    } catch (error) {
+        console.error("Recommend ShortStory Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+}
+
+
+
+export { createShortStory, listShortStory, openShortStory, updateShortStory, deleteShortStory, listUserShortStory, openUserShortStory, userAnswer, likeShortStory, listTrendingShortStory, markGoodReadShortStory, listGoodReads, getTopGoodReads, recommendShortStory }; 

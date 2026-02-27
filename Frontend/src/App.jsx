@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css"; // Ensure CSS is imported
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 import Loader from "./components/Loader.jsx"; // Use your new Book Loader here!
 
+
 // ================= LAZY LOAD PAGES (Code Splitting) =================
 // These will only load when the URL is visited, saving massive bundle size.
 
@@ -81,6 +82,7 @@ const App = () => {
                 path="/update/shortStory/:storyId"
                 element={<UpdateShortStory />}
               />
+
               <Route path="/profile/update" element={<UpdateProfile />} />
             </Route>
           </Route>

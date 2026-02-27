@@ -9,23 +9,51 @@ import { likeShortStory } from "../../Api-calls/likeShortStory.js";
 import { addShortStoryToGoodReads } from "../../Api-calls/addShortStoryToGoodReads.js";
 import { answerQuestionShortStory } from "../../Api-calls/answerQuestionShortStory.js";
 import { Minimize2, Maximize2 } from "lucide-react";
+import { recommendShortStory } from "../../Api-calls/recommendShortStrory.js";
+import RecommendShortStory from "./RecommendShortStory.jsx";
 const ViewShortStory = () => {
   const { storyId } = useParams();
 
   const [story, setStory] = useState({});
   const [loading, setLoading] = useState(true);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [addedToGoodReads, setAddedToGoodReads] = useState(false);
   const [goodReadsCount, setGoodReadsCount] = useState(0);
+  const [recommendedStories, setRecommendedStories] = useState([]);
+
+  // ✅ Reset state on story change
+  useEffect(() => {
+    setStory({});
+    setRecommendedStories([]);
+    setLoading(true);
+    window.scrollTo(0, 0);
+  }, [storyId]);
 
   // OPTIMIZATION: Memoize sanitized HTML
   const sanitizedContent = useMemo(() => {
     if (!story.story) return "";
     return DOMpurify.sanitize(story.story);
   }, [story.story]);
+
+  const fetchRecommendedStories = async () => {
+    setLoadingRecommendations(true);
+    try {
+      const response = await recommendShortStory({ currentStoryId: storyId, category: story?.category });
+      console.log("category of the story:", story.category)
+      if (response.success) {
+        console.log("recommend short stories", response.data)
+        setRecommendedStories(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching recommended stories:", error);
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  };
 
   /* ---------------- FETCH STORY ---------------- */
   useEffect(() => {
@@ -49,7 +77,17 @@ const ViewShortStory = () => {
       }
     };
     fetchStory();
+
   }, [storyId]);
+
+
+  // Fetch recommended stories when the main story's category is available/changes
+  useEffect(() => {
+    if (story?.category) {
+      fetchRecommendedStories();
+    }
+  }, [story?.category]);
+
 
   /* ---------------- LIKE ---------------- */
   const handleLike = async () => {
@@ -116,6 +154,8 @@ const ViewShortStory = () => {
       }
     }
   };
+
+
 
   if (loading) return <Loader />;
 
@@ -260,6 +300,8 @@ const ViewShortStory = () => {
           />
         </div>
       </div>
+
+      <RecommendShortStory relatedStories={recommendedStories} />
     </div >
   );
 };
