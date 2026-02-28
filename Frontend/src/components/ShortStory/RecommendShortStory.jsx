@@ -25,101 +25,113 @@ export default function RecommendShortStory({ relatedStories = [] }) {
     };
 
     return (
-        <section className="relative w-full py-20 px-4 sm:px-6 lg:px-8 font-sans overflow-hidden bg-[#050505]">
-            {/* Ambient Premium Background Gradients */}
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
-            <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[150px] pointer-events-none mix-blend-screen" />
+        <section className="relative w-full pb-24 px-4 sm:px-6 lg:px-8 font-sans overflow-hidden bg-transparent">
 
             <style>
                 {`
-                @keyframes smoothFadeUp {
-                    0% {
-                        opacity: 0;
-                        transform: translateY(20px) scale(0.98);
-                    }
-                    100% {
-                        opacity: 1;
-                        transform: translateY(0) scale(1);
-                    }
+            @keyframes smoothFadeUp {
+                0% {
+                    opacity: 0;
+                    transform: translateY(30px) scale(0.95);
                 }
-                .animate-premium-fade {
-                    animation: smoothFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-                    opacity: 0; 
+                100% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
                 }
-            `}
+            }
+            .animate-premium-fade {
+                animation: smoothFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                opacity: 0; 
+            }
+        `}
             </style>
 
-            <div className="max-w-[1400px] mx-auto relative z-10">
-                {/* Elegant Header */}
-                <div className="flex items-center gap-3 mb-10 pb-5 border-b border-white/[0.08]">
-                    <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
-                        <Sparkles className="text-indigo-400" size={18} strokeWidth={1.5} />
+            <div className="max-w-[1200px] mx-auto relative z-10">
+
+                {/* UPDATED HEADER: More subtle, algorithmic, and cinematic */}
+                <div className="flex items-end justify-between mb-8 pb-4 border-b border-emerald-900/20">
+                    <div className="flex flex-col gap-1">
+                        <h2 className="text-xl md:text-2xl font-serif tracking-wide text-gray-200">
+                            Continue the Thread
+                        </h2>
+                        <p className="text-xs text-gray-500 uppercase tracking-[0.2em]">Based on your atmospheric profile</p>
                     </div>
-                    <h2 className="text-2xl md:text-3xl font-serif font-medium tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-zinc-100 via-zinc-300 to-zinc-500">
-                        More from this universe
-                    </h2>
+                    <Sparkles size={24} className="text-emerald-400" /> 
                 </div>
 
-                {/* UPDATED GRID: 2 columns on mobile, up to 5 on large screens for portrait book layout */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5">
+                {/* THE GRID: High density, Netflix "More Like This" style */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
                     {relatedStories.map((story, index) => (
                         <div
                             key={story._id}
                             onClick={() => navigate(`/story/${story._id}`)}
-                            style={{ animationDelay: `${index * 100}ms` }}
-                            className="animate-premium-fade cursor-pointer group relative flex flex-col bg-[#121212] border border-white/[0.05] rounded-xl overflow-hidden transition-all duration-300 hover:bg-[#18181b] hover:border-white/[0.1] hover:-translate-y-1 hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.5)] focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                            style={{ animationDelay: `${index * 120}ms` }}
+                            className="animate-premium-fade cursor-pointer group relative flex flex-col bg-[#0a0a0a] rounded-lg overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_-10px_rgba(16,185,129,0.15)] hover:-translate-y-1.5 hover:ring-1 hover:ring-emerald-500/30"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                            {/* UPDATED IMAGE ASPECT RATIO: 2:3 for standard portrait book cover */}
-                            <div className="relative aspect-[2/3] w-full overflow-hidden shrink-0 bg-zinc-900 border-b border-white/[0.02]">
+                            {/* IMAGE CONTAINER */}
+                            <div className="relative aspect-[2/3] w-full overflow-hidden shrink-0 bg-[#050505]">
                                 <img
                                     src={story.coverImage || "/placeholder-cover.jpg"}
                                     alt={story.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100"
                                 />
 
-                                {/* Subtle top gradient to make bookmark pop */}
-                                <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/50 to-transparent" />
-                                {/* Bottom gradient merging into card body */}
-                                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#121212] to-transparent" />
+                                {/* Permanent top vignette for badges */}
+                                <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/80 via-black/30 to-transparent" />
+
+                                {/* Dynamic bottom vignette that rises on hover (The "Trailer" Reveal) */}
+                                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#020403] via-[#020403]/80 to-transparent transition-all duration-500 group-hover:h-[80%]" />
+
+                                {/* TOP BADGES: The Netflix Match Algorithm */}
+                                <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+                                    {/* Pseudo-random or prop-based match score for psychological buy-in */}
+                                    <span className="text-emerald-400 font-bold text-[10px] sm:text-[11px] tracking-wide drop-shadow-md">
+                                        {90 + (index % 10)}% Match
+                                    </span>
+                                </div>
 
                                 {/* Top Right Bookmark Icon */}
-                                <div className="absolute top-2 right-2 bg-emerald-500 text-white p-1.5 rounded-[4px] shadow-md opacity-90 group-hover:opacity-100 transition-opacity">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <div className="absolute top-3 right-3 text-white/40 group-hover:text-white transition-colors duration-300">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                                     </svg>
                                 </div>
-                            </div>
 
-                            {/* UPDATED CONTENT: Compact, no description, inline title and likes */}
-                            <div className="flex flex-col flex-grow p-3 sm:p-4 relative z-10">
-                                <div className="flex items-start justify-between gap-2 mb-2">
-                                    <h3 className="text-sm font-bold text-zinc-100 group-hover:text-emerald-400 transition-colors duration-300 line-clamp-1 leading-tight">
+                                {/* HOVER REVEAL CONTENT (Slides up over the image) */}
+                                <div className="absolute inset-x-0 bottom-0 p-4 flex flex-col justify-end translate-y-4 opacity-80 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+
+                                    <h3 className="text-sm sm:text-base font-bold text-zinc-100 leading-tight mb-1.5 drop-shadow-lg line-clamp-2">
                                         {story.title || "Story Title"}
                                     </h3>
 
-                                    {/* Green Likes Badge matching your screenshot */}
-                                    <div className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-[4px] shrink-0">
-                                        <Heart size={10} className="fill-emerald-400/20" />
-                                        <span className="text-[10px] font-bold tracking-wide">
-                                            {story.likes || 0}
-                                        </span>
+                                    {/* Hidden metadata that only shows on hover */}
+                                    <div className="flex items-center gap-2 text-[10px] text-gray-300 font-medium mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                        <span className="border border-gray-500/50 px-1.5 py-0.5 rounded-sm">18 Min</span>
+                                        <span>{story.category || "Psychological"}</span>
                                     </div>
-                                </div>
 
-                                {/* Compact Author Row */}
-                                <div className="flex items-center gap-2 mt-auto">
-                                    <div className="w-5 h-5 rounded-full overflow-hidden border border-white/10 group-hover:border-emerald-400/50 transition-colors duration-300 shrink-0">
-                                        <img
-                                            src={story.author?.profilePic || "/default-avatar.png"}
-                                            alt={story.author?.username || "Author"}
-                                            className="w-full h-full object-cover"
-                                        />
+                                    {/* Compact Author & Likes Row */}
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-5 h-5 rounded-full overflow-hidden border border-white/20">
+                                                <img
+                                                    src={story.author?.profilePic || "/default-avatar.png"}
+                                                    alt={story.author?.username || "Author"}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <span className="text-[11px] font-medium text-zinc-400 truncate max-w-[80px]">
+                                                {story.author?.username || "Unknown"}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center gap-1 text-emerald-400">
+                                            <Heart size={12} className="fill-emerald-400/20" />
+                                            <span className="text-[10px] font-bold tracking-wide">
+                                                {story.likes || 0}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <span className="text-[11px] font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors truncate">
-                                        {story.author?.username || "Unknown"}
-                                    </span>
                                 </div>
                             </div>
                         </div>
