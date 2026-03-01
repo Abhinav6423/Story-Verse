@@ -24,7 +24,7 @@ const ViewShortStory = () => {
   const [addedToGoodReads, setAddedToGoodReads] = useState(false);
   const [goodReadsCount, setGoodReadsCount] = useState(0);
   const [recommendedStories, setRecommendedStories] = useState([]);
-
+  const [showChapters, setShowChapters] = useState(false);
   // ✅ Reset state on story change
   useEffect(() => {
     setStory({});
@@ -34,10 +34,44 @@ const ViewShortStory = () => {
   }, [storyId]);
 
   // OPTIMIZATION: Memoize sanitized HTML
+  const [chapters, setChapters] = useState([]);
+
   const sanitizedContent = useMemo(() => {
-    if (!story.story) return "";
-    return DOMpurify.sanitize(story.story);
+    if (!story.story) {
+      setChapters([]);
+      return "";
+    }
+
+    const clean = DOMpurify.sanitize(story.story);
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(clean, "text/html");
+
+    const headings = doc.querySelectorAll("h2, h3");
+    const extractedChapters = [];
+
+    headings.forEach((heading, index) => {
+      const id = `chapter-${index + 1}`;
+      heading.setAttribute("id", id);
+
+      extractedChapters.push({
+        id,
+        title: heading.textContent,
+      });
+    });
+
+    setChapters(extractedChapters);
+
+    return doc.body.innerHTML;
   }, [story.story]);
+
+  // LOGIC: Scroll to chapter when URL has a hash (e.g., /story/123#chapter-2)
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   const fetchRecommendedStories = async () => {
     setLoadingRecommendations(true);
@@ -185,13 +219,71 @@ const ViewShortStory = () => {
               <h3 className="text-xl font-serif text-gray-500 tracking-wide">{story.title}</h3>
             </div>
           )}
-          {/* Deep fade into the radial background */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b1412] via-[#0b1412]/60 to-transparent z-10 pointer-events-none" />
         </div>
       )}
 
+
+      {/* --- SIDE CHAPTER INDEX --- */}
+      {!isFocusMode && chapters.length > 0 && (
+        <>
+
+          {/* Floating Index Button */}
+          <button
+            onClick={() => setShowChapters(!showChapters)}
+            className="fixed right-6 bottom-10 z-[100] bg-emerald-500 text-black px-6 py-3 rounded-full text-sm font-semibold shadow-2xl hover:scale-105 transition-all duration-300"
+          >
+            {showChapters ? "Close Index" : "Index"}
+          </button>
+
+          {showChapters && (
+            <div className="fixed inset-0 z-[90] flex justify-end">
+
+              {/* Backdrop */}
+              <div
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                onClick={() => setShowChapters(false)}
+              />
+
+              {/* Slide Panel */}
+              <div className="relative w-80 bg-[#0b1412] h-full p-8 overflow-y-auto border-l border-emerald-900/30 shadow-2xl animate-in slide-in-from-right duration-300">
+
+                <h4 className="text-[11px] tracking-[0.4em] uppercase text-emerald-500 mb-8 font-semibold">
+                  INDEX
+                </h4>
+
+                <div className="flex flex-col gap-6">
+                  {chapters.map((chapter, index) => (
+                    <button
+                      key={chapter.id}
+                      onClick={() => {
+                        scrollToSection(chapter.id);
+                        setShowChapters(false);
+                      }}
+                      className="group text-left font-serif text-[15px] text-gray-300 hover:text-white transition-all duration-300"
+                    >
+                      <span className="block text-[10px] tracking-widest text-gray-600 mb-1">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      <span className="group-hover:translate-x-1 transition-transform duration-300 inline-block">
+                        {chapter.title}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+              </div>
+            </div>
+          )}
+
+
+          
+        </>
+      )}
+
       {/* CONTENT CONTAINER */}
-      <div className={`mx-auto px-6 sm:px-8 pb-16 relative z-20 transition-all duration-700 ${isFocusMode ? 'max-w-3xl' : 'max-w-4xl pt-10 sm:-mt-16'}`}>
+      <div className={`mx-auto px-6 sm:px-8 pb-16 relative z-20 transition-all duration-700 ${isFocusMode ? 'max-w-3xl' : 'max-w-4xl pt-10 sm:-mt-16'} lg:ml-72`}>
 
 
         {/* --- CENTERED HEADER SECTION (Cinematic Premium Hero) --- */}
@@ -248,7 +340,7 @@ const ViewShortStory = () => {
               <div className="w-full max-w-lg border-l-[3px] border-emerald-500/40 bg-emerald-900/10 pl-6 py-4 my-2 text-left rounded-r-sm backdrop-blur-sm shadow-inner">
                 <p className="text-sm sm:text-base text-gray-200 font-serif italic leading-relaxed">
                   {story.description}<br />
-                  
+
                 </p>
               </div>
 
@@ -321,6 +413,10 @@ const ViewShortStory = () => {
         </div>
 
         <hr className={`my-12 w-24 mx-auto border-emerald-500/20 transition-opacity duration-700 ${isFocusMode ? 'opacity-0 my-6' : 'opacity-100'}`} />
+
+
+
+
 
         {/* STORY CONTENT */}
         <div
