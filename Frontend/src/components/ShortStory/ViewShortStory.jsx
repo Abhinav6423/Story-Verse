@@ -225,13 +225,13 @@ const ViewShortStory = () => {
 
 
       {/* --- SIDE CHAPTER INDEX --- */}
-      {!isFocusMode && chapters.length > 0 && (
+      {chapters.length > 0 && (
         <>
 
           {/* Floating Index Button */}
           <button
             onClick={() => setShowChapters(!showChapters)}
-            className="fixed right-6 bottom-10 z-[100] bg-emerald-500 text-black px-6 py-3 rounded-full text-sm font-semibold shadow-2xl hover:scale-105 transition-all duration-300"
+            className="fixed right-4 bottom-24  z-[100] bg-emerald-500 text-black px-6 py-3 rounded-full text-sm font-semibold shadow-2xl hover:scale-105 transition-all duration-300"
           >
             {showChapters ? "Close Index" : "Index"}
           </button>
