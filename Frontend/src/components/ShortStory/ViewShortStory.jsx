@@ -237,7 +237,7 @@ const ViewShortStory = () => {
           </button>
 
           {showChapters && (
-            <div className="fixed inset-0 z-[90] flex justify-end">
+            <div className="fixed  inset-0 z-[90] flex justify-end">
 
               {/* Backdrop */}
               <div
@@ -246,7 +246,11 @@ const ViewShortStory = () => {
               />
 
               {/* Slide Panel */}
-              <div className="relative w-80 bg-[#0b1412] h-full p-8 overflow-y-auto border-l border-emerald-900/30 shadow-2xl animate-in slide-in-from-right duration-300">
+              <div className="relative w-80 bg-[#0b1412] h-full p-8 
+    overflow-y-auto overscroll-y-contain 
+    border-l border-emerald-900/30 
+    shadow-2xl 
+    animate-in slide-in-from-right duration-300">
 
                 <h4 className="text-[11px] tracking-[0.4em] uppercase text-emerald-500 mb-8 font-semibold">
                   INDEX
@@ -278,7 +282,7 @@ const ViewShortStory = () => {
           )}
 
 
-          
+
         </>
       )}
 
