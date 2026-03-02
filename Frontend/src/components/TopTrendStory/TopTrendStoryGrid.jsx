@@ -141,17 +141,18 @@ function TopTrendStoryGrid() {
 
                 {/* GRID */}
                 <div className="
-        p-2 sm:p-4 md:p-0
-        grid
-        grid-cols-2
-        sm:grid-cols-3
-        md:grid-cols-4
-        lg:grid-cols-5
-        gap-4
-        sm:gap-6
-        md:gap-8
-        lg:gap-10
-      ">
+  mx-auto
+  max-w-[1400px]
+  grid
+  grid-cols-2
+  sm:grid-cols-3
+  md:grid-cols-3
+  lg:grid-cols-4
+  xl:grid-cols-5
+  gap-5
+  md:gap-8
+  lg:gap-10
+">
                     {stories.map((story, idx) => (
                         <Link
                             key={story._id}
