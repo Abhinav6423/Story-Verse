@@ -41,66 +41,128 @@ function TopTrendStoryGrid() {
     if (!stories.length) return null;
 
     return (
-        <div className="relative mt-0 px-4 md:px-8 bg-transparent text-white min-h-[200px]">
+        <div className="relative mt-0 px-4 sm:px-6 md:px-10 lg:px-16 bg-transparent text-white min-h-[200px] overflow-hidden">
 
             {/* === PREMIUM AMBIENT BACKGROUND SYSTEM === */}
 
-            {/* 1. Subtle overall wash: Fades smoothly from a dark emerald hint into your base background */}
+            {/* Gradient Wash */}
             <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/90 via-transparent to-transparent pointer-events-none z-0" />
 
-            {/* 2. Primary soft glow: Wide, extremely blurred, and low opacity so it feels like calm light */}
-            <div className="absolute top-[-20%] left-[5%] w-[70vw] h-[600px] bg-emerald-900/15 blur-[150px] rounded-[100%] pointer-events-none z-0" />
+            {/* Primary Glow */}
+            <div className="
+      absolute 
+      top-[-15%] 
+      left-[0%] 
+      w-[80vw] 
+      md:w-[60vw] 
+      h-[500px] 
+      md:h-[600px]
+      bg-emerald-900/15 
+      blur-[150px] 
+      rounded-full 
+      pointer-events-none 
+      z-0
+    " />
 
-            {/* 3. Secondary balancing glow: Placed on the bottom right to carry the theme subtly across the section */}
-            <div className="absolute bottom-[-20%] right-[-5%] w-[50vw] h-[500px] bg-teal-950/30 blur-[130px] rounded-[100%] pointer-events-none z-0" />
+            {/* Secondary Glow */}
+            <div className="
+      absolute 
+      bottom-[-15%] 
+      right-[-10%] 
+      w-[70vw] 
+      md:w-[50vw] 
+      h-[450px] 
+      md:h-[500px]
+      bg-teal-950/30 
+      blur-[130px] 
+      rounded-full 
+      pointer-events-none 
+      z-0
+    " />
 
             {/* ================= TRENDING SECTION ================= */}
-            <section className="relative z-10 py-6">
+            <section className="relative z-10 py-8 md:py-12">
 
                 {/* HEADER */}
-                <div className="mb-8 flex items-end justify-between w-full">
-                    <div className="flex items-center gap-3 md:gap-4">
+                <div className="mb-10 flex items-end justify-between w-full">
 
-                        {/* Premium Flame Badge */}
-                        <div className="relative flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#0F1714]/80 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)] backdrop-blur-md shrink-0">
+                    <div className="flex items-center gap-3 md:gap-5">
+
+                        {/* Flame Badge */}
+                        <div className="relative flex items-center justify-center 
+            w-10 h-10 
+            md:w-12 md:h-12 
+            rounded-xl 
+            bg-[#0F1714]/80 
+            border border-emerald-500/20 
+            shadow-[0_0_20px_rgba(16,185,129,0.2)] 
+            backdrop-blur-md 
+            shrink-0">
+
                             <FlameIcon
                                 size={22}
                                 className="text-emerald-400 fill-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)] animate-pulse md:w-6 md:h-6"
                             />
                         </div>
 
-                        {/* Typography Stack */}
+                        {/* Typography */}
                         <div className="flex flex-col justify-center">
-                            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-emerald-600/80 mb-0.5 md:mb-1">
+
+                            <span className="
+              text-[10px] 
+              md:text-xs 
+              font-bold 
+              uppercase 
+              tracking-[0.25em] 
+              text-emerald-500/80 
+              mb-1
+            ">
                                 Curated For You
                             </span>
-                            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-none">
-                                Your Next <span className="text-emerald-400 drop-shadow-[0_0_12px_rgba(52,211,153,0.2)]">Obsession</span>
+
+                            <h2 className="
+              text-2xl 
+              sm:text-3xl 
+              md:text-4xl 
+              font-extrabold 
+              tracking-tight 
+              text-white 
+              leading-tight
+            ">
+                                Your Next{" "}
+                                <span className="text-emerald-400 drop-shadow-[0_0_12px_rgba(52,211,153,0.25)]">
+                                    Obsession
+                                </span>
                             </h2>
+
                         </div>
                     </div>
                 </div>
 
                 {/* GRID */}
                 <div className="
-                p-2 sm:p-5
-                grid
-                grid-cols-2
-                sm:grid-cols-3
-                md:grid-cols-4
-                lg:grid-cols-5
-                gap-3 sm:gap-8 md:gap-12
-            ">
+        p-2 sm:p-4 md:p-0
+        grid
+        grid-cols-2
+        sm:grid-cols-3
+        md:grid-cols-4
+        lg:grid-cols-5
+        gap-4
+        sm:gap-6
+        md:gap-8
+        lg:gap-10
+      ">
                     {stories.map((story, idx) => (
                         <Link
                             key={story._id}
                             to={`/story/${story._id}`}
-                            className="block transition-transform hover:-translate-y-1 duration-300"
+                            className="block transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02]"
                         >
                             <TopTrendStoryCard story={story} idx={idx} />
                         </Link>
                     ))}
                 </div>
+
             </section>
         </div>
     );
