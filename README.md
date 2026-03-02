@@ -214,7 +214,8 @@ Portfolio: (your portfolio URL)
 
 📄 License
 
-MIT License
+All rights reserved.
+This repository is not open for redistribution or commercial reuse.
 
 ⭐ Why Preface Matters
 
