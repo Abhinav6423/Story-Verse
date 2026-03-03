@@ -10,9 +10,11 @@ import StarterKit from "@tiptap/starter-kit";
 import { Loader2, UploadCloud, X } from "lucide-react"; // Icons for better UX
 import { categories } from "../../utils/Categories.jsx";
 import imageCompression from "browser-image-compression";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const CreatePost = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     // Form State
     const [title, setTitle] = useState("");
@@ -28,7 +30,6 @@ const CreatePost = () => {
     const [previewUrl, setPreviewUrl] = useState(null);
 
     // UI State
-    const [loading, setLoading] = useState(false);
     const [step, setStep] = useState(1);
     const [compressing, setCompressing] = useState(false);
 
@@ -74,8 +75,9 @@ const CreatePost = () => {
 
         try {
             const options = {
-                maxSizeMB: 1,
-                maxWidthOrHeight: 1280,
+                maxSizeMB: 0.6,
+                maxWidthOrHeight: 1000,
+                initialQuality: 0.85,
                 useWebWorker: true,
                 fileType: "image/webp",
             };
@@ -117,138 +119,187 @@ const CreatePost = () => {
         setPreviewUrl(null);
     };
 
+
+    const createPostMutation = useMutation({
+        mutationFn: createShortStory, // cleaner
+
+        retry: (failureCount, error) => {
+            // Retry only for network errors (no response object)
+            if (!error?.response) return failureCount < 2;
+            return false;
+        },
+
+        retryDelay: (attemptIndex) =>
+            Math.min(1000 * 2 ** attemptIndex, 3000), // exponential backoff
+
+        onSuccess: (result) => {
+            if (result?.success) {
+                toast.success("Story created! +30 XP Reward 🌟");
+
+                // 🔥 Invalidate home feed so it refreshes automatically
+                queryClient.invalidateQueries({
+                    queryKey: ["shortStories"],
+                });
+
+                // Reset form
+                setTitle("");
+                setStory("");
+                setCoverImg(null);
+                setPreviewUrl(null);
+
+                navigate("/home");
+            } else {
+                toast.error(result?.message || "Failed to create story");
+            }
+        },
+
+        onError: (error) => {
+            console.error("Create Story Error:", error);
+            toast.error("Something went wrong. Please try again.");
+        },
+    });
+
     /* ================= SUBMIT ================= */
-    const handleSave = async (e) => {
+    const handleSave = (e) => {
         e.preventDefault();
 
-        if (!title.trim() || !story.trim()) return toast.error("Title and story content are required");
-        if (!coverImg) return toast.error("Cover image is required");
+        if (!title.trim() || !story.trim()) {
+            return toast.error("Title and story content are required");
+        }
+
+        if (!coverImg) {
+            return toast.error("Cover image is required");
+        }
 
         if (compressing) {
             toast.info("Processing image, please wait...");
             return;
         }
 
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("category", genre);
+        formData.append("description", description);
+        formData.append("finalQuestion", finalQ);
+        formData.append("finalAnswer", finalA);
+        formData.append("status", status);
+        formData.append("story", story);
+        formData.append("coverImage", coverImg);
 
-        try {
-            setLoading(true);
-            const formData = new FormData();
-            formData.append("title", title);
-            formData.append("category", genre);
-            formData.append("description", description);
-            formData.append("finalQuestion", finalQ);
-            formData.append("finalAnswer", finalA);
-            formData.append("status", status);
-            formData.append("story", story);
-            formData.append("coverImage", coverImg);
-
-            const result = await createShortStory(formData);
-
-            if (result?.success) {
-                toast.success("Story created! +30 XP Reward 🌟");
-                // Reset form
-                setTitle("");
-                setStory("");
-                setCoverImg(null);
-                setPreviewUrl(null);
-                navigate("/home");
-            } else {
-                toast.error(result?.message || "Failed to create story");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Something went wrong");
-        } finally {
-            setLoading(false);
-        }
+        createPostMutation.mutate(formData);
     };
 
     return (
-        <div className="min-h-screen border-black/70 border bg-gradient-to-b from-[#0f2a24] via-[#0b1412] to-black text-gray-200 pb-16">
+        <div className="min-h-screen bg-gradient-to-b from-[#0f2a24] via-[#0b1412] to-black text-gray-200 pb-16 font-sans">
 
-            <div className="max-w-5xl mx-auto mt-6 sm:mt-10 bg-[#141a18] rounded-2xl sm:rounded-3xl shadow-xl border border-white/10 p-4 sm:p-6 md:p-8">
+            <div className="max-w-5xl mx-auto mt-6 sm:mt-12 bg-[#141a18] rounded-2xl sm:rounded-3xl shadow-2xl border border-white/5 p-6 sm:p-8 md:p-10">
 
                 {/* ================= HEADER ================= */}
-                <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-200">
-                        Write Your Story
-                    </h1>
+                <div className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-6">
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
+                            Write Your Story
+                        </h1>
+                        <p className="text-gray-400 text-sm mt-1">Share your imagination with the world.</p>
+                    </div>
 
-                    <select
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                        className="px-4 py-2 text-sm bg-[#005c48] text-white font-bold border border-white/20 rounded-lg cursor-pointer hover:bg-[#004d3d] transition"
-                    >
-                        <option value="draft">Draft</option>
-                        <option value="published">Publish</option>
-                    </select>
+                    <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium text-gray-400">Status:</span>
+                        <select
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                            className="px-4 py-2 text-sm bg-white/5 text-white font-medium border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 focus:ring-2 focus:ring-emerald-500/50 outline-none transition"
+                        >
+                            <option value="draft">Draft</option>
+                            <option value="published">Publish</option>
+                        </select>
+                    </div>
                 </div>
 
                 {/* ================= PROGRESS BAR ================= */}
-                <div className="mb-12">
-                    <div className="flex items-center justify-between max-w-sm mx-auto mb-4 relative z-10">
+                <div className="mb-12 relative">
+                    <div className="flex items-center justify-between max-w-md mx-auto relative z-10">
                         <button
                             onClick={() => setStep(1)}
-                            className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${step === 1 ? "bg-[#0b1412] text-emerald-300 border border-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.35)]" : "bg-[#0b1412] text-gray-400 border border-white/10"}`}
+                            className={`px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${step === 1
+                                ? "bg-[#0b1412] text-emerald-400 border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                                : "bg-[#1a2220] text-gray-400 border border-white/5 hover:text-gray-200"
+                                }`}
                         >
-                            Step 1
+                            1. Story Content
                         </button>
                         <button
                             onClick={() => setStep(2)}
-                            disabled={!title || !story} // Disable step 2 until step 1 is started
-                            className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${step === 2 ? "bg-[#0b1412] text-emerald-300 border border-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.35)]" : "bg-[#0b1412] text-gray-400 border border-white/10"}`}
+                            disabled={!title || !story}
+                            className={`px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${step === 2
+                                ? "bg-[#0b1412] text-emerald-400 border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                                : "bg-[#1a2220] text-gray-400 border border-white/5 hover:text-gray-200"
+                                }`}
                         >
-                            Step 2
+                            2. Details & Cover
                         </button>
                     </div>
 
                     {/* Progress Line */}
-                    <div className="relative max-w-sm mx-auto top-[-20px] z-0">
-                        <div className="h-[2px] bg-white/10 w-full absolute top-1/2" />
-                        <div
-                            className={`h-[2px] bg-emerald-500 absolute top-1/2 transition-all duration-300 ${step === 1 ? "w-1/2" : "w-full"}`}
-                        />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-0 pointer-events-none px-20">
+                        <div className="h-[2px] bg-white/5 w-full rounded-full overflow-hidden">
+                            <div
+                                className={`h-full bg-emerald-500/50 transition-all duration-500 ease-in-out ${step === 1 ? "w-0" : "w-full"
+                                    }`}
+                            />
+                        </div>
                     </div>
                 </div>
 
                 {/* ================= STEP 1: CONTENT ================= */}
                 {step === 1 && (
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="mb-6">
-                            <label className="text-sm font-medium text-gray-300 mb-2 block">Title</label>
                             <input
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 placeholder="Enter a captivating title..."
-                                className="field-input text-lg font-semibold"
+                                className="w-full bg-transparent text-3xl md:text-4xl font-bold text-white placeholder:text-gray-600 border-none outline-none focus:ring-0 py-2"
                             />
                         </div>
 
-                        <div className="blog-editor border border-white/10 rounded-2xl overflow-hidden">
+                        <div className="blog-editor border border-white/10 rounded-2xl overflow-hidden shadow-inner bg-[#1A1A1A] focus-within:border-emerald-500/50 transition-colors duration-300">
                             {editor && (
                                 <RichTextEditor
                                     editor={editor}
                                     styles={{
-                                        root: { border: "none" },
+                                        root: {
+                                            border: "none",
+                                            backgroundColor: "transparent"
+                                        },
                                         content: {
-                                            minHeight: "350px",
-                                            backgroundColor: "#1A1A1A",
+                                            minHeight: "450px",
                                             color: "#e5e7eb",
-                                            fontSize: "16px",
-                                            padding: "20px"
+                                            fontSize: "1.125rem",
+                                            lineHeight: "1.75",
+                                            padding: "24px"
                                         },
                                         toolbar: {
-                                            backgroundColor: "#222",
-                                            borderBottom: "1px solid rgba(255,255,255,0.1)",
+                                            backgroundColor: "#1A1A1A", // Matches your editor container
+                                            borderBottom: "1px solid rgba(255,255,255,0.05)",
+                                            padding: "8px 12px"
+                                        },
+                                        // Add this to fix the white blocks:
+                                        controlsGroup: {
+                                            backgroundColor: "transparent",
                                         },
                                         control: {
                                             color: "#9ca3af",
                                             border: "none",
-                                            '&:hover': { backgroundColor: "rgba(255,255,255,0.1)" }
+                                            backgroundColor: "transparent", // Forces buttons to be clear
+                                            '&:hover': {
+                                                backgroundColor: "rgba(255,255,255,0.1)",
+                                                color: "#fff"
+                                            }
                                         }
                                     }}
                                 >
-                                    <RichTextEditor.Toolbar sticky stickyOffset={60}>
+                                    <RichTextEditor.Toolbar>
                                         <RichTextEditor.ControlsGroup>
                                             <RichTextEditor.Bold />
                                             <RichTextEditor.Italic />
@@ -286,7 +337,8 @@ const CreatePost = () => {
                         <div className="flex justify-end mt-8">
                             <button
                                 onClick={() => setStep(2)}
-                                className="px-8 py-3 rounded-xl bg-emerald-700 text-white font-semibold hover:bg-emerald-600 transition"
+                                disabled={!title}
+                                className="px-8 py-3.5 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-500 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-emerald-900/20"
                             >
                                 Continue to Details →
                             </button>
@@ -296,8 +348,8 @@ const CreatePost = () => {
 
                 {/* ================= STEP 2: METADATA ================= */}
                 {step === 2 && (
-                    <div className="animate-in fade-in slide-in-from-right-8 duration-300">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="animate-in fade-in slide-in-from-right-8 duration-500">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
                             {/* LEFT COLUMN */}
                             <div className="space-y-6">
@@ -305,7 +357,7 @@ const CreatePost = () => {
                                     <select
                                         value={genre}
                                         onChange={(e) => setGenre(e.target.value)}
-                                        className="field-input"
+                                        className="w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl text-gray-200 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
                                     >
                                         <option disabled value="">Select Genre</option>
                                         {categories.map((cat) => (
@@ -319,7 +371,7 @@ const CreatePost = () => {
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         rows={4}
-                                        className="field-input resize-none"
+                                        className="w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl text-gray-200 placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all resize-none"
                                         placeholder="What is this story about?"
                                     />
                                 </Field>
@@ -328,7 +380,7 @@ const CreatePost = () => {
                                     <input
                                         value={finalQ}
                                         onChange={(e) => setFinalQ(e.target.value)}
-                                        className="field-input"
+                                        className="w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl text-gray-200 placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
                                         placeholder="e.g. Who was the killer?"
                                     />
                                 </Field>
@@ -338,7 +390,7 @@ const CreatePost = () => {
                                         value={finalA}
                                         onChange={(e) => setFinalA(e.target.value)}
                                         rows={3}
-                                        className="field-input resize-none"
+                                        className="w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl text-gray-200 placeholder:text-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all resize-none"
                                         placeholder="The answer to the question above..."
                                     />
                                 </Field>
@@ -346,28 +398,34 @@ const CreatePost = () => {
 
                             {/* RIGHT COLUMN (IMAGE) */}
                             <div>
-                                <label className="text-sm font-medium text-gray-300 mb-2 block">Cover Image</label>
+                                <label className="text-sm font-semibold text-gray-300 mb-3 block">Cover Image</label>
 
                                 <label className={`
-                                    relative flex flex-col items-center justify-center w-full h-[300px] 
-                                    rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden
-                                    ${previewUrl ? 'border-emerald-500/50' : 'border-gray-600 hover:border-emerald-400 hover:bg-white/5'}
-                                `}>
+                                relative flex flex-col items-center justify-center w-full h-[380px] 
+                                rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden group
+                                ${previewUrl ? 'border-emerald-500/50 bg-[#1A1A1A]' : 'border-white/10 hover:border-emerald-500/40 hover:bg-white/5 bg-[#1A1A1A]'}
+                            `}>
                                     {previewUrl ? (
                                         <>
-                                            <img src={previewUrl} alt="Cover" className="w-full h-full object-cover" />
+                                            <img src={previewUrl} alt="Cover" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" />
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                <p className="text-white font-medium bg-black/60 px-4 py-2 rounded-lg backdrop-blur-sm">Change Image</p>
+                                            </div>
                                             <button
-                                                onClick={removeImage}
-                                                className="absolute top-2 right-2 bg-black/60 p-2 rounded-full hover:bg-red-500/80 transition text-white"
+                                                onClick={(e) => { e.preventDefault(); removeImage(); }}
+                                                className="absolute top-4 right-4 bg-black/60 p-2.5 rounded-full hover:bg-red-500 transition-colors text-white backdrop-blur-sm z-10"
                                             >
-                                                <X size={16} />
+                                                <X size={18} />
                                             </button>
                                         </>
                                     ) : (
-                                        <div className="text-center p-6">
-                                            <UploadCloud size={48} className="mx-auto text-gray-500 mb-3" />
-                                            <p className="text-gray-300 font-medium">Click to upload cover</p>
-                                            <p className="text-gray-500 text-xs mt-1">PNG, JPG up to 5MB</p>
+                                        <div className="text-center p-8">
+                                            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                                                <UploadCloud size={32} className="text-emerald-500" />
+                                            </div>
+                                            <p className="text-gray-200 font-semibold text-lg mb-1">Upload Cover Art</p>
+                                            <p className="text-gray-500 text-sm">Drag and drop or click to browse</p>
+                                            <p className="text-gray-600 text-xs mt-4">PNG, JPG up to 5MB</p>
                                         </div>
                                     )}
                                     <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
@@ -375,29 +433,34 @@ const CreatePost = () => {
                             </div>
                         </div>
 
-                        <div className="flex justify-between items-center mt-10 pt-6 border-t border-white/10">
+                        <div className="flex flex-col-reverse sm:flex-row justify-between items-center mt-12 pt-8 border-t border-white/10 gap-4">
                             <button
                                 onClick={() => setStep(1)}
-                                className="px-6 py-2 rounded-lg text-gray-400 hover:text-white transition font-medium"
+                                className="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors font-semibold"
                             >
                                 ← Back to Story
                             </button>
 
                             <button
                                 onClick={handleSave}
-                                disabled={loading || compressing}
+                                disabled={createPostMutation.isPending || compressing}
                                 className={`
-        px-8 py-3 rounded-xl font-bold text-white shadow-lg flex items-center gap-2
-        transition-all active:scale-95
-        ${(loading || compressing)
-                                        ? "bg-gray-600 cursor-not-allowed"
-                                        : "bg-emerald-600 hover:bg-emerald-500 hover:shadow-emerald-500/20"}
-    `}
+                                w-full sm:w-auto px-10 py-3.5 rounded-xl font-bold text-white shadow-lg flex items-center justify-center gap-3
+                                transition-all active:scale-95
+                                ${(createPostMutation.isPending || compressing)
+                                        ? "bg-gray-700 cursor-not-allowed"
+                                        : "bg-emerald-600 hover:bg-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"}
+                            `}
                             >
-                                {(loading || compressing) && <Loader2 className="animate-spin" size={20} />}
-                                {compressing ? "Optimizing image..." : loading ? "Saving..." : "Publish Story"}
+                                {(createPostMutation.isPending || compressing) &&
+                                    <Loader2 className="animate-spin" size={20} />
+                                }
+                                {compressing
+                                    ? "Optimizing..."
+                                    : createPostMutation.isPending
+                                        ? "Saving..."
+                                        : "Publish Story"}
                             </button>
-
                         </div>
                     </div>
                 )}
