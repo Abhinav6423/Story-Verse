@@ -1544,12 +1544,13 @@ const markGoodReadShortStory = async (req, res) => {
 };
 
 
+// TODO add aggregation pipeline to getTopGoodReads
 const getTopGoodReads = async (req, res) => {
     try {
-        // =========================
-        // 1. Aggregation Pipeline
-        // =========================
+
         const goodreads = await goodReadShortStory.aggregate([
+
+            // 1️⃣ count goodreads per story
             {
                 $group: {
                     _id: "$story",
@@ -1557,28 +1558,33 @@ const getTopGoodReads = async (req, res) => {
                 }
             },
 
+            // 2️⃣ sort by most goodreads
             { $sort: { totalGoodReads: -1 } },
+
+            // 3️⃣ take top 5
             { $limit: 5 },
 
-            // ================= STORY LOOKUP =================
+            // 4️⃣ join story details
             {
                 $lookup: {
                     from: "shortstories",
-                    localField: "_id",
+                    localField: "_id",  // because group ke bad _id hi loalField ka story jisme storyId hai vo bn chuka h hai 
                     foreignField: "_id",
                     as: "story"
                 }
             },
+
+            // convert story array → object
             { $unwind: "$story" },
 
             // only published stories
             {
-                $match: {
+                $match: {   // this operator is used to filter the documents that match the specified condition
                     "story.status": "published"
                 }
             },
 
-            // ================= AUTHOR LOOKUP =================
+            // 5️⃣ join author details
             {
                 $lookup: {
                     from: "users",
@@ -1587,9 +1593,10 @@ const getTopGoodReads = async (req, res) => {
                     as: "author"
                 }
             },
+
             { $unwind: "$author" },
 
-            // ================= FINAL SHAPE =================
+            // 6️⃣ final response shape
             {
                 $project: {
                     _id: 0,
@@ -1601,7 +1608,7 @@ const getTopGoodReads = async (req, res) => {
                         coverImage: "$story.coverImage",
                         category: "$story.category",
                         createdAt: "$story.createdAt",
-                        totalGoodReads: "$story.totalGoodReads",
+                        totalGoodReads: "$totalGoodReads",
                         author: {
                             _id: "$author._id",
                             username: "$author.username",
@@ -1610,12 +1617,10 @@ const getTopGoodReads = async (req, res) => {
                     }
                 }
             }
+
         ]);
 
-        // =========================
-        // 2. Handle Empty Result
-        // =========================
-        if (!goodreads || goodreads.length === 0) {
+        if (!goodreads.length) {
             return res.status(200).json({
                 success: true,
                 count: 0,
@@ -1623,9 +1628,6 @@ const getTopGoodReads = async (req, res) => {
             });
         }
 
-        // =========================
-        // 3. Success Response
-        // =========================
         return res.status(200).json({
             success: true,
             count: goodreads.length,
@@ -1633,35 +1635,14 @@ const getTopGoodReads = async (req, res) => {
         });
 
     } catch (error) {
+
         console.error("Get Top GoodReads Error:", error);
 
-        // =========================
-        // 4. Mongo Aggregation / Cast Error
-        // =========================
-        if (error.name === "CastError") {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid aggregation format"
-            });
-        }
-
-        // =========================
-        // 5. Mongo Network Error
-        // =========================
-        if (error.name === "MongoNetworkError") {
-            return res.status(503).json({
-                success: false,
-                message: "Database connection error. Try again later."
-            });
-        }
-
-        // =========================
-        // 6. Generic Server Error
-        // =========================
         return res.status(500).json({
             success: false,
             message: "Internal server error"
         });
+
     }
 };
 
