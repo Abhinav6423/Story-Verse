@@ -164,17 +164,30 @@ const Landing = () => {
       {/* ================= MICRO STORY ================= */}
       <section className="py-20 md:py-32 relative flex justify-center px-4 sm:px-6 border-y border-white/5 bg-[#030A06]">
         <div className="max-w-3xl text-center">
-          <BookOpen className="mx-auto text-emerald-500/40 mb-6 md:mb-8 w-8 h-8 md:w-10 md:h-10" />
-          <blockquote className="font-serif text-xl sm:text-2xl md:text-4xl italic text-white/90 mb-8 md:mb-10 leading-relaxed">
-            "Drawer 7 wasn't supposed to exist. <br className="hidden md:block" />
-            But when the archive door locked behind me, <br className="hidden md:block" />
-            I realized something was already inside."
+
+          <BookOpen className="mx-auto text-emerald-500/40 mb-6 md:mb-8 w-8 h-8 md:w-10 md:h-10 drop-shadow-md" />
+
+          <blockquote className="font-serif text-xl sm:text-2xl md:text-4xl italic text-white/90 mb-6 md:mb-8 leading-relaxed">
+            "At 3:17 AM, Aarav Kapoor’s phone buzzed in the dark. The message was simple: YOU FORGOT WHAT YOU DID. He stared at the sender’s number for a long time. It was his own."
           </blockquote>
+
+          {/* ===== STORY TITLE SECTION ===== */}
+          <div className="flex flex-col items-center justify-center gap-2 mb-8 md:mb-10">
+            <div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent mb-2"></div>
+            <span className="text-xs md:text-xs font-bold tracking-[0.3em] uppercase text-emerald-400/70">
+              Featured Story
+            </span>
+            <h3 className="font-serif text-lg md:text-2xl text-white/95 tracking-wide drop-shadow-lg">
+              You Forgot What You Did
+            </h3>
+          </div>
+
           <Link to={'/login'}>
             <button className="text-sm md:text-base font-bold tracking-widest uppercase text-teal-400 hover:text-teal-300 flex items-center justify-center gap-2 mx-auto transition-colors group">
               Read this story <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </Link>
+
         </div>
       </section>
 
