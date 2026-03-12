@@ -47,7 +47,7 @@ const ViewShortStory = () => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(clean, "text/html");
 
-    const headings = doc.querySelectorAll("h2, h3");
+    const headings = doc.querySelectorAll("h1 , h2, h3");
     const extractedChapters = [];
 
     headings.forEach((heading, index) => {
