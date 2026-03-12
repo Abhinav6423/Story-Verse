@@ -1,6 +1,6 @@
 import React from "react";
 
-const Loader = ({ text = "Opening Story-Verse..." }) => {
+const Loader = ({ text = "Opening Preface..." }) => {
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0b1412] text-emerald-400">
 
