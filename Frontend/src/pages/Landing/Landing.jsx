@@ -10,6 +10,7 @@ import Grammar from "../../Assets/Grammar.png";
 import eightMinutes from "../../Assets/eightMinutes.png";
 import { Link } from 'react-router-dom'
 import logo from "../../Assets/logo.png";
+import Bg from "../../Assets/Bg.jpg";
 // --- Animation Variants ---
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -42,7 +43,7 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3 group cursor-pointer z-50">
             <img src={logo} alt="logo" className="w-12 md:w-19" />
-            
+
           </div>
 
           {/* Desktop Nav */}
@@ -84,31 +85,16 @@ const Landing = () => {
       </nav>
 
       {/* ================= HERO ================= */}
-      <header className="relative min-h-[75svh] md:min-h-[80vh] lg:min-h-[100vh] flex items-center px-4 sm:px-6 md:px-10 lg:px-12 pt-24 md:pt-0 overflow-hidden bg-[#020604]">
+
+      <header className="relative min-h-[75svh] md:min-h-[80vh] lg:min-h-[100vh] flex items-center px-4 sm:px-6 md:px-10 lg:px-12 pt-24 md:pt-0 overflow-hidden bg-[#02060463]">
 
         {/* ===== Book Cover Background ===== */}
         <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-4 p-4 md:p-8 lg:p-12 opacity-70 md:opacity-100">
-            {[
-              eightMinutes, MinuteEats, Grammar, TownForgets,
-              eightMinutes, MinuteEats, Grammar, TownForgets,
-              eightMinutes, MinuteEats, Grammar, TownForgets,
-              eightMinutes, MinuteEats, Grammar, TownForgets,
-              eightMinutes, MinuteEats, Grammar, TownForgets,
-              eightMinutes, MinuteEats, Grammar, TownForgets,
-              eightMinutes, MinuteEats, Grammar, TownForgets,
-              eightMinutes, MinuteEats, Grammar, TownForgets,
-              eightMinutes, MinuteEats, Grammar, TownForgets,
-              eightMinutes, MinuteEats, Grammar, TownForgets
-            ].map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                alt=""
-                className="w-full h-[110px] sm:h-[130px] md:h-[160px] lg:h-[190px] object-cover rounded-lg blur-[1.5px] brightness-75 shadow-2xl"
-              />
-            ))}
-          </div>
+          <img
+            src={Bg}
+            alt="Story Covers Background"
+            className="w-full h-full object-cover opacity-70 md:opacity-100 blur-[1px] brightness-100"
+          />
         </div>
 
         {/* Glow */}
@@ -116,12 +102,11 @@ const Landing = () => {
 
         {/* ===== Netflix-Style Cinematic Overlays ===== */}
         {/* 1. Strong fade from Left to Right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#020604] via-[#020604]/80 to-transparent z-0" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#020604] via-[#020604]/50 to-transparent z-0" />
         {/* 2. Seamless fade from Bottom to Top (blends section into the rest of the page) */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#020604] via-[#020604]/40 to-transparent z-0" />
 
         {/* ===== Hero Content ===== */}
-        {/* Removed grid-cols-2. Container now handles the max-width dynamically per screen size */}
         <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col justify-center items-start mt-8 md:mt-0">
 
           {/* The Content Block - Takes 100% on mobile, 75% on tablet, 60% on desktop */}
@@ -146,7 +131,10 @@ const Landing = () => {
               transition={{ delay: 0.1 }}
               className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/70 max-w-[90%] md:max-w-[85%] mb-8 md:mb-10 font-light leading-relaxed"
             >
-              Discover immersive short stories designed to be read in one sitting.
+              Finish a story in one sitting.
+              Remember it forever.
+              <br />
+              <span className="text-emerald-700 font-bold">10,000+</span> readers discovering stories every week
             </motion.p>
 
             <motion.div
@@ -156,13 +144,17 @@ const Landing = () => {
               transition={{ delay: 0.2 }}
               className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pr-4 sm:pr-0"
             >
-              <button className="w-full sm:w-auto px-8 md:px-10 py-4 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-[0_0_40px_rgba(16,185,129,0.3)]">
-                Start Reading <ChevronRight size={20} />
-              </button>
+              <Link to={'/login'}>
+                <button className="w-full sm:w-auto px-8 md:px-10 py-4 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-[0_0_40px_rgba(16,185,129,0.3)]">
+                  Start Reading <ChevronRight size={20} />
+                </button>
+              </Link>
 
-              <button className="w-full sm:w-auto px-8 md:px-10 py-4 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-colors backdrop-blur-md text-lg font-medium text-white/90">
-                Explore Stories
-              </button>
+              <Link to={'/register'}>
+                <button className="w-full sm:w-auto px-8 md:px-10 py-4 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-colors backdrop-blur-md text-lg font-medium text-white/90">
+                  Explore Stories
+                </button>
+              </Link>
             </motion.div>
 
           </div>
@@ -178,9 +170,11 @@ const Landing = () => {
             But when the archive door locked behind me, <br className="hidden md:block" />
             I realized something was already inside."
           </blockquote>
-          <button className="text-sm md:text-base font-bold tracking-widest uppercase text-teal-400 hover:text-teal-300 flex items-center justify-center gap-2 mx-auto transition-colors group">
-            Read this story <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+          <Link to={'/login'}>
+            <button className="text-sm md:text-base font-bold tracking-widest uppercase text-teal-400 hover:text-teal-300 flex items-center justify-center gap-2 mx-auto transition-colors group">
+              Read this story <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </Link>
         </div>
       </section>
 
@@ -219,9 +213,11 @@ const Landing = () => {
 
                   {/* Button stays visible on mobile, reveals on hover on desktop */}
                   <div className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 md:absolute md:bottom-6 md:left-6 md:right-6 md:translate-y-4 md:group-hover:translate-y-0 relative bottom-0">
-                    <button className="w-full py-3 rounded-lg bg-white text-black font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors">
-                      <Play size={14} className="fill-black" /> Read Story
-                    </button>
+                    <Link to={'/login'}>
+                      <button className="w-full py-3 rounded-lg bg-white text-black font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors">
+                        <Play size={14} className="fill-black" /> Read Story
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </motion.div>
@@ -270,9 +266,11 @@ const Landing = () => {
             Your next favorite <br className="hidden sm:block" />
             <span className="italic text-emerald-400">story is waiting.</span>
           </h2>
-          <button className="w-full sm:w-auto px-10 md:px-12 py-4 md:py-5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-lg md:text-xl font-bold hover:scale-105 transition-transform shadow-[0_0_40px_rgba(16,185,129,0.3)]">
-            Start Reading Free
-          </button>
+          <Link to="/register">
+            <button className="w-full sm:w-auto px-10 md:px-12 py-4 md:py-5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-lg md:text-xl font-bold hover:scale-105 transition-transform shadow-[0_0_40px_rgba(16,185,129,0.3)]">
+              Start Reading Free
+            </button>
+          </Link>
         </motion.div>
       </section>
 

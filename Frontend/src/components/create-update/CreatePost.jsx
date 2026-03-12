@@ -7,6 +7,8 @@ import { toast } from 'react-toastify';
 import { RichTextEditor } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
+
 import { Loader2, UploadCloud, X } from "lucide-react"; // Icons for better UX
 import { categories } from "../../utils/Categories.jsx";
 import imageCompression from "browser-image-compression";
@@ -52,8 +54,13 @@ const CreatePost = () => {
             StarterKit.configure({
                 link: false,
             }),
+            Placeholder.configure({
+                placeholder: "Start writing your story...",
+            }),
+
         ],
-        content: "",
+        content: "<p></p>", // IMPORTANT
+
         onUpdate: ({ editor }) => {
             setStory(editor.getHTML());
         },
@@ -263,43 +270,68 @@ const CreatePost = () => {
                             />
                         </div>
 
-                        <div className="blog-editor border border-white/10 rounded-2xl overflow-hidden shadow-inner bg-[#1A1A1A] focus-within:border-emerald-500/50 transition-colors duration-300">
+                        <div className="blog-editor border border-white/10 rounded-2xl bg-[#1A1A1A] flex">
+
                             {editor && (
                                 <RichTextEditor
                                     editor={editor}
                                     styles={{
                                         root: {
+                                            display: "flex",
+                                            width: "100%",
+                                        },
+
+                                        control: {
+                                            backgroundColor: "transparent",
                                             border: "none",
+                                            color: "#9ca3af",
+
+                                            '&:hover': {
+                                                backgroundColor: "rgba(255,255,255,0.08)",
+                                                color: "#fff"
+                                            },
+
+                                            '&[data-active]': {
+                                                backgroundColor: "#10b981",
+                                                color: "#000"
+                                            }
+                                        },
+                                        controlsGroup: {
                                             backgroundColor: "transparent"
                                         },
+                                        toolbar: {
+                                            position: "sticky",
+                                            top: "0",
+                                            height: "100%",
+                                            backgroundColor: "#1A1A1A",
+                                            borderRight: "1px solid rgba(255,255,255,0.05)",
+                                            padding: "10px",
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            gap: "6px"
+                                        },
+
+
                                         content: {
-                                            minHeight: "450px",
+                                            height: "600px",
+                                            overflowY: "auto",
+                                            flex: 1,
+                                            padding: "24px",
                                             color: "#e5e7eb",
                                             fontSize: "1.125rem",
                                             lineHeight: "1.75",
-                                            padding: "24px"
-                                        },
-                                        toolbar: {
-                                            backgroundColor: "#1A1A1A", // Matches your editor container
-                                            borderBottom: "1px solid rgba(255,255,255,0.05)",
-                                            padding: "8px 12px"
-                                        },
-                                        // Add this to fix the white blocks:
-                                        controlsGroup: {
-                                            backgroundColor: "transparent",
-                                        },
-                                        control: {
-                                            color: "#9ca3af",
-                                            border: "none",
-                                            backgroundColor: "transparent", // Forces buttons to be clear
-                                            '&:hover': {
-                                                backgroundColor: "rgba(255,255,255,0.1)",
-                                                color: "#fff"
+
+                                            scrollbarWidth: "none",
+                                            msOverflowStyle: "none",
+
+                                            '&::-webkit-scrollbar': {
+                                                display: "none"
                                             }
                                         }
                                     }}
                                 >
                                     <RichTextEditor.Toolbar>
+
                                         <RichTextEditor.ControlsGroup>
                                             <RichTextEditor.Bold />
                                             <RichTextEditor.Italic />
@@ -328,8 +360,11 @@ const CreatePost = () => {
                                             <RichTextEditor.AlignJustify />
                                             <RichTextEditor.AlignRight />
                                         </RichTextEditor.ControlsGroup>
+
                                     </RichTextEditor.Toolbar>
+
                                     <RichTextEditor.Content />
+
                                 </RichTextEditor>
                             )}
                         </div>

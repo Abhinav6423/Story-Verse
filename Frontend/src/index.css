@@ -53,6 +53,12 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* globals.css */
+
+.ProseMirror p {
+  min-height: 1.5em;
+}
+
 /* =====================================================
    LAYER: COMPONENTS (Custom UI Elements)
 ===================================================== */
