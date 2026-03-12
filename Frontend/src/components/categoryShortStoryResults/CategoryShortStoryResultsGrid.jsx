@@ -70,7 +70,7 @@ const CategoryShortStoryResultsGrid = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 relative z-10">
 
         {/* HEADER */}
-        <div className="flex flex-col gap-2 mb-10">
+        <div className="flex flex-col gap-2 mt-10 sm:mt-20 md:mt-24  mb-10">
           <span className="text-xs font-bold tracking-wider text-center text-emerald-500 uppercase">
             Category
           </span>
