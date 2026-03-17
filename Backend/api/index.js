@@ -34,6 +34,12 @@ app.get("/api/health", (req, res) => {
         message: "Server is alive 🚀",
     });
 });
+app.get("/test", (req, res) => {
+    res.status(200).json({
+        status: "ok",
+        message: "Server is alive 🚀",
+    });
+});
 
 // ✅ Better DB caching
 let cached = global.mongoose;
