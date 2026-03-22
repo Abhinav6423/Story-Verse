@@ -117,12 +117,12 @@ const HomeGoodReadGrid = () => {
                         {/* Refined Metadata: Scaled down slightly, softer colors */}
                         <div className="flex flex-wrap items-center gap-2.5 md:gap-3 text-xs md:text-sm font-medium text-zinc-400">
                             <span className="text-amber-400 flex items-center gap-1.5 font-bold bg-amber-400/10 px-2 py-0.5 rounded-md">
-                                <Star size={12} fill="currentColor" /> 98% Match
+                                <Star size={12} fill="currentColor" /> Must Try
                             </span>
                             <span className="w-1 h-1 rounded-full bg-zinc-600" />
                             <span className="text-zinc-200">{activeStory.genre || "Fiction"}</span>
                             <span className="w-1 h-1 rounded-full bg-zinc-600" />
-                            <span className="text-zinc-200">5 min read</span>
+                            <span className="text-zinc-200">Enjoy Reading</span>
                         </div>
 
                         {/* Highly Visible Hook Line: Border accent, brighter text, elegant line-height */}
