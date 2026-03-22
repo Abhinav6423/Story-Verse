@@ -110,7 +110,7 @@ const HomeGoodReadGrid = () => {
                         </div>
 
                         {/* Premium Title: Scaled down from 7xl/6xl to 5xl/4xl, tighter line-height, sophisticated weight */}
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-white drop-shadow-xl">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-white drop-shadow-xl whitespace-nowrap overflow-hidden text-ellipsis max-w-full pb-1">
                             {activeStory.title}
                         </h1>
 
@@ -142,7 +142,7 @@ const HomeGoodReadGrid = () => {
                                 <span>Start Reading</span>
                             </Link>
 
-                            
+
                         </div>
                     </div>
 
