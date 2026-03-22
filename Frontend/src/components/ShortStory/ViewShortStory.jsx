@@ -10,7 +10,7 @@ import { addShortStoryToGoodReads } from "../../Api-calls/addShortStoryToGoodRea
 import { answerQuestionShortStory } from "../../Api-calls/answerQuestionShortStory.js";
 import { recommendShortStory } from "../../Api-calls/recommendShortStrory.js";
 import RecommendShortStory from "./RecommendShortStory.jsx";
-import {getCategoryGradient} from "../../utils/GetStoryGradient.jsx"
+import { getCategoryGradient } from "../../utils/GetStoryGradient.jsx"
 const ViewShortStory = () => {
   const { storyId } = useParams();
 
@@ -488,10 +488,10 @@ const ViewShortStory = () => {
                 <div
                   key={idx}
                   className={`flex-1 rounded-full transition-colors duration-300 ${idx === currentSlideIndex
-                      ? "bg-emerald-400"
-                      : idx < currentSlideIndex
-                        ? "bg-gray-600/60"
-                        : "bg-gray-800"
+                    ? "bg-emerald-400"
+                    : idx < currentSlideIndex
+                      ? "bg-gray-600/60"
+                      : "bg-gray-800"
                     }`}
                 />
               ))}

@@ -44,40 +44,49 @@ const HomeGoodReadGrid = () => {
             {/* =========================================================
            1. BACKGROUND LAYERS
         ========================================================= */}
-            <div className="absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out pointer-events-none">
-                {/* Layer A: Atmosphere */}
-                <div className="absolute inset-0 w-full h-full overflow-hidden">
-                    <img
-                        src={activeStory.coverImage || activeStory.image}
-                        alt="Atmosphere"
-                        className="w-full h-full object-cover blur-[60px] scale-125 opacity-40 transition-opacity duration-700"
-                    />
-                </div>
+            <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
 
-                {/* Layer B: Sharp Subject */}
+                {/* --- Layer B: Sharp Subject Image --- */}
                 <div className="absolute inset-0 w-full h-full">
                     <img
                         src={activeStory.coverImage || activeStory.image}
                         alt="Background"
-                        key={activeStory._id}
                         className={`
-                        absolute left-0 top-0 h-full w-full lg:w-[65%] 
-                        object-cover object-top
-                        transition-all duration-700 ease-out
-                        ${isAnimating ? 'opacity-0 scale-[1.02]' : 'opacity-80 lg:opacity-90 scale-100'}
-                    `}
+                absolute left-0 top-0 h-full w-full lg:w-[65%]
+                object-cover object-top
+                transition-all duration-700 ease-out
+                ${isAnimating
+                                ? 'opacity-0 translate-y-2 scale-[1.01]'
+                                : 'opacity-100 translate-y-0 scale-100'
+                            }
+            `}
                     />
                 </div>
 
-                {/* --- DARK TINT OVERLAY --- */}
-                <div className={`absolute inset-0 w-full h-full bg-black/50 transition-opacity duration-700 ${isAnimating ? 'opacity-0' : 'opacity-100'}`} />
+                {/* --- Seamless Right Blend (fix harsh cut) --- */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/20 to-black pointer-events-none" />
 
-                {/* Layer C: Premium Gradients */}
-                <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#050505] via-[#050505]/80 lg:via-[#050505]/60 to-transparent" />
+                {/* --- Dark Tint Overlay (lighter for clarity) --- */}
+                <div
+                    className={`
+            absolute inset-0 bg-black/10
+            transition-opacity duration-700
+            ${isAnimating ? 'opacity-0' : 'opacity-100'}
+        `}
+                />
+
+                {/* --- Premium Main Gradient --- */}
+                <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#050505] via-[#050505]/30 lg:via-[#050505]/20 to-transparent" />
+
+                {/* --- Top Fade --- */}
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#050505]/80 to-transparent" />
 
-                {/* --- SEAMLESS GREEN BLEND AT BOTTOM --- */}
+                {/* --- Bottom Green Blend --- */}
                 <div className="absolute bottom-0 left-0 w-full h-32 md:h-48 bg-gradient-to-t from-[#061510] via-[#061510]/90 to-transparent z-10" />
+
+                {/* --- Subtle Film Grain (Depth) --- */}
+                <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('/noise.png')]" />
+
             </div>
 
             {/* =========================================================
@@ -133,9 +142,7 @@ const HomeGoodReadGrid = () => {
                                 <span>Start Reading</span>
                             </Link>
 
-                            <button className="p-2.5 md:p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex-shrink-0">
-                                <Bookmark size={18} className="text-zinc-200" />
-                            </button>
+                            
                         </div>
                     </div>
 
@@ -171,7 +178,7 @@ const HomeGoodReadGrid = () => {
                 {/* --- DESKTOP RIGHT COL: SIDEBAR LIST --- */}
                 <div className="hidden lg:flex w-[420px] xl:w-[480px] h-full flex-col border-l border-white/5 bg-black/40 backdrop-blur-2xl pt-8 pb-12 px-8 overflow-y-auto scrollbar-hide relative z-30">
                     <div className="flex items-center justify-between mb-4 sticky top-0 z-40 py-4 bg-gradient-to-b from-black via-black/90 to-transparent">
-                        <h3 className="text-[11px] font-bold text-zinc-300 uppercase tracking-[0.2em] flex items-center gap-2 drop-shadow-md">
+                        <h3 className="text-[11px] mt-15 md:text-[12px] font-bold text-zinc-300 uppercase tracking-[0.2em] flex items-center gap-2 drop-shadow-md">
                             Top Trends
                         </h3>
                     </div>
