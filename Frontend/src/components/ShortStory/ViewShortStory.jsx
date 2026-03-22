@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { ThumbsUp, Bookmark, Minimize2, Maximize2, X } from "lucide-react";
+import { ThumbsUp, Bookmark, Minimize2, Maximize2, X, Star, Eye } from "lucide-react";
 import { toast } from "react-toastify";
 import DOMpurify from "dompurify";
 import Loader from "../Loader.jsx";
@@ -247,13 +247,7 @@ const ViewShortStory = () => {
   return (
     <div className={`min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#152a25] via-[#0b1412] to-[#070c0b] text-gray-300 relative transition-all duration-700 ${isFocusMode ? 'pt-8' : ''}`}>
 
-      {/* --- PROGRESS BAR --- */}
-      <div className="fixed top-0 left-0 w-full h-[2px] z-50 bg-transparent">
-        <div
-          className="h-full bg-emerald-500 shadow-[0_0_8px_#10b981]"
-          style={{ width: `${scrollProgress}%`, transition: "width 0.15s ease-out" }}
-        />
-      </div>
+
 
       {/* --- COVER IMAGE --- */}
       {!isFocusMode && (
@@ -324,7 +318,7 @@ const ViewShortStory = () => {
 
           {!isFocusMode && (
             <div className="animate-in slide-in-from-bottom-2 fade-in duration-700">
-              <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase drop-shadow-md">
+              <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase drop-shadow-md bg-white/5 px-3 py-1 rounded-full border border-white/10">
                 <span className="text-emerald-500">Archive</span>
                 <span className="text-gray-400">Selection</span>
               </div>
@@ -332,98 +326,89 @@ const ViewShortStory = () => {
           )}
 
           <div className="max-w-4xl flex flex-col items-center gap-4">
-            <h1 className={`font-serif text-gray-50 leading-[1.1] tracking-tight transition-all duration-500 drop-shadow-2xl ${isFocusMode ? 'text-4xl sm:text-5xl opacity-90' : 'text-5xl sm:text-6xl lg:text-7xl font-medium'}`}>
+            <h1 className={`font-serif text-gray-50 leading-[1.1] tracking-tight transition-all duration-500 drop-shadow-2xl ${isFocusMode ? 'text-4xl sm:text-5xl opacity-90' : 'text-5xl sm:text-6xl lg:text-7xl font-semibold'}`}>
               {story.title}
             </h1>
 
             {!isFocusMode && (
-              <p className="text-lg sm:text-xl text-emerald-400/90 font-serif italic tracking-wide animate-in fade-in duration-700 delay-100">
-                A slow-burning psychological descent into memory erosion.
-              </p>
-            )}
-
-            {!isFocusMode && (
-              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm font-medium animate-in fade-in duration-1000 delay-150 mt-2">
-                <span className="text-emerald-400 font-bold drop-shadow-md">98% Match</span>
-                <span className="text-gray-400">2024</span>
-                <span className="border border-gray-600 bg-gray-900/50 px-1.5 py-0.5 rounded-[2px] text-[10px] text-gray-300 tracking-widest">
-                  {story.category ? story.category.toUpperCase() : "MATURE"}
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm font-medium animate-in fade-in duration-1000 delay-150 mt-1">
+                <span className="text-emerald-400 font-bold drop-shadow-md flex items-center gap-1">
+                  <Star size={14} className="fill-emerald-400" /> Enjoy Reading
                 </span>
-                <span className="text-gray-300">One-sitting psychological descent</span>
-                <span className="text-gray-400 border border-gray-600 px-1.5 py-0.5 rounded-[2px] text-[10px] tracking-widest uppercase">Deep Focus</span>
+                <span className="text-gray-600">•</span>
+                <span className="text-gray-300 tracking-wider uppercase text-[11px]">
+                  {story.category || "Psychological"}
+                </span>
+                <span className="text-gray-600">•</span>
+                <span className="text-gray-400">
+                  By <span className="text-gray-200 hover:text-emerald-400 transition-colors cursor-pointer">{story.author?.username || "Unknown"}</span>
+                </span>
               </div>
             )}
           </div>
 
           {story.description && !isFocusMode && (
-            <div className="max-w-2xl mt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 flex flex-col items-center">
-              <div className="w-full max-w-lg border-l-[3px] border-emerald-500/40 bg-emerald-900/10 pl-6 py-4 my-2 text-left rounded-r-sm backdrop-blur-sm shadow-inner">
-                <p className="text-sm sm:text-base text-gray-200 font-serif italic leading-relaxed">
-                  {story.description}
-                </p>
-              </div>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] sm:text-[11px] text-gray-400 tracking-[0.15em] uppercase">
-                <span className="font-semibold text-gray-600">Created by</span>
-                <span className="text-gray-200 hover:text-emerald-400 transition-colors cursor-pointer">{story.author?.username}</span>
-                <span className="text-gray-700">|</span>
-                <span className="font-semibold text-gray-600">Atmosphere</span>
-                <span className="text-gray-200">Psychological, Unsettling</span>
-              </div>
+            <div className="max-w-2xl mt-2 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 flex flex-col items-center">
+              <p className="text-base sm:text-lg text-gray-300/90 font-light leading-relaxed max-w-[90%] md:max-w-full drop-shadow-md">
+                {story.description}
+              </p>
             </div>
           )}
 
           {/* ACTION BUTTONS */}
           <div className={`flex flex-col items-center w-full mt-8 transition-opacity duration-500 ${isFocusMode ? 'opacity-30 hover:opacity-100' : 'opacity-100'}`}>
-            <div className="flex flex-wrap items-center justify-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
 
-              {/* Focus Mode Button */}
-              <button
-                onClick={toggleFocusMode}
-                className={`flex items-center justify-center gap-3 px-8 py-3.5 rounded-[2px] font-bold text-sm transition-all duration-300 w-full sm:w-auto shadow-lg hover:scale-[1.02] uppercase tracking-[0.1em]
-                  ${isFocusMode ? "bg-white/10 text-white hover:bg-white/20 border border-white/20" : "bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.15)]"}`}
-              >
-                {isFocusMode ? <Minimize2 size={18} /> : <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>}
-                <span>{isFocusMode ? "Surface from focus" : "Begin the Descent"}</span>
-              </button>
-
-              {/* Tap to Read (Story Mode) Button */}
+              {/* PRIMARY CTA: Tap to Read */}
               <button
                 onClick={openStoryMode}
                 disabled={slides.length === 0}
-                className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-[2px] font-bold text-sm transition-all duration-300 w-full sm:w-auto uppercase tracking-[0.1em] bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 hover:bg-emerald-800/60 hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
+                className="relative group flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm transition-all duration-300 w-full sm:w-auto uppercase tracking-widest bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-[0_4px_20px_rgba(16,185,129,0.3)] hover:shadow-[0_8px_40px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 active:scale-95 active:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:scale-100 overflow-hidden"
               >
-                <Maximize2 size={16} />
-                <span>Tap to Read</span>
+                <div className="absolute inset-0 rounded-full border border-white/20 animate-[ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-white/0 group-active:bg-black/20 transition-colors" /> {/* Click darkening effect */}
+                <Maximize2 size={16} className="relative z-10" />
+                <span className="relative z-10 drop-shadow-md">Tap to Read</span>
               </button>
 
-              {/* Archive Button */}
+              {/* SECONDARY CTA: Focus Mode */}
               <button
-                onClick={handleGoodReads}
-                className={`flex items-center justify-center gap-2 px-8 py-3.5 rounded-[2px] font-bold text-sm transition-all duration-300 w-full sm:w-auto uppercase tracking-[0.1em]
-                  ${addedToGoodReads ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" : "bg-transparent text-white border border-gray-600/60 hover:bg-gray-800/60 hover:border-gray-400"}`}
+                onClick={toggleFocusMode}
+                className={`flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm transition-all duration-300 w-full sm:w-auto uppercase tracking-widest backdrop-blur-md active:scale-95 active:translate-y-0 hover:-translate-y-0.5
+            ${isFocusMode
+                    ? "bg-white/10 text-white shadow-[0_0_15px_rgba(255,255,255,0.1)] border border-white/30"
+                    : "bg-white/5 text-gray-200 hover:bg-white/10 hover:text-white border border-white/10 hover:border-white/20"}`}
               >
-                <Bookmark size={16} className={addedToGoodReads ? "fill-emerald-400" : ""} />
-                <span>{addedToGoodReads ? "In Archive" : "My List"}</span>
+                {isFocusMode ? <Minimize2 size={16} /> : <Eye size={16} />}
+                <span>{isFocusMode ? "Exit Focus" : "Focus Mode"}</span>
               </button>
 
-              {/* Like Button */}
-              <button
-                onClick={handleLike}
-                className={`flex items-center justify-center p-3.5 rounded-[2px] transition-all duration-300 border backdrop-blur-sm
-                  ${liked ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-400" : "bg-transparent border-gray-600/60 text-white hover:border-gray-400 hover:bg-gray-800/60"}`}
-                title="Acknowledge this story"
-              >
-                <ThumbsUp size={16} className={liked ? "fill-emerald-400" : ""} />
-              </button>
-            </div>
+              {/* QUICK ACTIONS: Archive & Like */}
+              <div className="flex flex-wrap items-center justify-center gap-3 w-full sm:w-auto">
+                <button
+                  onClick={handleGoodReads}
+                  className={`flex items-center justify-center px-5 py-3.5 gap-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 backdrop-blur-md active:scale-95 active:translate-y-0 hover:-translate-y-0.5
+                ${addedToGoodReads
+                      ? "bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                      : "bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 hover:text-white"}`}
+                >
+                  <Bookmark size={16} className={`transition-transform duration-300 ${addedToGoodReads ? "fill-emerald-400 scale-110" : ""}`} />
+                  <span>{addedToGoodReads ? "In Archive" : "Save"}</span>
+                </button>
 
-            {!isFocusMode && (
-              <div className="mt-6 flex items-center gap-2 text-[10px] text-gray-500 uppercase tracking-[0.2em] font-medium animate-in fade-in duration-1000 delay-300">
-                <div className="w-8 h-[1px] bg-gray-700/50"></div>
-                <p>Best experienced in one uninterrupted sitting.</p>
-                <div className="w-8 h-[1px] bg-gray-700/50"></div>
+                <button
+                  onClick={handleLike}
+                  className={`flex items-center justify-center px-5 py-3.5 gap-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 backdrop-blur-md active:scale-95 active:translate-y-0 hover:-translate-y-0.5
+                ${liked
+                      ? "bg-emerald-900/40 text-emerald-400 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                      : "bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 hover:text-white"}`}
+                >
+                  <ThumbsUp size={16} className={`transition-transform duration-300 ${liked ? "fill-emerald-400 -translate-y-0.5 rotate-12" : ""}`} />
+                  <span>{liked ? "Liked" : "Like"}</span>
+                </button>
               </div>
-            )}
+
+            </div>
           </div>
         </div>
 
