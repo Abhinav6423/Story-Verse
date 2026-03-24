@@ -15,6 +15,7 @@ const AuthProvider = ({ children }) => {
     try {
       const result = await meRoute();
       if (result?.success) {
+        console.log("User Datas aress" , result.user)
         setUserData(result.user);
       } else {
         setUserData(null);

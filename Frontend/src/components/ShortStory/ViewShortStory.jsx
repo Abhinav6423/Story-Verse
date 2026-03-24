@@ -360,16 +360,24 @@ const ViewShortStory = () => {
             <div className="flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
 
               {/* PRIMARY CTA: Tap to Read */}
-              <button
-                onClick={openStoryMode}
-                disabled={slides.length === 0}
-                className="relative group flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm transition-all duration-300 w-full sm:w-auto uppercase tracking-widest bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-[0_4px_20px_rgba(16,185,129,0.3)] hover:shadow-[0_8px_40px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 active:scale-95 active:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:scale-100 overflow-hidden"
-              >
-                <div className="absolute inset-0 rounded-full border border-white/20 animate-[ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite] opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute inset-0 bg-white/0 group-active:bg-black/20 transition-colors" /> {/* Click darkening effect */}
-                <Maximize2 size={16} className="relative z-10" />
-                <span className="relative z-10 drop-shadow-md">Tap to Read</span>
-              </button>
+              <div 
+              onClick={openStoryMode}
+              style={{ position: 'relative', display: 'inline-flex' }}>
+                {/* glow layer */}
+                <div className="gemini-glow" />
+
+                {/* sharp border */}
+                <div className="gemini-border p-[1.5px] rounded-full inline-flex ">
+                  <button className="relative flex items-center gap-2 px-8 py-3.5 rounded-full 
+      bg-gradient-to-r from-emerald-600 to-emerald-500 
+      text-white font-semibold text-sm uppercase tracking-wider
+      transition-all duration-300 hover:-translate-y-0.5 active:scale-95
+      disabled:opacity-50 disabled:cursor-not-allowed">
+                    <Maximize2 size={16} color="black" />
+                    <span className="text-black font-semibold">Tap to Read</span>
+                  </button>
+                </div>
+              </div>
 
               {/* SECONDARY CTA: Focus Mode */}
               <button

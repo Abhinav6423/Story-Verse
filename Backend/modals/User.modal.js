@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -34,6 +33,12 @@ const userSchema = new mongoose.Schema(
       default:
         "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     },
+
+    lastRead: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ShortStory",
+      default: null
+    }
   },
   { timestamps: true }
 );

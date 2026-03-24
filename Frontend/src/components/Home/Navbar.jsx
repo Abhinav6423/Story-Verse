@@ -62,7 +62,7 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
         <>
             {/* ================= NAVBAR ================= */}
             {/* Changed from sticky to fixed w-full to properly overlay the hero without scrolling gaps */}
-            <nav className="fixed w-full top-0 z-50 h-16 sm:h-20 transition-all duration-300">
+            <nav className="fixed w-full top-0 z-50 h-16 sm:h-15 transition-all duration-300">
 
                 {/* CINEMATIC BACKGROUND LAYERS */}
                 {/* 1. Netflix-style top gradient fade */}

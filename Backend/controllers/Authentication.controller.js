@@ -74,9 +74,13 @@ export const getLoggedInUser = async (req, res) => {
       });
     }
 
+    const user = await User.findById(req.user._id)
+      .populate("lastRead", "title coverImage category")
+      .lean();
+
     return res.status(200).json({
       success: true,
-      user: req.user,
+      user: user,
     });
   } catch (error) {
     return res.status(500).json({
