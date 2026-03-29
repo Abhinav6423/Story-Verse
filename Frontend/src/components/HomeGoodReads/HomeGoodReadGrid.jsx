@@ -94,21 +94,21 @@ const HomeGoodReadGrid = () => {
 
                 {/* NEW GRADIENTS: Clear at the top/right, dark at the bottom/left for text */}
                 {/* 1. Strong bottom-to-top gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent h-[70%] top-auto bottom-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent h-[70%] top-auto bottom-0" />
 
                 {/* 2. Left-to-right gradient to protect text legibility, fading out smoothly */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/90 via-[#050505]/40 to-transparent w-full md:w-3/4" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/90 via-[#050505]/10 to-transparent w-full md:w-3/4" />
 
                 {/* 3. Very subtle top gradient just for the navbar area */}
-                <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/40 to-transparent" />
+                <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/10 to-transparent" />
             </div>
 
             {/* =========================================================
-               2. MAIN CONTENT (Text Shifted to Bottom)
+               2. MAIN CONTENT
             ========================================================= */}
-            {/* Changed 'justify-center' to 'justify-end' and added bottom padding ('pb-24 lg:pb-32') */}
-            <div className="relative z-10 flex-1 flex flex-col justify-end pb-24 lg:pb-32 px-6 md:px-12 lg:px-24 w-full mx-auto pt-32">
-                <div className={`max-w-3xl transition-all duration-700 ease-out ${isAnimating ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}>
+
+            <div className="relative z-10 flex-1 flex flex-col justify-end pb-24 lg:pb-32 px-6 md:px-12 lg:px-12 w-full mx-auto pt-32">
+                <div className={`max-w-3xl transition-all duration-700 ease-out ${isAnimating ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0  sm:mt-29' }`}>
 
                     {/* Badge */}
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6 shadow-lg">
@@ -121,7 +121,7 @@ const HomeGoodReadGrid = () => {
                     </div>
 
                     {/* Title */}
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-white drop-shadow-2xl mb-4">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-white drop-shadow-2xl mb-4">
                         {activeStory.title}
                     </h1>
 
@@ -137,7 +137,7 @@ const HomeGoodReadGrid = () => {
                     </div>
 
                     {/* Description */}
-                    <p className="text-sm md:text-base text-zinc-300 leading-relaxed max-w-2xl drop-shadow-lg mb-8 line-clamp-3 md:line-clamp-4">
+                    <p className="text-sm md:text-base text-zinc-300 leading-relaxed max-w-2xl drop-shadow-lg mb-8 line-clamp-3 md:line-clamp-4 font-semibold">
                         {activeStory.description || activeStory.synopsis}
                     </p>
 
