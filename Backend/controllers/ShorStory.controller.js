@@ -52,23 +52,33 @@ const createShortStory = async (req, res) => {
 
         /* ================= IMAGE UPLOAD ================= */
         let coverImageUrl = null;
+        let posterImageUrl = null;
 
-        if (req.file) {
-            try {
-                const uploadResult = await uploadToCloudinary(
-                    req.file,
+        try {
+            // Cover Image
+            if (req.files?.coverImage?.[0]) {
+                const coverUpload = await uploadToCloudinary(
+                    req.files.coverImage[0],
                     "story_covers"
                 );
-
-                coverImageUrl = uploadResult?.url || null;
-
-            } catch (cloudError) {
-                console.error("Cloudinary Upload Error:", cloudError);
-                return res.status(500).json({
-                    success: false,
-                    message: "Image upload failed"
-                });
+                coverImageUrl = coverUpload?.url || null;
             }
+
+            // Poster Image
+            if (req.files?.posterImage?.[0]) {
+                const posterUpload = await uploadToCloudinary(
+                    req.files.posterImage[0],
+                    "story_posters"
+                );
+                posterImageUrl = posterUpload?.url || null;
+            }
+
+        } catch (cloudError) {
+            console.error("Cloudinary Upload Error:", cloudError);
+            return res.status(500).json({
+                success: false,
+                message: "Image upload failed"
+            });
         }
 
         /* ================= CREATE STORY ================= */
@@ -77,6 +87,7 @@ const createShortStory = async (req, res) => {
             story,
             description,
             coverImage: coverImageUrl,
+            posterImage: posterImageUrl, // ✅ added
             finalQuestion,
             category,
             author: req.user._id,
@@ -99,7 +110,7 @@ const createShortStory = async (req, res) => {
             }
         );
 
-        /* ================= LEVEL UP LOGIC (SAFE CONDITION) ================= */
+        /* ================= LEVEL UP LOGIC ================= */
         if (shortStory.status === "published") {
             await Userstats.updateOne(
                 {
@@ -337,9 +348,9 @@ const openUserShortStory = async (req, res) => {
 
 const updateShortStory = async (req, res) => {
     try {
-        // =========================
-        // 1. Validate Auth User
-        // =========================
+        /* =========================
+        1. Validate Auth User
+        ========================= */
         if (!req.user || !req.user._id) {
             return res.status(401).json({
                 success: false,
@@ -349,9 +360,9 @@ const updateShortStory = async (req, res) => {
 
         const userId = req.user._id;
 
-        // =========================
-        // 2. Validate storyId
-        // =========================
+        /* =========================
+        2. Validate storyId
+        ========================= */
         const { storyId } = req.params;
 
         if (!storyId) {
@@ -368,9 +379,9 @@ const updateShortStory = async (req, res) => {
             });
         }
 
-        // =========================
-        // 3. Extract Body
-        // =========================
+        /* =========================
+        3. Extract Body
+        ========================= */
         const {
             title,
             story,
@@ -381,9 +392,9 @@ const updateShortStory = async (req, res) => {
             status
         } = req.body;
 
-        // =========================
-        // 4. Validate Status
-        // =========================
+        /* =========================
+        4. Validate Status
+        ========================= */
         if (status && !["draft", "published"].includes(status)) {
             return res.status(400).json({
                 success: false,
@@ -391,27 +402,42 @@ const updateShortStory = async (req, res) => {
             });
         }
 
-        // =========================
-        // 5. Handle Image Upload
-        // =========================
+        /* =========================
+        5. Handle Image Upload (UPDATED)
+        ========================= */
         let coverImage;
+        let posterImage;
 
-        if (req.file) {
-            try {
-                const { url } = await uploadToCloudinary(req.file, "story_covers");
+        try {
+            // Cover Image
+            if (req.files?.coverImage?.[0]) {
+                const { url } = await uploadToCloudinary(
+                    req.files.coverImage[0],
+                    "story_covers"
+                );
                 coverImage = url;
-            } catch (uploadError) {
-                console.error("Cloudinary Upload Error:", uploadError);
-                return res.status(500).json({
-                    success: false,
-                    message: "Image upload failed"
-                });
             }
+
+            // Poster Image
+            if (req.files?.posterImage?.[0]) {
+                const { url } = await uploadToCloudinary(
+                    req.files.posterImage[0],
+                    "story_posters"
+                );
+                posterImage = url;
+            }
+
+        } catch (uploadError) {
+            console.error("Cloudinary Upload Error:", uploadError);
+            return res.status(500).json({
+                success: false,
+                message: "Image upload failed"
+            });
         }
 
-        // =========================
-        // 6. Fetch Story
-        // =========================
+        /* =========================
+        6. Fetch Story
+        ========================= */
         const shortStory = await ShortStory.findById(storyId);
 
         if (!shortStory) {
@@ -421,9 +447,9 @@ const updateShortStory = async (req, res) => {
             });
         }
 
-        // =========================
-        // 7. Authorization Check
-        // =========================
+        /* =========================
+        7. Authorization Check
+        ========================= */
         if (shortStory.author.toString() !== userId.toString()) {
             return res.status(403).json({
                 success: false,
@@ -431,18 +457,19 @@ const updateShortStory = async (req, res) => {
             });
         }
 
-        // =========================
-        // 8. Store Previous Status
-        // =========================
+        /* =========================
+        8. Store Previous Status
+        ========================= */
         const previousStatus = shortStory.status;
 
-        // =========================
-        // 9. Update Fields (Safe)
-        // =========================
+        /* =========================
+        9. Update Fields (SAFE)
+        ========================= */
         if (title !== undefined) shortStory.title = title;
         if (story !== undefined) shortStory.story = story;
         if (description !== undefined) shortStory.description = description;
         if (coverImage !== undefined) shortStory.coverImage = coverImage;
+        if (posterImage !== undefined) shortStory.posterImage = posterImage; // ✅ added
         if (finalQuestion !== undefined) shortStory.finalQuestion = finalQuestion;
         if (finalAnswer !== undefined) shortStory.finalAnswer = finalAnswer;
         if (category !== undefined) shortStory.category = category;
@@ -450,9 +477,9 @@ const updateShortStory = async (req, res) => {
 
         await shortStory.save();
 
-        // =========================
-        // 10. XP Logic (Safe)
-        // =========================
+        /* =========================
+        10. XP Logic
+        ========================= */
         const XP_REWARD = 30;
 
         try {
@@ -470,7 +497,7 @@ const updateShortStory = async (req, res) => {
                 await Userstats.findOneAndUpdate(
                     {
                         userId: shortStory.author,
-                        xp: { $gte: XP_REWARD }   // prevent double deduction
+                        xp: { $gte: XP_REWARD }
                     },
                     [
                         {
@@ -489,12 +516,11 @@ const updateShortStory = async (req, res) => {
             }
         } catch (xpError) {
             console.error("XP Update Error:", xpError);
-            // Do NOT fail main request if XP fails
         }
 
-        // =========================
-        // 11. Success Response
-        // =========================
+        /* =========================
+        11. Success Response
+        ========================= */
         return res.status(200).json({
             success: true,
             message: "Short story updated successfully",
@@ -504,9 +530,6 @@ const updateShortStory = async (req, res) => {
     } catch (error) {
         console.error("Update ShortStory Error:", error);
 
-        // =========================
-        // 12. Mongo Cast Error
-        // =========================
         if (error.name === "CastError") {
             return res.status(400).json({
                 success: false,
@@ -514,9 +537,6 @@ const updateShortStory = async (req, res) => {
             });
         }
 
-        // =========================
-        // 13. Mongo Validation Error
-        // =========================
         if (error.name === "ValidationError") {
             const messages = Object.values(error.errors).map(e => e.message);
             return res.status(400).json({
@@ -525,9 +545,6 @@ const updateShortStory = async (req, res) => {
             });
         }
 
-        // =========================
-        // 14. DB Connection Error
-        // =========================
         if (error.name === "MongoNetworkError") {
             return res.status(503).json({
                 success: false,
@@ -535,9 +552,6 @@ const updateShortStory = async (req, res) => {
             });
         }
 
-        // =========================
-        // 15. Generic Error
-        // =========================
         return res.status(500).json({
             success: false,
             message: "Internal server error"
@@ -1555,76 +1569,27 @@ const markGoodReadShortStory = async (req, res) => {
 const getTopGoodReads = async (req, res) => {
     try {
 
-        const goodreads = await goodReadShortStory.aggregate([
-
-            // 1️⃣ count goodreads per story
+        const goodreads = await ShortStory.aggregate([
             {
-                $group: {
-                    _id: "$story",
-                    totalGoodReads: { $sum: 1 }
-                }
+                $match: { status: "published" }
             },
-
-            // 2️⃣ sort by most goodreads
-            { $sort: { totalGoodReads: -1 } },
-
-            // 3️⃣ take top 5
-            { $limit: 5 },
-
-            // 4️⃣ join story details
             {
                 $lookup: {
-                    from: "shortstories",
-                    localField: "_id",  // because group ke bad _id hi loalField ka story jisme storyId hai vo bn chuka h hai 
-                    foreignField: "_id",
-                    as: "story"
+                    from: "goodreadshortstories",
+                    localField: "_id",
+                    foreignField: "story",
+                    as: "goodreads"
                 }
             },
-
-            // convert story array → object
-            { $unwind: "$story" },
-
-            // only published stories
             {
-                $match: {   // this operator is used to filter the documents that match the specified condition
-                    "story.status": "published"
+                $addFields: {
+                    totalGoodReads: { $size: "$goodreads" }
                 }
             },
-
-            // 5️⃣ join author details
             {
-                $lookup: {
-                    from: "users",
-                    localField: "story.author",
-                    foreignField: "_id",
-                    as: "author"
-                }
+                $sort: { totalGoodReads: -1 }
             },
-
-            { $unwind: "$author" },
-
-            // 6️⃣ final response shape
-            {
-                $project: {
-                    _id: 0,
-                    totalGoodReads: 1,
-                    story: {
-                        _id: "$story._id",
-                        title: "$story.title",
-                        description: "$story.description",
-                        coverImage: "$story.coverImage",
-                        category: "$story.category",
-                        createdAt: "$story.createdAt",
-                        totalGoodReads: "$totalGoodReads",
-                        author: {
-                            _id: "$author._id",
-                            username: "$author.username",
-                            profilePic: "$author.profilePic"
-                        }
-                    }
-                }
-            }
-
+            { $limit: 5 }
         ]);
 
         if (!goodreads.length) {

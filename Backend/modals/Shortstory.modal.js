@@ -22,6 +22,10 @@ const shortStorySchema = new Schema(
         coverImage: {
             type: String,
         },
+        posterImage: {
+            type: String,
+        },
+        
         finalQuestion: {
             type: String,
             required: true

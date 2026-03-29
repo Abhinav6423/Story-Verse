@@ -61,18 +61,17 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
     return (
         <>
             {/* ================= NAVBAR ================= */}
-            {/* Changed from sticky to fixed w-full to properly overlay the hero without scrolling gaps */}
-            <nav className="fixed w-full top-0 z-50 h-16 sm:h-15 transition-all duration-300">
+            <nav className="fixed w-full top-0 z-50 h-16 sm:h-20 transition-all duration-300">
 
                 {/* CINEMATIC BACKGROUND LAYERS */}
-                {/* 1. Netflix-style top gradient fade */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/50 to-transparent pointer-events-none"></div>
+                {/* 1. Very subtle top gradient fade just for text legibility, matching the airy look */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent pointer-events-none"></div>
 
-                {/* 2. Crisp glass effect (using pure black instead of grey removes the faded/muddy look) */}
-                <div className="absolute inset-0 backdrop-blur-md bg-black/20 supports-[backdrop-filter]:bg-black/10"></div>
+                {/* 2. Transparent background (removed heavy black glass effect) */}
+                <div className="absolute inset-0 bg-transparent"></div>
 
-                {/* 3. Slightly brighter bottom line for separation */}
-                <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent drop-shadow-sm"></div>
+                {/* 3. Removed bottom line to blend seamlessly with the hero section */}
+                <div className="absolute inset-x-0 bottom-0 h-[1px] bg-transparent"></div>
 
                 <div className="relative max-w-7xl mx-auto px-6 h-full flex items-center justify-between text-white">
 
@@ -86,47 +85,47 @@ const Navbar = ({ onAnyNavClick, setShowBrowse, showBrowse }) => {
                             alt="Story-Verse Logo"
                             width="112"
                             height="40"
-                            className="w-24 sm:w-32 h-auto object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+                            className="w-24 sm:w-28 h-auto object-contain drop-shadow-md"
                         />
                     </Link>
 
                     {/* DESKTOP ACTIONS */}
-                    <div className="hidden md:flex items-center gap-5 text-sm font-medium">
+                    <div className="hidden md:flex items-center gap-6 text-sm font-medium">
 
-                        {/* Write Story - Premium Glass Pill */}
+                        {/* Write Story - Clean text and icon (Removed pill background and border) */}
                         <Link
                             to="/create"
-                            className="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 hover:border-white/40 transition-all duration-300 backdrop-blur-lg shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+                            className="group flex items-center gap-2 py-2 transition-all duration-300"
                         >
-                            <Plus size={16} className="text-white/90 group-hover:text-white transition-colors drop-shadow-md" />
-                            <span className="tracking-wide text-white drop-shadow-md">Write Story</span>
+                            <Plus size={16} className="text-white/70 group-hover:text-white transition-colors" />
+                            <span className="tracking-wide text-white/90 group-hover:text-white transition-colors">Write story</span>
                         </Link>
 
-                        {/* Divider */}
-                        <div className="h-6 w-[1px] bg-white/20 mx-1"></div>
+                        {/* Divider - Made transparent as it's not in the reference image */}
+                        <div className="h-4 w-[1px] bg-transparent mx-0"></div>
 
-                        {/* Browse Button */}
+                        {/* Browse Button - Clean text and icon */}
                         <button
-                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 group"
+                            className="flex items-center gap-2 py-2 transition-all duration-300 group"
                             onClick={() => setShowBrowse(p => !p)}
                             aria-label="Browse Categories"
                         >
-                            <LayoutGrid size={18} className="text-white/80 group-hover:text-white transition-colors drop-shadow-md" />
-                            <span className="tracking-wide text-white/90 group-hover:text-white drop-shadow-md">Browse</span>
+                            <LayoutGrid size={16} className="text-white/70 group-hover:text-white transition-colors" />
+                            <span className="tracking-wide text-white/90 group-hover:text-white transition-colors">Browse</span>
                         </button>
 
-                        {/* Profile Dropdown Trigger */}
+                        {/* Profile Dropdown Trigger - Clean text and icon */}
                         <div className="relative" ref={profileMenuRef}>
                             <button
-                                className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 group ${showProfileMenu ? 'bg-white/10 text-white' : 'text-white/90'}`}
+                                className={`flex items-center gap-2 py-2 transition-all duration-300 group ${showProfileMenu ? 'text-white' : 'text-white/90'}`}
                                 onClick={() => {
                                     onAnyNavClick();
                                     setShowProfileMenu(p => !p);
                                 }}
                                 aria-label="User Menu"
                             >
-                                <User size={18} className="text-white/80 group-hover:text-white transition-colors drop-shadow-md" />
-                                <span className="tracking-wide drop-shadow-md group-hover:text-white">Profile</span>
+                                <User size={16} className="text-white/70 group-hover:text-white transition-colors" />
+                                <span className="tracking-wide group-hover:text-white transition-colors">Profile</span>
                             </button>
 
                             {/* DESKTOP DROPDOWN MENU */}

@@ -10,7 +10,7 @@ const TopTrendStoryCard = ({ story, idx }) => {
         <div className="relative w-full group perspective-1000">
 
             {/* RANK — RESPONSIVE BACKGROUND NUMBER (Desktop) */}
-            <div className="absolute hidden sm:block -bottom-4 -left-6 lg:-left-10 text-[7rem] lg:text-[9rem] font-black text-[#050505] [-webkit-text-stroke:3px_#047857] lg:[-webkit-text-stroke:4px_#047857] drop-shadow-[0_10px_15px_rgba(4,120,87,0.4)] group-hover:[-webkit-text-stroke:4px_#34d399] group-hover:drop-shadow-[0_0_25px_rgba(52,211,153,0.6)] transition-all duration-500 ease-out select-none pointer-events-none z-0 tracking-tighter group-hover:-translate-y-2 group-hover:scale-105">
+            <div className="absolute hidden sm:block -bottom-4 -left-6 lg:-left-10 text-[7rem] lg:text-[9rem] font-black bg-gradient-to-b from-zinc-100 via-zinc-300 to-zinc-600 bg-clip-text text-transparent drop-shadow-[0_8px_10px_rgba(0,0,0,0.8)] group-hover:drop-shadow-[0_15px_20px_rgba(0,0,0,0.9)] transition-all duration-500 ease-out select-none pointer-events-none z-0 tracking-tighter group-hover:-translate-y-2 group-hover:scale-105">
                 {idx + 1}
             </div>
 
@@ -24,23 +24,7 @@ const TopTrendStoryCard = ({ story, idx }) => {
                 {/* POSTER IMAGE */}
                 <div className="relative aspect-[2/3] w-full rounded-xl overflow-hidden bg-zinc-900 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] ring-1 ring-white/10 group-hover:ring-emerald-400/40 transition-all duration-500">
 
-                    {/* TRENDING BADGE (New) */}
-                    <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-20 flex items-center gap-1.5 px-2.5 py-1.5 
-    bg-black/20 backdrop-blur-xl rounded-lg
-    border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.5)]
-    ring-1 ring-inset ring-white/10 
-    transition-all duration-300 ease-out group-hover:scale-105 group-hover:bg-black/30 group-hover:border-emerald-400/30">
-
-                        <Flame
-                            size={14}
-                            className="text-emerald-400 fill-emerald-400/30 drop-shadow-[0_0_8px_rgba(52,211,153,0.9)] animate-pulse"
-                        />
-
-                        <span className="text-[10px] sm:text-xs font-extrabold tracking-[0.15em] uppercase 
-        bg-gradient-to-br from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent drop-shadow-md mt-[1px]">
-                            #{idx + 1} Trending
-                        </span>
-                    </div>
+                    
 
                     {/* Premium Glassmorphic Good Read Badge */}
                     {story?.isGoodRead && (

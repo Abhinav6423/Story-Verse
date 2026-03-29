@@ -31,6 +31,11 @@ const CreatePost = () => {
     const [coverImg, setCoverImg] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
 
+    const [posterImg, setPosterImg] = useState(null);
+    const [posterPreview, setPosterPreview] = useState(null);
+
+
+
     // UI State
     const [step, setStep] = useState(1);
     const [compressing, setCompressing] = useState(false);
@@ -39,7 +44,7 @@ const CreatePost = () => {
     /* ================= PREVENT ACCIDENTAL CLOSE ================= */
     useEffect(() => {
         const handleBeforeUnload = (e) => {
-            if (title || story || coverImg) {
+            if (title || story || coverImg || posterImg || description || finalQ || finalA || status) {
                 e.preventDefault();
                 e.returnValue = "";
             }
@@ -70,6 +75,8 @@ const CreatePost = () => {
     const handleImageChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
+
+        e.target.value = null; // Reset file input to allow re-uploading the same file if needed
 
         // Skip compression for small images (<1.2MB)
         if (file.size / 1024 / 1024 < 1.2) {
@@ -117,15 +124,65 @@ const CreatePost = () => {
     };
 
 
+    // Poster image handler 
+    const handlePosterChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        e.target.value = null; // Reset file input to allow re-uploading the same file if needed
+
+        if (file.size / 1024 / 1024 < 1.2) {
+            setPosterImg(file);
+            setPosterPreview(URL.createObjectURL(file));
+            return;
+        }
+
+        setCompressing(true);
+
+        try {
+            const options = {
+                maxSizeMB: 0.6,
+                maxWidthOrHeight: 1000,
+                initialQuality: 0.85,
+                useWebWorker: true,
+                fileType: "image/webp",
+            };
+
+            const compressedFile = await imageCompression(file, options);
+
+            const webpFile = new File(
+                [compressedFile],
+                file.name.replace(/\.(jpg|jpeg|png)$/i, ".webp"),
+                { type: "image/webp" }
+            );
+
+            setPosterImg(webpFile);
+            setPosterPreview(URL.createObjectURL(webpFile));
+
+        } catch (error) {
+            console.error("Poster compression error:", error);
+            toast.error("Failed to process poster image");
+        } finally {
+            setCompressing(false);
+        }
+    };
+
 
 
 
     const removeImage = (e) => {
         e.preventDefault();
+        e.stopPropagation();
         setCoverImg(null);
         setPreviewUrl(null);
     };
 
+    const removePoster = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setPosterImg(null);
+        setPosterPreview(null);
+    };
 
     const createPostMutation = useMutation({
         mutationFn: createShortStory, // cleaner
@@ -153,6 +210,8 @@ const CreatePost = () => {
                 setStory("");
                 setCoverImg(null);
                 setPreviewUrl(null);
+                setPosterImg(null);
+                setPosterPreview(null);
 
                 navigate("/home");
             } else {
@@ -178,6 +237,10 @@ const CreatePost = () => {
             return toast.error("Cover image is required");
         }
 
+        if (!posterImg) {
+            return toast.error("Poster image is required");
+        }
+
         if (compressing) {
             toast.info("Processing image, please wait...");
             return;
@@ -192,6 +255,7 @@ const CreatePost = () => {
         formData.append("status", status);
         formData.append("story", story);
         formData.append("coverImage", coverImg);
+        formData.append("posterImage", posterImg);
 
         createPostMutation.mutate(formData);
     };
@@ -447,7 +511,7 @@ const CreatePost = () => {
                                                 <p className="text-white font-medium bg-black/60 px-4 py-2 rounded-lg backdrop-blur-sm">Change Image</p>
                                             </div>
                                             <button
-                                                onClick={(e) => { e.preventDefault(); removeImage(); }}
+                                                onClick={removeImage}
                                                 className="absolute top-4 right-4 bg-black/60 p-2.5 rounded-full hover:bg-red-500 transition-colors text-white backdrop-blur-sm z-10"
                                             >
                                                 <X size={18} />
@@ -464,6 +528,44 @@ const CreatePost = () => {
                                         </div>
                                     )}
                                     <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                                </label>
+                            </div>
+
+                            {/* POSTER IMAGE */}
+                            <div className="mt-6">
+                                <label className="text-sm font-semibold text-gray-300 mb-3 block">
+                                    Poster Image (Optional)
+                                </label>
+
+                                <label className={`
+        relative flex flex-col items-center justify-center w-full h-[200px] 
+        rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden group
+        ${posterPreview ? 'border-emerald-500/50 bg-[#1A1A1A]' : 'border-white/10 hover:border-emerald-500/40 hover:bg-white/5 bg-[#1A1A1A]'}
+    `}>
+                                    {posterPreview ? (
+                                        <>
+                                            <img src={posterPreview} alt="Poster" className="w-full h-full object-cover" />
+
+                                            <button
+                                                onClick= {removePoster}
+                                                className="absolute top-3 right-3 bg-black/60 p-2 rounded-full hover:bg-red-500 text-white"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <div className="text-center">
+                                            <UploadCloud size={28} className="text-emerald-500 mx-auto mb-2" />
+                                            <p className="text-sm text-gray-400">Upload Poster</p>
+                                        </div>
+                                    )}
+
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handlePosterChange}
+                                    />
                                 </label>
                             </div>
                         </div>

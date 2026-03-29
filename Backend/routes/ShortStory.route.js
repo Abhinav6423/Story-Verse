@@ -26,7 +26,10 @@ const router = express.Router();
    ========================= */
 
 router.post("/", verifyFirebaseToken,
-   upload.single("coverImage"),
+   upload.fields([
+      { name: "coverImage", maxCount: 1 },
+      { name: "posterImage", maxCount: 1 }
+   ]),
    createShortStory);
 
 router.get("/me", verifyFirebaseToken, listUserShortStory);

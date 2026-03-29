@@ -50,7 +50,7 @@ const Layout = () => {
           showBrowse={showBrowse}
         />
 
-        <main className="flex-1 w-full pb-20 md:pb-8">
+        <main className="flex-1 w-full pb-20 ">
           <Outlet />
         </main>
 
