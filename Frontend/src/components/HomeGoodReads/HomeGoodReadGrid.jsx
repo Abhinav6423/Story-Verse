@@ -79,7 +79,7 @@ const HomeGoodReadGrid = () => {
       transition-all duration-700 ease-out
       ${isAnimating ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}
       block md:hidden
-      filter contrast-110 brightness-90 saturate-110
+      filter contrast-110 brightness-100 saturate-110
     `}
                 />
 
@@ -93,21 +93,21 @@ const HomeGoodReadGrid = () => {
       transition-all duration-700 ease-out
       ${isAnimating ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}
       hidden md:block
-      filter contrast-110 brightness-90 saturate-110
+      filter contrast-110 brightness-100 saturate-110
     `}
                 />
 
                 {/* 🎯 LEFT TEXT SUPPORT (soft, not heavy) */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/25 to-transparent" />
+                {/* <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/25 to-transparent" /> */}
 
                 {/* 🎯 BOTTOM DEPTH */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent" />
+                {/* <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent" /> */}
 
                 {/* 🎯 TOP NAV FADE */}
-                <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/30 to-transparent" />
+                {/* <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/30 to-transparent" /> */}
 
                 {/* 🎯 CINEMATIC VIGNETTE (KEY DIFFERENCE 🔥) */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,transparent_0%,rgba(0,0,0,0.65)_100%)]" />
+                {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,transparent_0%,rgba(0,0,0,0.65)_100%)]" /> */}
 
             </div>
 
