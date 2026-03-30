@@ -98,7 +98,7 @@ const HomeGoodReadGrid = () => {
                 />
 
                 {/* 🎯 LEFT TEXT SUPPORT (soft, not heavy) */}
-                {/* <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/25 to-transparent" /> */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/25 to-transparent" />
 
                 {/* 🎯 BOTTOM DEPTH */}
                 {/* <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent" /> */}
