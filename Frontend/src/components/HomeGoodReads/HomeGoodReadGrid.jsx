@@ -67,17 +67,22 @@ const HomeGoodReadGrid = () => {
             {/* =========================================================
                1. BACKGROUND LAYERS
             ========================================================= */}
-            <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+            <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
+
                 {/* Mobile (coverImage) */}
                 <img
                     src={activeStory.coverImage || activeStory.posterImage}
                     alt="Background"
                     className={`
-    absolute inset-0 w-full h-full object-cover object-center
-    transition-all duration-700 ease-out
-    ${isAnimating ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}
-    block md:hidden
-  `}
+      absolute inset-0 w-full h-full 
+      object-cover object-center
+      transition-all duration-700 ease-out
+      ${isAnimating ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}
+      block md:hidden
+
+      /* 🎬 Cinematic color grading */
+      filter contrast-110 brightness-90 saturate-110
+    `}
                 />
 
                 {/* Desktop (posterImage) */}
@@ -85,22 +90,26 @@ const HomeGoodReadGrid = () => {
                     src={activeStory.posterImage || activeStory.coverImage}
                     alt="Background"
                     className={`
-    absolute inset-0 w-full h-full object-cover object-center
-    transition-all duration-700 ease-out
-    ${isAnimating ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}
-    hidden md:block
-  `}
+      absolute inset-0 w-full h-full 
+      object-cover object-[60%_center]
+      transition-all duration-700 ease-out
+      ${isAnimating ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}
+      hidden md:block
+
+      /* 🎬 Cinematic color grading */
+      filter contrast-110 brightness-90 saturate-110
+    `}
                 />
 
-                {/* NEW GRADIENTS: Clear at the top/right, dark at the bottom/left for text */}
-                {/* 1. Strong bottom-to-top gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent h-[70%] top-auto bottom-0" />
+                {/* 🎯 LEFT TEXT GRADIENT (soft, cinematic) */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
 
-                {/* 2. Left-to-right gradient to protect text legibility, fading out smoothly */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/90 via-[#050505]/10 to-transparent w-full md:w-3/4" />
+                {/* 🎯 BOTTOM DEPTH GRADIENT (subtle, not killing image) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-                {/* 3. Very subtle top gradient just for the navbar area */}
-                <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/10 to-transparent" />
+                {/* 🎯 TOP NAVBAR FADE (very subtle) */}
+                <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/30 to-transparent" />
+
             </div>
 
             {/* =========================================================
@@ -108,45 +117,41 @@ const HomeGoodReadGrid = () => {
             ========================================================= */}
 
             <div className="relative z-10 flex-1 flex flex-col justify-end pb-24 lg:pb-32 px-6 md:px-12 lg:px-12 w-full mx-auto pt-32">
-                <div className={`max-w-3xl transition-all duration-700 ease-out ${isAnimating ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0  sm:mt-29' }`}>
+                <div className={`max-w-2xl transition-all duration-700 ease-out ${isAnimating ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0 sm:mt-28'}`}>
 
-                    {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6 shadow-lg">
-                        <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.5)]">
-                            <Sparkles size={10} className="text-[#050505]" />
-                        </div>
-                        <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.15em] text-zinc-200">
-                            Editor's Choice #{activeIndex + 1}
+                    {/* Badge (cleaned) */}
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm mb-6">
+                        <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                        <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white/70">
+                            Editor’s Choice #{activeIndex + 1}
                         </span>
                     </div>
 
-                    {/* Title */}
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-white drop-shadow-2xl mb-4">
+                    {/* Title (cinematic) */}
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-wide leading-[1.1] text-white mb-5 drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)]">
                         {activeStory.title}
                     </h1>
 
-                    {/* Metadata */}
-                    <div className="flex items-center gap-3 text-xs md:text-sm font-medium text-zinc-300 mb-6 drop-shadow-md">
-                        <span className="flex items-center gap-1.5 text-zinc-100">
-                            <User size={14} className="text-zinc-400" /> Must Try
+                    {/* Metadata (lighter) */}
+                    <div className="flex items-center gap-3 text-xs md:text-sm text-white/60 mb-6">
+                        <span className="flex items-center gap-1.5 text-white/80">
+                            <User size={14} className="text-white/40" /> Must Try
                         </span>
-                        <span className="text-zinc-500">•</span>
+                        <span className="opacity-40">•</span>
                         <span>{activeStory.genre || "Fiction"}</span>
-                        <span className="text-zinc-500">•</span>
+                        <span className="opacity-40">•</span>
                         <span>Enjoy Reading</span>
                     </div>
 
-                    {/* Description */}
-                    <p className="text-sm md:text-base text-zinc-300 leading-relaxed max-w-2xl drop-shadow-lg mb-8 line-clamp-3 md:line-clamp-4 font-semibold">
+                    {/* Description (clean + readable) */}
+                    <p className="text-sm md:text-base text-white/70 leading-relaxed max-w-lg mb-8 line-clamp-3 md:line-clamp-4">
                         {activeStory.description || activeStory.synopsis}
                     </p>
 
-
-
-                    {/* Primary CTA */}
+                    {/* CTA (slightly refined) */}
                     <Link
                         to={`/story/${activeStory._id}`}
-                        className="group inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-black rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 w-full sm:w-auto"
+                        className="group inline-flex items-center justify-center gap-3 px-7 py-3 bg-emerald-500 hover:bg-emerald-400 text-black rounded-full font-medium text-sm md:text-base transition-all duration-300 shadow-[0_10px_30px_rgba(16,185,129,0.25)] hover:shadow-[0_15px_40px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 w-full sm:w-auto"
                     >
                         <span>Start Reading</span>
                         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
