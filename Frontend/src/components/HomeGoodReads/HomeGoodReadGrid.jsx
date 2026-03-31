@@ -1,14 +1,54 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { PlayCircle, Bookmark, Star, ChevronRight, Sparkles, BookOpen, Search, Menu, User, ArrowRight } from "lucide-react";
+import { User, ArrowRight } from "lucide-react";
 import { listTopGoodReadsShortStory } from "../../Api-calls/TopGoodreadsShortStory.js";
+import fallbackImage from "../../Assets/fallback.png";
 import HomeGoodReadCard from "./HomeGoodReadCard";
 
 const SkeletonHero = () => (
-    <section className="relative w-full h-[80vh] min-h-[600px] bg-zinc-900 animate-pulse flex">
-        <div className="w-full lg:w-2/3 h-full bg-zinc-800/50" />
-        {/* <div className="hidden lg:block w-1/3 h-full border-l border-white/5 bg-zinc-900" /> */}
+    <section className="relative w-full h-[100dvh] min-h-[600px] overflow-hidden bg-[#050505]">
+
+        {/* 🔥 FAKE BACKGROUND (blur + gradient instead of blank) */}
+        <div className="absolute inset-0">
+            <div className="w-full h-full bg-gradient-to-r from-black via-zinc-900 to-black opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.05),transparent_60%)]" />
+        </div>
+
+        {/* 🔥 SHIMMER EFFECT */}
+        <div className="absolute inset-0 animate-pulse">
+            <div className="w-full h-full bg-zinc-800/40" />
+        </div>
+
+        {/* 🔥 CONTENT PLACEHOLDER */}
+        <div className="relative z-10 flex flex-col justify-end h-full px-6 md:px-12 lg:px-12 pb-24 lg:pb-32">
+
+            <div className="max-w-2xl space-y-4">
+
+                {/* Badge */}
+                <div className="h-4 w-32 bg-zinc-700 rounded-full animate-pulse" />
+
+                {/* Title lines */}
+                <div className="space-y-3">
+                    <div className="h-10 w-[90%] bg-zinc-700 rounded-md animate-pulse" />
+                    <div className="h-10 w-[70%] bg-zinc-700 rounded-md animate-pulse" />
+                </div>
+
+                {/* Metadata */}
+                <div className="h-4 w-48 bg-zinc-700 rounded-full animate-pulse" />
+
+                {/* Description */}
+                <div className="space-y-2">
+                    <div className="h-3 w-full bg-zinc-700 rounded animate-pulse" />
+                    <div className="h-3 w-[90%] bg-zinc-700 rounded animate-pulse" />
+                    <div className="h-3 w-[75%] bg-zinc-700 rounded animate-pulse" />
+                </div>
+
+                {/* Button */}
+                <div className="h-10 w-40 bg-zinc-600 rounded-full animate-pulse mt-4" />
+
+            </div>
+        </div>
     </section>
 );
 
@@ -20,46 +60,62 @@ const HomeGoodReadGrid = () => {
         queryKey: ["topGoodReadsShortStory"],
         queryFn: listTopGoodReadsShortStory,
         staleTime: 1000 * 60 * 5,
+        cacheTime: 1000 * 60 * 30,
+        refetchOnWindowFocus: false, // ✅ avoid unnecessary refetch
     });
+
+
 
     const shortStories = data?.goodreads || [];
 
-    console.log("HomeGoodReads are ", shortStories)
-
-
-
-    const handleStoryChange = (index) => {
+    // ✅ FIX 1: memoize function (important)
+    const handleStoryChange = useCallback((index) => {
         if (index === activeIndex) return;
         setIsAnimating(true);
         setTimeout(() => {
             setActiveIndex(index);
             setIsAnimating(false);
         }, 300);
-    };
+    }, [activeIndex]);
 
+    // ✅ FIX 2: autoplay WITHOUT recreating interval
     useEffect(() => {
-        // Safety check: ensure stories exist
-        if (!shortStories || shortStories.length === 0) return;
+        if (!shortStories.length) return;
 
         const timer = setInterval(() => {
-            // Calculate the next index. 
-            // The '%' (modulo) operator ensures that when it reaches the end (e.g., 5), 
-            // it wraps around back to 0.
             const nextIndex = (activeIndex + 1) % shortStories.length;
             handleStoryChange(nextIndex);
-        }, 3000); // 3000 milliseconds = 3 seconds
+        }, 2000);
 
-        // Cleanup: Clear the timer when the component unmounts or the index changes.
-        // This prevents multiple timers from running at once and resets the clock 
-        // if the user manually clicks a dot.
         return () => clearInterval(timer);
-
     }, [activeIndex, shortStories.length, handleStoryChange]);
 
-    if (isLoading) return <SkeletonHero />;
-    if (isError || !shortStories.length) return null;
 
-    const activeStory = shortStories[activeIndex];
+    // ✅ FIX 3: preload next image (GAME CHANGER)
+    useEffect(() => {
+        if (!shortStories.length) return;
+
+        const nextIndex = (activeIndex + 1) % shortStories.length;
+        const img = new Image();
+        img.src =
+            shortStories[nextIndex]?.posterImage ||
+            shortStories[nextIndex]?.coverImage;
+    }, [activeIndex, shortStories]);
+
+
+
+    if (isError) return null;
+
+    // ✅ FIX 5: don't block UI completely on loading
+    const activeStory = shortStories[activeIndex] || {
+        title: "Loading...",
+        description: "Please wait while we fetch the best short stories for you.",
+        posterImage: fallbackImage,
+        coverImage: fallbackImage,
+    };
+
+    if (isLoading && !shortStories.length) return <SkeletonHero />;
+
 
     return (
         <section className="relative w-full h-[100dvh] min-h-[600px] bg-[#050505] overflow-hidden text-white font-sans flex flex-col">
@@ -71,13 +127,20 @@ const HomeGoodReadGrid = () => {
 
                 {/* Mobile */}
                 <img
-                    src={activeStory.coverImage || activeStory.posterImage}
+                    loading="eager"
+                    fetchPriority="high"
+
+                    src={
+                        activeStory?.coverImage ||
+                        activeStory?.posterImage ||
+                        fallbackImage
+                    }
                     alt="Background"
                     className={`
       absolute inset-0 w-full h-full 
       object-cover object-center
       transition-all duration-700 ease-out
-      ${isAnimating ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}
+      ${isAnimating ? 'opacity-0 scale-105 blur-sm' : 'opacity-100 scale-100 blur-0'}
       block md:hidden
       filter contrast-110 brightness-100 saturate-110
     `}
@@ -85,13 +148,19 @@ const HomeGoodReadGrid = () => {
 
                 {/* Desktop */}
                 <img
-                    src={activeStory.posterImage || activeStory.coverImage}
+                    loading="eager"
+                    fetchPriority="high"
+                    src={
+                        activeStory?.posterImage ||
+                        activeStory?.coverImage ||
+                        fallbackImage
+                    }
                     alt="Background"
                     className={`
       absolute inset-0 w-full h-full 
       object-cover object-[65%_center]
       transition-all duration-700 ease-out
-      ${isAnimating ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}
+      ${isAnimating ? 'opacity-0 scale-105 blur-sm' : 'opacity-100 scale-100 blur-0'}
       hidden md:block
       filter contrast-110 brightness-100 saturate-110
     `}
@@ -101,13 +170,13 @@ const HomeGoodReadGrid = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/45 to-transparent" />
 
                 {/* 🎯 BOTTOM DEPTH */}
-                {/* <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent" /> */}
+                <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent" />
 
                 {/* 🎯 TOP NAV FADE */}
-                {/* <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/30 to-transparent" /> */}
+                <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/30 to-transparent" />
 
                 {/* 🎯 CINEMATIC VIGNETTE (KEY DIFFERENCE 🔥) */}
-                {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,transparent_0%,rgba(0,0,0,0.65)_100%)]" /> */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,transparent_0%,rgba(0,0,0,0.65)_100%)]" />
 
             </div>
 
@@ -143,7 +212,7 @@ const HomeGoodReadGrid = () => {
                     </div>
 
                     {/* Description (clean + readable) */}
-                    <p className="text-sm font-medium md:text-base text-white/70 leading-relaxed max-w-lg mb-8 line-clamp-3 md:line-clamp-4">
+                    <p className="hidden sm:block text-sm font-medium md:text-base text-white/70 leading-relaxed max-w-lg mb-8 line-clamp-3 md:line-clamp-4">
                         {activeStory.description || activeStory.synopsis}
                     </p>
 
