@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { User, ArrowRight } from "lucide-react";
 import { listTopGoodReadsShortStory } from "../../Api-calls/TopGoodreadsShortStory.js";
 import fallbackImage from "../../Assets/fallback.png";
-import HomeGoodReadCard from "./HomeGoodReadCard";
+// import HomeGoodReadCard from "./HomeGoodReadCard";
 
 const SkeletonHero = () => (
     <section className="relative w-full h-[100dvh] min-h-[600px] overflow-hidden bg-[#050505]">
@@ -114,7 +114,7 @@ const HomeGoodReadGrid = () => {
         coverImage: fallbackImage,
     };
 
-    if (isLoading && !shortStories.length) return <SkeletonHero />;
+    // if (isLoading && !shortStories.length) return <SkeletonHero />;
 
 
     return (
