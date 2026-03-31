@@ -8,7 +8,7 @@ import HomeGoodReadCard from "./HomeGoodReadCard";
 const SkeletonHero = () => (
     <section className="relative w-full h-[80vh] min-h-[600px] bg-zinc-900 animate-pulse flex">
         <div className="w-full lg:w-2/3 h-full bg-zinc-800/50" />
-        <div className="hidden lg:block w-1/3 h-full border-l border-white/5 bg-zinc-900" />
+        {/* <div className="hidden lg:block w-1/3 h-full border-l border-white/5 bg-zinc-900" /> */}
     </section>
 );
 
