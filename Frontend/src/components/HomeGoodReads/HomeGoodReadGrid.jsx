@@ -131,11 +131,11 @@ const HomeGoodReadGrid = () => {
     // transition-opacity only (no blur, no transition-all) = smooth on mobile
     // ---------------------------------------------------------------------------
     const bgImageClass = `
-        absolute inset-0 w-full h-full object-cover
-        transition-opacity duration-700 ease-out
-        contrast-110 saturate-110
-        ${isAnimating ? "opacity-0" : "opacity-100"}
-    `;
+    absolute inset-0 w-full h-full object-cover
+    transition-opacity duration-700 ease-out
+    ${isAnimating ? "opacity-0" : "opacity-100"}
+`;
+
 
     // ---------------------------------------------------------------------------
     // Render
@@ -163,12 +163,13 @@ const HomeGoodReadGrid = () => {
                     style={{ willChange: "opacity" }}
                     src={activeStory?.posterImage || activeStory?.coverImage || fallbackImage}
                     alt=""
-                    className={`${bgImageClass} object-[65%_center] hidden md:block`}
+                    className={`${bgImageClass} object-center hidden md:block`}
                 />
 
                 {/* Gradient overlays for text legibility */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/15 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/10 to-transparent" />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
             </div>
 
             {/* ── 2. CONTENT ────────────────────────────────────────────────── */}
