@@ -155,7 +155,7 @@ const HomeGoodReadGrid = () => {
                     </div>
 
                     {/* Title */}
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.05] text-white mb-3 drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)]">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.05] text-white mb-3 drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)]">
                         {activeSlide?.title}
                     </h1>
 
