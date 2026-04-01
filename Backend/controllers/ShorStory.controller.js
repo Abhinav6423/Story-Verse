@@ -167,7 +167,7 @@ const listUserShortStory = async (req, res) => {
         const filter = { author: userId };
 
         if (status) {
-            const allowedStatus = ["draft", "published", "archived"];
+            const allowedStatus = ["draft", "published"];
             if (!allowedStatus.includes(status)) {
                 return res.status(400).json({
                     success: false,
@@ -190,7 +190,7 @@ const listUserShortStory = async (req, res) => {
         // =========================
         const shortStory = await ShortStory
             .find(filter)
-            .sort({ createdAt: -1 })
+            // .sort({ createdAt: -1 })
             .lean();   // faster + safe (no mongoose doc methods)
 
         // =========================

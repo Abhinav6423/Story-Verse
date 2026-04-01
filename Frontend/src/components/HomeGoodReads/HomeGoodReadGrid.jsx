@@ -167,13 +167,13 @@ const HomeGoodReadGrid = () => {
                 />
 
                 {/* 🎯 LEFT TEXT SUPPORT (soft, not heavy) */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/45 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/15 to-transparent" />
 
                 {/* 🎯 BOTTOM DEPTH */}
                 <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent" />
 
                 {/* 🎯 TOP NAV FADE */}
-                <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/30 to-transparent" />
+                {/* <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/30 to-transparent" /> */}
 
                 {/* 🎯 CINEMATIC VIGNETTE (KEY DIFFERENCE 🔥) */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,transparent_0%,rgba(0,0,0,0.65)_100%)]" />
