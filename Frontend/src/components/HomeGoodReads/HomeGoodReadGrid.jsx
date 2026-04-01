@@ -40,7 +40,8 @@ const SkeletonHero = () => (
 // Constants
 // ---------------------------------------------------------------------------
 const AUTOPLAY_INTERVAL_MS = 5000; // time each slide stays visible
-const TRANSITION_DURATION_MS = 700; // must match duration-700 in Tailwind
+
+const TRANSITION_DURATION_MS = typeof window !== "undefined" && window.innerWidth < 768 ? 500 : 700;
 
 const FALLBACK_STORY = {
     title: "Loading...",
@@ -132,7 +133,7 @@ const HomeGoodReadGrid = () => {
     // ---------------------------------------------------------------------------
     const bgImageClass = `
     absolute inset-0 w-full h-full object-cover
-    transition-opacity duration-700 ease-out
+    transition-opacity duration-500 md:duration-700 ease-out
     ${isAnimating ? "opacity-0" : "opacity-100"}
 `;
 
