@@ -176,7 +176,7 @@ const HomeGoodReadGrid = () => {
                 {/* <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/30 to-transparent" /> */}
 
                 {/* 🎯 CINEMATIC VIGNETTE (KEY DIFFERENCE 🔥) */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,transparent_0%,rgba(0,0,0,0.65)_100%)]" />
+                {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,transparent_0%,rgba(0,0,0,0.65)_100%)]" /> */}
 
             </div>
 
