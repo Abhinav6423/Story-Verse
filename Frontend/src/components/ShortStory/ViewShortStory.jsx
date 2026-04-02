@@ -247,24 +247,36 @@ const ViewShortStory = () => {
   return (
     <div className={`min-h-screen bg-black text-gray-300 relative transition-all duration-700 ${isFocusMode ? 'pt-8' : ''}`}>
 
-
+      {/* --- FOOLPROOF EXIT FOCUS ESCAPE HATCH --- */}
+      {isFocusMode && (
+        <button
+          onClick={toggleFocusMode}
+          className="fixed top-10 left-1/2 -translate-x-1/2 z-[9999] group flex items-center gap-3 px-6 py-3 rounded-full bg-[#111111]/90 backdrop-blur-xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/20 shadow-[0_10px_40px_rgba(0,0,0,0.8)] transition-all duration-300 active:scale-95 animate-in slide-in-from-bottom-8 fade-in"
+        >
+          <Minimize2 size={16} className="group-hover:scale-90 transition-transform" />
+          <span className="text-xs font-bold uppercase tracking-widest">Exit Focus</span>
+        </button>
+      )}
 
       {/* --- COVER IMAGE --- */}
       {!isFocusMode && (
-        <div className="relative w-full h-[35vh] sm:h-[45vh] animate-in fade-in duration-1000">
+        <div className="relative w-full h-[45vh] sm:h-[55vh] animate-in fade-in duration-[1.5s] overflow-hidden bg-[#0b1412] group">
+
           {story?.coverImage ? (
             <img
               src={story.posterImage || story.coverImage}
               alt={story.title}
               fetchPriority="high"
-              className="w-full h-full object-cover opacity-70 mix-blend-luminosity"
+              className="w-full h-full object-cover scale-105 transition-transform duration-10000 ease-linear group-hover:scale-110 opacity-80 brightness-75 contrast-125 relative z-0"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-emerald-900/10">
-              <h3 className="text-xl font-serif text-gray-500 tracking-wide">{story.title}</h3>
+            <div className="w-full h-full flex items-center justify-center bg-[#050a08]">
+              <h3 className="text-xl font-serif text-emerald-900/50 tracking-wider uppercase">{story.title}</h3>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1412] via-[#0b1412]/60 to-transparent z-10 pointer-events-none" />
+
+
+
         </div>
       )}
 
@@ -280,12 +292,28 @@ const ViewShortStory = () => {
 
           {showChapters && (
             <div className="fixed inset-0 z-[90] flex justify-end">
-              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowChapters(false)} />
-              <div className="relative w-80 bg-[#0b1412] h-full p-8 overflow-y-auto border-l border-emerald-900/30 shadow-2xl animate-in slide-in-from-right duration-300">
-                <h4 className="text-[11px] tracking-[0.4em] uppercase text-emerald-500 mb-8 font-semibold">
+
+              {/* Overlay */}
+              <div
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                onClick={() => setShowChapters(false)}
+              />
+
+              {/* Sidebar */}
+              <div className="relative w-80 bg-[#0b1412] h-full p-8 overflow-y-auto border-l border-emerald-900/30 shadow-2xl animate-in slide-in-from-right duration-300 no-scrollbar">
+
+                {/* Header */}
+                <h4 className="text-lg sm:text-xl tracking-widest uppercase text-emerald-500 mb-2 font-semibold">
                   INDEX
                 </h4>
-                <div className="flex flex-col gap-6">
+
+                {/* UX Hint */}
+                <p className="text-xs text-gray-100 mb-6 tracking-widest font-bold">
+                  TAP A CHAPTER TO JUMP
+                </p>
+
+                {/* Chapters */}
+                <div className="flex flex-col gap-3">
                   {chapters.map((chapter, index) => (
                     <button
                       key={chapter.id}
@@ -293,14 +321,25 @@ const ViewShortStory = () => {
                         scrollToSection(chapter.id);
                         setShowChapters(false);
                       }}
-                      className="group text-left font-serif text-[15px] text-gray-300 hover:text-white transition-all duration-300"
+                      className="group relative text-left font-serif text-[15px] text-gray-300 px-4 py-3 rounded-lg cursor-pointer transition-all duration-300 hover:text-white bg-white/[0.02] hover:bg-white/5 active:scale-[0.98]"
                     >
+
+                      {/* Left indicator bar */}
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-0 bg-emerald-500 rounded-full transition-all duration-300 group-hover:h-6" />
+
+                      {/* Chapter number */}
                       <span className="block text-[10px] tracking-widest text-gray-600 mb-1">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="group-hover:translate-x-1 transition-transform duration-300 inline-block">
+
+                      {/* Title + arrow */}
+                      <span className="flex items-center gap-2 group-hover:translate-x-1 transition-transform duration-300">
                         {chapter.title}
+                        <span className="opacity-100  group-hover:opacity-100 transition-opacity duration-300">
+                          →
+                        </span>
                       </span>
+
                     </button>
                   ))}
                 </div>
@@ -314,118 +353,98 @@ const ViewShortStory = () => {
       <div className={`mx-auto flex flex-col items-center pb-20 relative z-20 transition-all duration-700 w-full px-4 sm:px-6 md:px-8 ${isFocusMode ? 'max-w-3xl' : 'max-w-4xl pt-10 sm:pt-16'}`}>
 
         {/* --- CENTERED HEADER SECTION --- */}
-        <div className="flex flex-col items-center text-center w-full relative z-20">
+        <div className="flex flex-col w-full relative z-20 items-start text-left mb-16">
 
           {!isFocusMode && (
-            <>
-              {/* Top Badge (Editor's Choice Style) */}
-              <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold tracking-widest uppercase bg-white/5 px-4 py-1.5 rounded-full border border-white/10 text-gray-300 mb-6">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
-                Archive Selection
+            <div className="w-full flex flex-col items-start animate-in slide-in-from-bottom-8 fade-in duration-1000">
+
+              {/* 1. Raw Metadata (Replaces Top Badge & Tags) */}
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] font-mono tracking-[0.3em] uppercase text-emerald-500/80 mb-6">
+                <span className="flex items-center gap-2 text-emerald-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,1)] animate-pulse"></span>
+                  Archive Selection
+                </span>
+                <span className="text-gray-700">/</span>
+                <span className="text-gray-400">
+                  {story?.category || "FICTION"}
+                </span>
+                <span className="text-gray-700">/</span>
+                <span className="text-gray-500">
+                  AUTHOR // {story?.author?.username || "UNKNOWN"}
+                </span>
               </div>
 
-              {/* Title */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium text-white tracking-tight leading-[1.1] mb-6 drop-shadow-lg w-full text-center">
+              {/* 2. Monumental Title */}
+              <h1 className="text-6xl sm:text-7xl md:text-[6rem] font-medium text-white tracking-tighter leading-[0.95] drop-shadow-2xl mb-8 -ml-1">
                 {story.title}
               </h1>
 
-              {/* Description */}
+              {/* 3. Editorial Description (Thin, elegant, left-bordered) */}
               {story.description && (
-                <p className="text-sm sm:text-base md:text-[15px] text-gray-400 font-medium leading-relaxed max-w-3xl text-center mb-8 mx-auto">
+                <p className="text-base sm:text-lg text-gray-400 font-light leading-relaxed max-w-2xl border-l-2 border-emerald-500/30 pl-6 backdrop-blur-sm mb-12">
                   {story.description}
                 </p>
               )}
-
-              {/* Categories / Tags */}
-              <div className="flex items-center justify-center w-full max-w-3xl mx-auto gap-4 mb-10">
-
-                {/* Left Line */}
-                <div className="flex-grow h-[1px] bg-emerald-900/40"></div>
-
-                {/* Tags Container */}
-                <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
-                  <span className="px-4 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-emerald-200 bg-emerald-900/40 rounded-full">
-                    {story.category || "FICTION"}
-                  </span>
-
-                  {/* Author info styled to match the pill aesthetic from the image */}
-                  <span className="px-4 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-emerald-200 bg-emerald-900/40 rounded-full">
-                    BY {story.author?.username || "UNKNOWN"}
-                  </span>
-                </div>
-
-                {/* Right Line */}
-                <div className="flex-grow h-[1px] bg-emerald-900/40"></div>
-
-              </div>
-            </>
+            </div>
           )}
 
+          {/* Focus Mode Title */}
           {isFocusMode && (
-            <h1 className="text-3xl sm:text-4xl font-bold text-white/90 tracking-tight leading-[1.1] mb-8 w-full text-center">
+            <h1 className="text-4xl sm:text-5xl font-medium text-white/40 tracking-tight leading-[1.1] mb-16 w-full text-center animate-in fade-in duration-700">
               {story.title}
             </h1>
           )}
 
-          {/* --- ACTION BUTTONS ROW --- */}
-          <div className={`relative flex flex-col sm:flex-row items-center justify-between w-full max-w-3xl mx-auto gap-4 sm:gap-0 mb-16 transition-opacity duration-500 ${isFocusMode ? 'opacity-30 hover:opacity-100' : 'opacity-100'}`}>
+          {/* --- 4. IN-FLOW CINEMATIC ACTION BUTTONS --- */}
+          {/* Not floating. Sits directly below the text. Hides during Focus Mode. */}
+          <div className={`relative flex flex-col sm:flex-row items-start gap-4 sm:gap-6 w-full transition-all duration-500 ${isFocusMode ? 'hidden' : 'opacity-100'}`}>
 
-            {/* Left: Focus Mode */}
-            <div className="flex justify-start w-full sm:w-1/3">
+            {/* Primary CTA: Read Now */}
+            <button
+              onClick={openStoryMode}
+              className="group relative flex items-center justify-center gap-3 px-10 py-4 rounded-full bg-emerald-500 text-black font-bold text-xs sm:text-sm uppercase tracking-widest transition-all duration-300 hover:bg-emerald-400 active:scale-95 shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:shadow-[0_0_50px_rgba(16,185,129,0.4)] overflow-hidden w-full sm:w-auto"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-[1.2s] ease-in-out" />
+              <span className="relative z-10 whitespace-nowrap">Read Now</span>
+              <Play size={14} className="fill-black text-black relative z-10 group-hover:scale-110 transition-transform duration-300" />
+            </button>
+
+            {/* Secondary Actions: Glassmorphic Control Bar */}
+            <div className="flex items-center p-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 w-full sm:w-auto shadow-xl">
+
+              {/* Focus Mode Toggle */}
               <button
                 onClick={toggleFocusMode}
-                className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-medium text-xs sm:text-sm transition-colors w-full sm:w-auto
-        ${isFocusMode
-                    ? "bg-white/10 text-white border border-white/20"
-                    : "bg-[#18181b] text-[#a1a1aa] border border-white/5 hover:bg-[#27272a] hover:text-white"}`}
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-medium text-xs sm:text-sm text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300"
               >
-                {/* Changed Eye to Target to match the crosshair icon in the image */}
-                {isFocusMode ? <Minimize2 size={16} /> : <Target size={16} />}
-                <span>{isFocusMode ? "Exit Focus mode" : "Try Focus mode"}</span>
+                <Target size={16} />
+                <span className="hidden sm:inline">Focus</span>
               </button>
-            </div>
 
-            {/* Center: Tap to Read (Primary) */}
-            <div className="flex justify-center w-full sm:w-1/3">
+              {/* Divider */}
+              <div className="w-[1px] h-4 bg-white/10 hidden sm:block"></div>
+
+              {/* Save Button */}
               <button
-                onClick={openStoryMode}
-                className="flex items-center justify-center gap-2 px-8 py-2.5 rounded-full bg-[#0aa360] hover:bg-[#0dae68] text-white font-semibold text-xs sm:text-sm transition-all active:scale-95 w-full sm:w-auto shadow-[0_0_20px_rgba(10,163,96,0.2)]"
+                onClick={handleGoodReads}
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300
+          ${addedToGoodReads ? "bg-emerald-500/15 text-emerald-400" : "text-gray-400 hover:text-white hover:bg-white/10"}`}
               >
-                <span>Tap to read</span>
-                {/* Changed Maximize2 to Play (filled) to match the triangle in the image */}
-                <Play size={14} className="fill-white text-white" />
+                <Bookmark size={16} className={addedToGoodReads ? "fill-emerald-400" : ""} />
+                <span className="hidden sm:inline">{addedToGoodReads ? "Saved" : "Save"}</span>
               </button>
-            </div>
 
-            {/* Right: Quick Actions (Save & Like) */}
-            <div className="flex justify-end w-full sm:w-1/3">
-              <div className="flex items-center justify-center sm:justify-end gap-2.5 w-full sm:w-auto">
+              {/* Divider */}
+              <div className="w-[1px] h-4 bg-white/10 hidden sm:block"></div>
 
-                {/* Save Button */}
-                <button
-                  onClick={handleGoodReads}
-                  className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-colors
-          ${addedToGoodReads
-                      ? "bg-[#064e3b] text-emerald-400 border border-emerald-800/50"
-                      : "bg-[#064e3b]/60 text-emerald-500/90 border border-transparent hover:bg-[#064e3b] hover:text-emerald-400"}`}
-                >
-                  <Bookmark size={14} className={addedToGoodReads ? "fill-emerald-400" : ""} />
-                  <span>{addedToGoodReads ? "Saved" : "Save"}</span>
-                </button>
-
-                {/* Like Button */}
-                <button
-                  onClick={handleLike}
-                  className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-colors
-          ${liked
-                      ? "bg-[#064e3b] text-emerald-400 border border-emerald-800/50"
-                      : "bg-[#064e3b]/60 text-emerald-500/90 border border-transparent hover:bg-[#064e3b] hover:text-emerald-400"}`}
-                >
-                  <ThumbsUp size={14} className={liked ? "fill-emerald-400" : ""} />
-                  <span>{liked ? "Liked" : "Like"}</span>
-                </button>
-
-              </div>
+              {/* Like Button */}
+              <button
+                onClick={handleLike}
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300
+          ${liked ? "bg-emerald-500/15 text-emerald-400" : "text-gray-400 hover:text-white hover:bg-white/10"}`}
+              >
+                <ThumbsUp size={16} className={liked ? "fill-emerald-400" : ""} /> {story.likes}
+              </button>
             </div>
 
           </div>
