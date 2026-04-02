@@ -547,7 +547,7 @@ const CreatePost = () => {
                                             <img src={posterPreview} alt="Poster" className="w-full h-full object-cover" />
 
                                             <button
-                                                onClick= {removePoster}
+                                                onClick={removePoster}
                                                 className="absolute top-3 right-3 bg-black/60 p-2 rounded-full hover:bg-red-500 text-white"
                                             >
                                                 <X size={16} />

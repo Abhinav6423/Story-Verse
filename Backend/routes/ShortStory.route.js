@@ -36,7 +36,10 @@ router.get("/me", verifyFirebaseToken, listUserShortStory);
 router.get("/me/:storyId", verifyFirebaseToken, openUserShortStory);
 
 router.put("/:storyId",
-   upload.single("coverImage"),
+   upload.fields([
+      { name: "coverImage", maxCount: 1 },
+      { name: "posterImage", maxCount: 1 }
+   ]),
    verifyFirebaseToken, updateShortStory);
 router.delete("/:storyId", verifyFirebaseToken, deleteShortStory);
 

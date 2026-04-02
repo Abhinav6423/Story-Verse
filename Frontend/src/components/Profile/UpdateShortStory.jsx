@@ -7,6 +7,8 @@ import { RichTextEditor } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Loader2, UploadCloud, X, ArrowLeft } from "lucide-react";
+// 🔥 CRITICAL FIX: Missing import for image compression
+import imageCompression from 'browser-image-compression';
 import { categories } from "../../utils/Categories.jsx";
 
 // API Calls
@@ -30,17 +32,21 @@ const UpdateShortStory = () => {
     const [storyContent, setStoryContent] = useState("");
 
     // Media State
-    const [coverImgFile, setCoverImgFile] = useState(null); // New file to upload
-    const [previewUrl, setPreviewUrl] = useState(null);     // Visual preview (Server URL or Blob)
+    const [coverImg, setCoverImg] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
+
+    const [posterImg, setPosterImg] = useState(null);
+    const [posterPreview, setPosterPreview] = useState(null);
+    const [compressing, setCompressing] = useState(false);
 
     // UI State
-    const [loading, setLoading] = useState(false); // Saving state
+    const [loading, setLoading] = useState(false);
     const [step, setStep] = useState(1);
 
     /* ================= PREVENT ACCIDENTAL CLOSE ================= */
     useEffect(() => {
         const handleBeforeUnload = (e) => {
-            if (!loading) { // Only warn if not currently saving
+            if (!loading) {
                 e.preventDefault();
                 e.returnValue = "";
             }
@@ -48,6 +54,15 @@ const UpdateShortStory = () => {
         window.addEventListener("beforeunload", handleBeforeUnload);
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
     }, [loading]);
+
+    /* ================= MEMORY LEAK CLEANUP ================= */
+    useEffect(() => {
+        // Cleanup object URLs to avoid memory leaks when component unmounts or URLs change
+        return () => {
+            if (previewUrl && previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl);
+            if (posterPreview && posterPreview.startsWith('blob:')) URL.revokeObjectURL(posterPreview);
+        };
+    }, [previewUrl, posterPreview]);
 
     /* ================= EDITOR SETUP ================= */
     const editor = useEditor({
@@ -69,19 +84,19 @@ const UpdateShortStory = () => {
 
                 if (result?.success) {
                     const data = result.data;
-                    // console.log("Fetched story data:", result.data);
 
-                    // Populate Form
                     setTitle(data.title);
                     setGenre(data.category);
                     setDescription(data.description);
                     setFinalQ(data.finalQuestion || "");
                     setFinalA(data.finalAnswer || "");
                     setStatus(data.status || "draft");
-                    setPreviewUrl(data.coverImage); // Show existing image
+                    setCoverImg(data.coverImage);
                     setStoryContent(data.story);
+                    setPosterImg(data.posterImage);
+                    setPreviewUrl(data.coverImage);
+                    setPosterPreview(data.posterImage);
 
-                    // Populate Editor
                     if (editor) {
                         editor.commands.setContent(data.story);
                     }
@@ -97,25 +112,92 @@ const UpdateShortStory = () => {
             }
         };
 
-        // Only fetch when editor is ready to accept content
         if (editor) {
             fetchStoryData();
         }
     }, [storyId, editor, navigate]);
 
-    /* ================= IMAGE HANDLER ================= */
-    const handleImageChange = (e) => {
+    /* ================= IMAGE HANDLERS ================= */
+    const handleImageChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setCoverImgFile(file);
+        if (!file) return;
+        e.target.value = null;
+
+        if (file.size / 1024 / 1024 < 1.2) {
+            setCoverImg(file);
             setPreviewUrl(URL.createObjectURL(file));
+            return;
+        }
+
+        setCompressing(true);
+        try {
+            const options = {
+                maxSizeMB: 0.6,
+                maxWidthOrHeight: 1000,
+                initialQuality: 0.85,
+                useWebWorker: true,
+                fileType: "image/webp",
+            };
+
+            const compressedFile = await imageCompression(file, options);
+            const webpFile = new File([compressedFile], file.name.replace(/\.(jpg|jpeg|png)$/i, ".webp"), { type: "image/webp" });
+
+            setCoverImg(webpFile);
+            setPreviewUrl(URL.createObjectURL(webpFile));
+        } catch (error) {
+            console.error("Image compression error:", error);
+            toast.error("Failed to process image");
+        } finally {
+            setCompressing(false);
+        }
+    };
+
+    const handlePosterChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        e.target.value = null;
+
+        if (file.size / 1024 / 1024 < 1.2) {
+            setPosterImg(file);
+            setPosterPreview(URL.createObjectURL(file));
+            return;
+        }
+
+        setCompressing(true);
+        try {
+            const options = {
+                maxSizeMB: 0.6,
+                maxWidthOrHeight: 1000,
+                initialQuality: 0.85,
+                useWebWorker: true,
+                fileType: "image/webp",
+            };
+
+            const compressedFile = await imageCompression(file, options);
+            const webpFile = new File([compressedFile], file.name.replace(/\.(jpg|jpeg|png)$/i, ".webp"), { type: "image/webp" });
+
+            setPosterImg(webpFile);
+            setPosterPreview(URL.createObjectURL(webpFile));
+        } catch (error) {
+            console.error("Poster compression error:", error);
+            toast.error("Failed to process poster image");
+        } finally {
+            setCompressing(false);
         }
     };
 
     const removeImage = (e) => {
         e.preventDefault();
-        setCoverImgFile(null);
+        e.stopPropagation();
+        setCoverImg(null);
         setPreviewUrl(null);
+    };
+
+    const removePoster = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setPosterImg(null);
+        setPosterPreview(null);
     };
 
     /* ================= SUBMIT ================= */
@@ -137,16 +219,18 @@ const UpdateShortStory = () => {
             formData.append("status", status);
             formData.append("story", storyContent);
 
-            // Only append image if a new one was selected
-            if (coverImgFile) {
-                formData.append("coverImage", coverImgFile);
+            if (posterImg && typeof posterImg !== 'string') {
+                formData.append("posterImage", posterImg);
+            }
+            if (coverImg && typeof coverImg !== 'string') {
+                formData.append("coverImage", coverImg);
             }
 
             const result = await updateShortStory(formData, storyId);
 
             if (result?.success) {
                 toast.success("Story updated successfully!");
-                navigate("/profile"); // Redirect to profile or story view
+                navigate("/profile");
             } else {
                 toast.error(result?.message || "Failed to update story");
             }
@@ -166,6 +250,9 @@ const UpdateShortStory = () => {
             </div>
         );
     }
+
+    // Common input styling class
+    const inputStyle = "w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all";
 
     return (
         <div className="min-h-screen border-black/70 border bg-gradient-to-b from-[#0f2a24] via-[#0b1412] to-black text-gray-200 pb-16">
@@ -189,7 +276,7 @@ const UpdateShortStory = () => {
                     <select
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
-                        className="px-4 py-2 text-sm bg-[#005c48] text-white font-bold border border-white/20 rounded-lg cursor-pointer hover:bg-[#004d3d] transition"
+                        className="px-4 py-2 text-sm bg-[#005c48] text-white font-bold border border-white/20 rounded-lg cursor-pointer hover:bg-[#004d3d] focus:outline-none transition"
                     >
                         <option value="draft">Draft</option>
                         <option value="published">Publish</option>
@@ -231,7 +318,7 @@ const UpdateShortStory = () => {
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 placeholder="Enter a captivating title..."
-                                className="field-input text-lg font-semibold"
+                                className={`${inputStyle} text-lg font-semibold`}
                             />
                         </div>
 
@@ -297,7 +384,7 @@ const UpdateShortStory = () => {
                         <div className="flex justify-end mt-8">
                             <button
                                 onClick={() => setStep(2)}
-                                className="px-8 py-3 rounded-xl bg-emerald-700 text-white font-semibold hover:bg-emerald-600 transition"
+                                className="px-8 py-3 rounded-xl bg-emerald-700 text-white font-semibold hover:bg-emerald-600 transition shadow-[0_0_15px_rgba(4,120,87,0.3)] hover:shadow-[0_0_20px_rgba(4,120,87,0.5)]"
                             >
                                 Continue to Details →
                             </button>
@@ -316,7 +403,7 @@ const UpdateShortStory = () => {
                                     <select
                                         value={genre}
                                         onChange={(e) => setGenre(e.target.value)}
-                                        className="field-input"
+                                        className={inputStyle}
                                     >
                                         <option disabled value="">Select Genre</option>
                                         {categories.map((cat) => (
@@ -330,7 +417,7 @@ const UpdateShortStory = () => {
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         rows={4}
-                                        className="field-input resize-none"
+                                        className={`${inputStyle} resize-none`}
                                         placeholder="What is this story about?"
                                     />
                                 </Field>
@@ -339,7 +426,7 @@ const UpdateShortStory = () => {
                                     <input
                                         value={finalQ}
                                         onChange={(e) => setFinalQ(e.target.value)}
-                                        className="field-input"
+                                        className={inputStyle}
                                         placeholder="e.g. Who was the killer?"
                                     />
                                 </Field>
@@ -349,7 +436,7 @@ const UpdateShortStory = () => {
                                         value={finalA}
                                         onChange={(e) => setFinalA(e.target.value)}
                                         rows={3}
-                                        className="field-input resize-none"
+                                        className={`${inputStyle} resize-none`}
                                         placeholder="The answer to the question above..."
                                     />
                                 </Field>
@@ -375,8 +462,8 @@ const UpdateShortStory = () => {
                                                 <X size={16} />
                                             </button>
                                             {/* Badge if it's the existing server image */}
-                                            {!coverImgFile && (
-                                                <div className="absolute bottom-2 right-2 bg-black/60 px-2 py-1 rounded text-xs text-emerald-400">
+                                            {!coverImg && typeof previewUrl === 'string' && !previewUrl.startsWith('blob:') && (
+                                                <div className="absolute bottom-2 right-2 bg-black/80 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-widest font-bold text-emerald-400 border border-white/10">
                                                     Current Cover
                                                 </div>
                                             )}
@@ -391,27 +478,62 @@ const UpdateShortStory = () => {
                                     <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                                 </label>
                             </div>
+                            <div>
+                                <label className="text-sm font-medium text-gray-300 mb-2 block">Poster Image</label>
+
+                                <label className={`
+                                    relative flex flex-col items-center justify-center w-full h-[300px] 
+                                    rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden
+                                    ${posterPreview ? 'border-emerald-500/50' : 'border-gray-600 hover:border-emerald-400 hover:bg-white/5'}
+                                `}>
+                                    {posterPreview ? (
+                                        <>
+                                            <img src={posterPreview} alt="Poster" className="w-full h-full object-cover" />
+                                            {/* X button to clear image */}
+                                            <button
+                                                onClick={removePoster}
+                                                className="absolute top-2 right-2 bg-black/60 p-2 rounded-full hover:bg-red-500/80 transition text-white"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                            {/* Badge if it's the existing server image */}
+                                            {!posterImg && typeof posterPreview === 'string' && !posterPreview.startsWith('blob:') && (
+                                                <div className="absolute bottom-2 right-2 bg-black/80 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-widest font-bold text-emerald-400 border border-white/10">
+                                                    Current Poster
+                                                </div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <div className="text-center p-6">
+                                            <UploadCloud size={48} className="mx-auto text-gray-500 mb-3" />
+                                            <p className="text-gray-300 font-medium">Click to upload new poster</p>
+                                            <p className="text-gray-500 text-xs mt-1">PNG, JPG up to 5MB</p>
+                                        </div>
+                                    )}
+                                    <input type="file" className="hidden" accept="image/*" onChange={handlePosterChange} />
+                                </label>
+                            </div>
                         </div>
 
                         <div className="flex justify-between items-center mt-10 pt-6 border-t border-white/10">
                             <button
                                 onClick={() => setStep(1)}
-                                className="px-6 py-2 rounded-lg text-gray-400 hover:text-white transition font-medium"
+                                className="px-6 py-2 rounded-lg text-gray-400 hover:text-white transition font-medium flex items-center gap-2"
                             >
-                                ← Back to Story
+                                <ArrowLeft size={16} /> Back to Story
                             </button>
 
                             <button
                                 onClick={handleUpdate}
-                                disabled={loading}
+                                disabled={loading || compressing}
                                 className={`
-                                    px-8 py-3 rounded-xl font-bold text-white shadow-lg flex items-center gap-2
-                                    transition-all active:scale-95
-                                    ${loading ? "bg-gray-600 cursor-not-allowed" : "bg-emerald-600 hover:bg-emerald-500 hover:shadow-emerald-500/20"}
+                                    px-8 py-3 rounded-xl font-bold text-white flex items-center gap-2
+                                    transition-all active:scale-95 uppercase tracking-wide text-sm
+                                    ${(loading || compressing) ? "bg-gray-700 cursor-not-allowed text-gray-400" : "bg-emerald-600 hover:bg-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]"}
                                 `}
                             >
-                                {loading ? <Loader2 className="animate-spin" size={20} /> : null}
-                                {loading ? "Updating..." : "Update Story"}
+                                {(loading || compressing) ? <Loader2 className="animate-spin" size={18} /> : null}
+                                {compressing ? "Processing Image..." : loading ? "Updating..." : "Update Story"}
                             </button>
                         </div>
                     </div>
