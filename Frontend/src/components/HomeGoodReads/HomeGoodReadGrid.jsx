@@ -128,9 +128,9 @@ const HomeGoodReadGrid = () => {
                 ))}
 
                 {/* Netflix-style gradients */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent" />
+                {/* <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/80 via-[#050505]/20 to-transparent" />
-                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-[#050505]/60 to-transparent" />
+                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-[#050505]/60 to-transparent" /> */}
             </div>
 
             {/* ── CONTENT ───────────────────────────────────────────────────────── */}
