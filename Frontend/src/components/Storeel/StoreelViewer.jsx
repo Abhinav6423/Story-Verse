@@ -125,9 +125,17 @@ const StoreelViewer = () => {
             <div className="relative z-10 px-8 text-center w-full max-w-lg pointer-events-none">
                 <h2
                     key={currentIndex}
-                    className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 leading-[1.3] drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom-4 duration-700"
+                    className="
+    fade-slide
+    text-3xl md:text-4xl lg:text-5xl
+    font-medium tracking-tight
+    text-transparent bg-clip-text
+    bg-gradient-to-b from-white to-white/50
+    leading-[1.3]
+    drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]
+    "
                 >
-                    {slides[currentIndex]} {/* ✅ Real slide text */}
+                    {slides[currentIndex]}
                 </h2>
             </div>
 

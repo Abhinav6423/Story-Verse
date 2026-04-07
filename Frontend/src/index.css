@@ -282,3 +282,16 @@ body {
   filter: blur(10px);
   opacity: 0.75;
 }
+
+
+/* reel text animation */
+@keyframes fadeSlide {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.fade-slide {
+  animation: fadeSlide 3s ease-in-out forwards;
+}
