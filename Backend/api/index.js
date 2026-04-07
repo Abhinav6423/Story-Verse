@@ -23,6 +23,9 @@ app.use(express.urlencoded({ extended: true }));
 import authRoutes from "../routes/authentication.routes.js";
 import shortStoryRoutes from "../routes/ShortStory.route.js";
 import userProfileRoutes from "../routes/userProfile.route.js";
+import storeelRoutes from "../routes/stoReel.routes.js";
+
+app.use("/api/storeel", storeelRoutes);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/story", shortStoryRoutes);

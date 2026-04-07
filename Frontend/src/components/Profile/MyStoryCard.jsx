@@ -1,5 +1,5 @@
 import React, { useState, memo } from "react";
-import { Pencil, Trash2, Calendar, Folder } from "lucide-react";
+import { Pencil, Trash2, Calendar, Folder, Film } from "lucide-react";
 import { deleteShortStory } from "../../Api-calls/deleteShortStory.js";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
@@ -51,6 +51,9 @@ const MyStoryCard = ({ title, image, id, status, category, time }) => {
         month: "short", day: "numeric"
     });
 
+    // 1. Don't forget to define this at the top of your component!
+    // const navigate = useNavigate();
+
     return (
         <div className="w-full p-2 rounded-xl bg-[#212121] border border-white/5 hover:border-white/10 transition-colors group">
 
@@ -77,21 +80,40 @@ const MyStoryCard = ({ title, image, id, status, category, time }) => {
 
                     {/* ACTION BUTTONS (Visible on Hover or Mobile) */}
                     <div className="absolute top-2 right-2 flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
+
+                        {/* NEW: CREATE REEL BUTTON */}
                         <button
-                            onClick={handleUpdate}
-                            className="p-2 rounded-full bg-black/60 hover:bg-emerald-600 text-white backdrop-blur-sm transition-colors"
+                            onClick={(e) => {
+                                e.preventDefault(); // Stops the outer <Link> from triggering
+                                navigate(`/storeel/create/${id}`); // Routes to your create page
+                            }}
+                            className="p-2 rounded-full bg-black/60 hover:bg-emerald-500 text-white backdrop-blur-sm transition-colors border border-transparent hover:border-emerald-400"
+                            title="Create Story Trailer"
+                        >
+                            <Film size={14} />
+                        </button>
+
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault(); // Make sure your handleUpdate also has this!
+                                handleUpdate(e);
+                            }}
+                            className="p-2 rounded-full bg-black/60 hover:bg-blue-600 text-white backdrop-blur-sm transition-colors"
                             title="Edit Story"
                         >
                             <Pencil size={14} />
                         </button>
 
                         <button
-                            onClick={handleDelete}
+                            onClick={(e) => {
+                                e.preventDefault(); // Make sure your handleDelete also has this!
+                                handleDelete(e);
+                            }}
                             disabled={deleting}
                             className={`
-                                p-2 rounded-full bg-black/60 text-white backdrop-blur-sm transition-colors
-                                ${deleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"}
-                            `}
+                            p-2 rounded-full bg-black/60 text-white backdrop-blur-sm transition-colors
+                            ${deleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"}
+                        `}
                             title="Delete Story"
                         >
                             <Trash2 size={14} />

@@ -33,13 +33,15 @@ const Layout = () => {
       <div
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
-          background: `radial-gradient(circle at 50% 0%, #164e38 0%, #062c21 40%, #020b08 80%, #000000 100%)`
+          background: `
+            radial-gradient(ellipse at 0% 50%, rgba(22, 78, 56, 0.5) 0%, transparent 50%),
+            radial-gradient(ellipse at 100% 50%, rgba(22, 78, 56, 0.5) 0%, transparent 50%),
+            #0a0c0a
+          `
         }}
       />
-      <div
-        className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none"
-        style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}
-      />
+
+
 
       {/* CONTENT WRAPPER */}
       <div className="relative z-10 flex flex-col min-h-screen">

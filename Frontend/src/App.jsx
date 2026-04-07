@@ -1,15 +1,13 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Ensure CSS is imported
+import "react-toastify/dist/ReactToastify.css";
 
 // Keep lightweight, critical components static
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
-import Loader from "./components/Loader.jsx"; // Use your new Book Loader here!
-
+import Loader from "./components/Loader.jsx";
 
 // ================= LAZY LOAD PAGES (Code Splitting) =================
-// These will only load when the URL is visited, saving massive bundle size.
 
 // Public / Landing
 const Landing = lazy(() => import("./pages/Landing/Landing.jsx"));
@@ -28,12 +26,17 @@ const CreatePost = lazy(() => import("./components/create-update/CreatePost.jsx"
 
 // Profile & User
 const UserProfile = lazy(() => import("./pages/profile/UserProfile.jsx"));
+const StoreelCreate = lazy(() => import("./components/Storeel/StoreelCreate.jsx"));
 const UpdateProfile = lazy(() => import("./components/Profile/UpdateProfile.jsx"));
 const UpdateShortStory = lazy(() => import("./components/Profile/UpdateShortStory.jsx"));
 
 // Grids / Lists
 const GoodReadsShortStoryGrid = lazy(() => import("./components/GoodReadsShortStory/GoodReadsShortStoryGrid.jsx"));
 const CategoryShortStoryResultsGrid = lazy(() => import("./components/categoryShortStoryResults/CategoryShortStoryResultsGrid.jsx"));
+
+// --- NEW: Lazy Load StoreelViewer ---
+// (Make sure this path matches exactly where you saved the component)
+const StoreelViewer = lazy(() => import("./components/Storeel/StoreelViewer.jsx"));
 
 const App = () => {
   return (
@@ -45,12 +48,9 @@ const App = () => {
         newestOnTop
         closeOnClick
         pauseOnHover
-        theme="dark" // Switched to dark to match your theme
+        theme="dark"
       />
 
-      {/* SUSPENSE WRAPPER:
-         Shows your animated <Loader /> while the specific page chunk is downloading.
-      */}
       <Suspense fallback={<Loader />}>
         <Routes>
           {/* ---------- PUBLIC ROUTES ---------- */}
@@ -65,9 +65,12 @@ const App = () => {
             <Route element={<Layout />}>
               <Route path="/home" element={<HomeFeed />} />
               <Route path="/story/:storyId" element={<ViewShortStory />} />
-              <Route path="/profile" element={<UserProfile />} />
 
-              {/* Heavy components like CreatePost now load on demand! */}
+              {/* --- NEW ROUTE: Storeel Viewer --- */}
+              {/* Note: React Router uses a colon ':' to denote a URL parameter */}
+              <Route path="/storeel/:storeelId" element={<StoreelViewer />} />
+
+              <Route path="/profile" element={<UserProfile />} />
               <Route path="/create" element={<CreatePost />} />
 
               <Route
@@ -84,6 +87,7 @@ const App = () => {
               />
 
               <Route path="/profile/update" element={<UpdateProfile />} />
+              <Route path="/storeel/create/:id" element={<StoreelCreate />} />
             </Route>
           </Route>
         </Routes>

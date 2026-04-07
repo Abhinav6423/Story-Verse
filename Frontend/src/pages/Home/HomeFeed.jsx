@@ -4,6 +4,7 @@ import ShortStoryGrid from "../../components/ShortStory/ShortStoryGrid.jsx";
 import HomeGoodReadGrid from "../../components/HomeGoodReads/HomeGoodReadGrid.jsx";
 import LastReadBanner from "../../components/lastRead/LastReadBanner.jsx";
 import { useAuth } from "../../context/Authcontext.js";
+import StoreelGrid from "../../components/Storeel/StoreelGrid.jsx"; // Make sure this is imported!
 
 const HomeFeed = () => {
   const { userData } = useAuth();
@@ -19,14 +20,29 @@ const HomeFeed = () => {
       {/* MAIN CONTENT */}
       {/* INCREASED bottom padding (pb-32 md:pb-24) so the last items in the grid 
           don't get hidden completely behind the fixed banner. */}
-      <main className="space-y-6 pb-32 md:pb-24">
+      <main className="space-y-0 pb-32 md:pb-10">
+
+        {/* SECTION 1.5: STORY REELS */}
+        <section
+          aria-label="Story Reels"
+          className="px-4 md:px-6 mt-6"
+        >
+          <StoreelGrid />
+        </section>
 
         {/* SECTION 2: TRENDING */}
-        <section aria-label="Trending Stories">
+        <section
+          aria-label="Trending Stories"
+          className="px-4 md:px-6 mt-6"
+        >
           <TopTrendStoryGrid />
         </section>
 
+       
+
         {/* SECTION 3: ALL STORIES */}
+        {/* Note: Kept mt-0 here assuming the pt-4/pt-6 we added directly inside 
+            ShortStoryGrid handles the spacing nicely. */}
         <section
           aria-label="Fresh Reads"
           className="px-4 md:px-6"
