@@ -5,54 +5,8 @@ import { listAllStoreels } from '../../Api-calls/listAllStoreels.js';
 import { AlertCircle } from 'lucide-react';
 
 const StoreelGrid = () => {
-    // Dummy data tailored to dark/suspenseful themes
-    const dummyReels = [
-        {
-            id: 1,
-            title: "The House at the End of the Lane",
-            duration: "0:45",
-            views: "1.2k",
-            author: "pabhinav595",
-            authorAvatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=60",
-            thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&auto=format&fit=crop&q=80",
-        },
-        {
-            id: 2,
-            title: "I found a journal from 2030...",
-            duration: "1:15",
-            views: "856",
-            author: "Unknown Author",
-            authorAvatar: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&auto=format&fit=crop&q=60",
-            thumbnail: "https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?w=400&auto=format&fit=crop&q=80",
-        },
-        {
-            id: 3,
-            title: "Don't look at the mirrors at 3 AM",
-            duration: "0:59",
-            views: "3.4k",
-            author: "Sarah Writes",
-            authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=60",
-            thumbnail: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400&auto=format&fit=crop&q=80",
-        },
-        {
-            id: 4,
-            title: "The Detective's Last Case",
-            duration: "2:10",
-            views: "420",
-            author: "Noir Fanatic",
-            authorAvatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&auto=format&fit=crop&q=60",
-            thumbnail: "https://images.unsplash.com/photo-1509822929063-6b6cfc9b42f2?w=400&auto=format&fit=crop&q=80",
-        },
-        {
-            id: 5,
-            title: "Escape Room: No Way Out",
-            duration: "0:30",
-            views: "5.1k",
-            author: "ThrillerJunkie",
-            authorAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=60",
-            thumbnail: "https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?w=400&auto=format&fit=crop&q=80",
-        }
-    ];
+    
+   
 
     const { isLoading, data, error } = useQuery({
         queryKey: ["storeels"],

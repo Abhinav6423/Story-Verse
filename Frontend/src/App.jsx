@@ -21,6 +21,7 @@ const Layout = lazy(() => import("./pages/Layout/Layout.jsx"));
 
 // Core Features
 const HomeFeed = lazy(() => import("./pages/Home/HomeFeed.jsx"));
+const ReelFeed = lazy(() => import("./components/Storeel/ReelsFeed.jsx")); // If you want to keep this separate from HomeFeed
 const ViewShortStory = lazy(() => import("./components/ShortStory/ViewShortStory.jsx"));
 const CreatePost = lazy(() => import("./components/create-update/CreatePost.jsx"));
 
@@ -64,6 +65,7 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route path="/home" element={<HomeFeed />} />
+              <Route path="/reels" element={<ReelFeed />} />
               <Route path="/story/:storyId" element={<ViewShortStory />} />
 
               {/* --- NEW ROUTE: Storeel Viewer --- */}
