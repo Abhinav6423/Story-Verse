@@ -158,7 +158,11 @@ const ViewShortStory = () => {
 
     try {
       await likeShortStory({ storyId });
-      toast.success(wasLiked ? "Like removed" : "Story liked ❤️");
+      toast.success(
+        wasLiked
+          ? "You unliked this story 💔"
+          : "You liked this story ❤️"
+      );
     } catch {
       setLiked(wasLiked);
       setLikesCount((p) => (wasLiked ? p + 1 : p - 1));
@@ -174,7 +178,11 @@ const ViewShortStory = () => {
     try {
       const result = await addShortStoryToGoodReads({ storyId });
       if (!result?.success) throw new Error();
-      toast.success(wasAdded ? "Removed from Good Reads" : "Added to Good Reads 📚");
+      toast.success(
+        wasAdded
+          ? "Removed from your Good Reads 🗑️"
+          : "Saved to your Good Reads 📚💚"
+      );
     } catch {
       setAddedToGoodReads(wasAdded);
       setGoodReadsCount((p) => (wasAdded ? p + 1 : p - 1));

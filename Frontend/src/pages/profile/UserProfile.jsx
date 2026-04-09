@@ -169,22 +169,22 @@ const UserProfile = () => {
 
 const Stat = ({ icon: Icon, label, value }) => (
     <div className="flex flex-col items-center justify-center flex-1 min-w-[60px] group cursor-default">
-        
+
         {/* ICON: Now visible on all screens. Shifts to Emerald on hover for a premium interactive feel */}
         <div className="text-zinc-500 mb-1.5 transition-colors duration-300 group-hover:text-emerald-400">
             {Icon && <Icon size={16} strokeWidth={2} />}
         </div>
-        
+
         {/* NUMBER: Tighter tracking and crisp zinc color that brightens on hover */}
         <p className="text-lg sm:text-2xl font-bold text-zinc-200 tracking-tight leading-none mb-1 transition-colors duration-300 group-hover:text-white">
             {value || 0}
         </p>
-        
+
         {/* LABEL: Extremely wide tracking (0.2em) and tiny font size for high-end editorial contrast */}
         <p className="text-[9px] sm:text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.2em] transition-colors duration-300 group-hover:text-zinc-400">
             {label}
         </p>
-        
+
     </div>
 );
 

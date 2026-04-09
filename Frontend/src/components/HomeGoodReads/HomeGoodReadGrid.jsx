@@ -5,11 +5,6 @@ import { User, ArrowRight } from "lucide-react";
 import { listTopGoodReadsShortStory } from "../../Api-calls/TopGoodreadsShortStory.js";
 import fallbackImage from "../../Assets/fallback.png";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Config — change these two numbers to tune the slideshow
-// ─────────────────────────────────────────────────────────────────────────────
-const SLIDE_DURATION_MS = 5000; // how long each slide stays
-const FADE_DURATION_MS = 700;  // how long the crossfade takes
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Skeleton — shown while API is loading
@@ -52,33 +47,20 @@ const HomeGoodReadGrid = () => {
 
     const slides = data?.goodreads || [];
 
-    // ── Slide change ────────────────────────────────────────────────────────
-    // Fades out → swaps index → fades in
-    // Blocked while a transition is already running
-    const goToSlide = useCallback((index) => {
-        if (index === activeIndexRef.current) return;
-        if (isTransitioningRef.current) return;
+    // ── Control Slideshow ────────────────────────────────────────────────────
+    const handleNext = useCallback(() => {
+        setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length);
+    }, [slides.length]);
 
-        isTransitioningRef.current = true;
-        setIsTransitioning(true);
+    const handlePrev = useCallback(() => {
+        setActiveIndex((prevIndex) => (prevIndex - 1 + slides.length) % slides.length);
+    }, [slides.length]);
 
-        setTimeout(() => {
-            activeIndexRef.current = index;
-            setActiveIndex(index);
-            setIsTransitioning(false);
-            isTransitioningRef.current = false;
-        }, FADE_DURATION_MS);
-    }, []);
-
-    // ── Autoplay ────────────────────────────────────────────────────────────
     useEffect(() => {
-        if (!slides.length) return;
-        const timer = setInterval(() => {
-            const next = (activeIndexRef.current + 1) % slides.length;
-            goToSlide(next);
-        }, SLIDE_DURATION_MS);
+        const timer = setInterval(handleNext, 5000);
         return () => clearInterval(timer);
-    }, [slides.length, goToSlide]);
+    }, [activeIndex]);
+
 
     // ── Early returns ───────────────────────────────────────────────────────
     if (isError) return null;
@@ -90,122 +72,134 @@ const HomeGoodReadGrid = () => {
     // Render
     // ─────────────────────────────────────────────────────────────────────────
     return (
-        <section className="relative w-full h-[100dvh] min-h-[600px] bg-[#050505] overflow-hidden text-white font-sans">
+        <section className="relative w-full h-[100dvh] bg-black overflow-hidden">
 
-            {/* ── BACKGROUND IMAGES ─────────────────────────────────────────────
-            All images in DOM, only active one visible.
-            Netflix uses a strong bottom fade + subtle left fade for text area.
-        ──────────────────────────────────────────────────────────────────── */}
-            <div className="absolute inset-0">
-                {slides.map((slide, index) => (
-                    <React.Fragment key={slide._id}>
+            {/* MAIN FLEX CONTAINER - Left Image + Right Content */}
+            <div className="relative z-10 flex flex-col md:flex-row w-full h-full">
 
-                        {/* Mobile — coverImage */}
+                {/* LEFT SIDE - IMAGE (60% width on desktop) */}
+                <div className="relative w-full md:w-3/5 h-1/2 md:h-full overflow-hidden">
+                    {slides.map((slide, index) => (
                         <img
-                            src={slide.coverImage || fallbackImage}
-                            alt=""
-                            className={`
-                    absolute inset-0 w-full h-full object-cover object-top
-                    transition-opacity ease-out block md:hidden
-                    ${index === activeIndex ? "opacity-100" : "opacity-0"}
-                `}
-                            style={{ transitionDuration: `${FADE_DURATION_MS}ms`, willChange: "opacity" }}
+                            key={slide._id}
+                            src={slide.coverImage}
+                            alt={slide.title}
+                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${index === activeIndex ? "opacity-100" : "opacity-0"
+                                }`}
                         />
+                    ))}
 
-                        {/* Desktop — posterImage */}
-                        <img
-                            src={slide.posterImage || fallbackImage}
-                            alt=""
-                            className={`
-                    absolute inset-0 w-full h-full object-cover object-top
-                    transition-opacity ease-out hidden md:block
-                    ${index === activeIndex ? "opacity-100" : "opacity-0"}
-                `}
-                            style={{ transitionDuration: `${FADE_DURATION_MS}ms`, willChange: "opacity" }}
-                        />
+                    {/* Gradient overlay for better text visibility on mobile */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:hidden" />
+                </div>
 
-                    </React.Fragment>
-                ))}
+                {/* RIGHT SIDE - TEXT & BLUR EFFECT (40% width on desktop) */}
+                <div className="relative w-full md:w-2/5 h-1/2 md:h-full flex items-center justify-center px-6 sm:px-8 md:px-10 lg:px-12 py-8 md:py-0">
 
-                {/* Netflix-style gradients */}
-                {/* <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#050505]/80 via-[#050505]/20 to-transparent" />
-                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-[#050505]/60 to-transparent" /> */}
-            </div>
+                    {/* CINEMATIC FROSTED GLASS EFFECT */}
+                   
+                    <div className="absolute inset-0 bg-black/30 backdrop-blur-2xl md:backdrop-blur-[40px] border-l border-white/5 shadow-[-20px_0_30px_rgba(0,0,0,0.5)]" />
 
-            {/* ── CONTENT ───────────────────────────────────────────────────────── */}
-            <div className="relative z-10 h-full flex flex-col justify-end pb-16 lg:pb-24 px-8 md:px-14 lg:px-20">
-                <div
-                    className="max-w-lg"
-                    style={{
-                        opacity: isTransitioning ? 0 : 1,
-                        transform: isTransitioning ? "translateY(20px)" : "translateY(0)",
-                        transition: `opacity ${FADE_DURATION_MS}ms ease-out, transform ${FADE_DURATION_MS}ms ease-out`,
-                    }}
-                >
-                    {/* Genre tags */}
-                    <div className="flex items-center gap-2 mb-4">
-                        <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold uppercase tracking-[0.3em] backdrop-blur-sm">
-                            {activeSlide?.category || "Fiction"}
-                        </span>
-                        <span className="text-white/20 text-xs">|</span>
-                        <span className="text-white/40 text-[10px] uppercase tracking-[0.3em] font-medium">
-                            Preface Choice
-                        </span>
-                    </div>
+                    {/* CONTENT BOX */}
+                    <div className="relative z-10 w-full max-w-md mx-auto md:mx-0">
 
-                    {/* Title */}
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.05] text-white mb-3 drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)]">
-                        {activeSlide?.title}
-                    </h1>
+                        {/* GENRE BADGE */}
+                        <div className="mb-3 md:mb-4 flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]"></div>
+                            <span className="text-xs sm:text-sm font-semibold text-white/70 uppercase tracking-widest">
+                                {activeSlide?.category || "MOVIE"} • {activeSlide?.year || "2025"}
+                            </span>
+                        </div>
 
-                    {/* Description — 2 lines max, not 3 */}
-                    <p className="hidden sm:block text-sm md:text-[15px] text-white/60 leading-relaxed max-w-sm mb-8 line-clamp-2">
-                        {(activeSlide?.description || activeSlide?.synopsis || "").slice(0, 300)}
-                    </p>
+                        {/* TITLE */}
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 leading-tight text-white drop-shadow-md">
+                            {activeSlide?.title}
+                        </h1>
 
-                    {/* CTAs — auto width, not full width */}
-                    <div className="flex items-center gap-3">
-                        <Link
-                            to={`/story/${activeSlide?._id}`}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 bg-white hover:bg-white/90 text-black rounded-md font-semibold text-sm transition-colors duration-200 whitespace-nowrap"
-                        >
-                            <ArrowRight size={16} />
-                            Start Reading
-                        </Link>
+                        {/* GENRE TAGS */}
+                        <div className="flex flex-wrap gap-1 md:gap-2 mb-4 md:mb-5">
+                            {activeSlide?.genres?.map((genre, i) => (
+                                <span key={i} className="text-xs sm:text-sm px-3 py-1 rounded-full bg-white/10 border border-white/10 text-white/80">
+                                    {genre}
+                                </span>
+                            ))}
+                        </div>
 
+                        {/* DESCRIPTION */}
+                        <p className="text-sm sm:text-base text-white/80 mb-6 md:mb-8 line-clamp-3 md:line-clamp-4 leading-relaxed font-light">
+                            {activeSlide?.description || activeSlide?.synopsis}
+                        </p>
+
+                        {/* CTA BUTTONS */}
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <Link
+                                to={`/story/${activeSlide?._id}`}
+                                className="px-6 sm:px-8 py-3 sm:py-3.5 bg-white text-black font-semibold rounded-xl text-sm sm:text-base hover:scale-105 transition-transform duration-300 flex items-center justify-center gap-2 shadow-[0_8px_30px_rgba(255,255,255,0.15)]"
+                            >
+                                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                                Start Reading
+                            </Link>
+
+                            <button className="px-6 sm:px-8 py-3 sm:py-3.5 bg-black/20 backdrop-blur-md text-white font-medium rounded-xl text-sm sm:text-base hover:bg-black/40 transition-colors duration-300 flex items-center justify-center gap-2 border border-white/20">
+                                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Watch Trailer
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* ── PAGINATION DOTS ───────────────────────────────────────────────── 
-            Netflix puts these bottom-right, thin progress lines not dots
-        ──────────────────────────────────────────────────────────────────── */}
-            <div className="absolute bottom-8 right-8 md:right-14 lg:right-20 z-20 flex items-center gap-1.5">
+            {/* LARGER NAVIGATION BUTTONS - Better for mobile touch */}
+            <div className="absolute inset-y-0 left-0 right-0 z-20 flex items-center justify-between px-3 sm:px-4 md:px-6 pointer-events-none">
+
+                {/* PREV BUTTON - Larger on mobile */}
+                <button
+                    onClick={handlePrev}
+                    className="pointer-events-auto w-12 h-12 sm:w-14 sm:h-14 md:w-12 md:h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl border border-white/10"
+                >
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+
+                {/* NEXT BUTTON - Larger on mobile */}
+                <button
+                    onClick={handleNext}
+                    className="pointer-events-auto w-12 h-12 sm:w-14 sm:h-14 md:w-12 md:h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl border border-white/10"
+                >
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+
+            {/* LARGER DOTS PAGINATION - Easy to tap on mobile */}
+            <div className="absolute bottom-5 sm:bottom-6 md:bottom-6 left-0 right-0 z-20 flex justify-center gap-3 sm:gap-4 md:gap-3">
                 {slides.map((_, index) => (
                     <button
                         key={index}
-                        onClick={() => goToSlide(index)}
-                        aria-label={`Go to slide ${index + 1}`}
-                        className="group p-1.5 flex items-center justify-center"
-                    >
-                        <div className={`
-                        h-[3px] rounded-full transition-all duration-300
-                        ${index === activeIndex
-                                ? "w-8 bg-emerald-400"
-                                : "w-3 bg-white/30 group-hover:bg-white/60"}
-                    `} />
-                    </button>
+                        onClick={() => setActiveIndex(index)}
+                        className={`transition-all duration-300 rounded-full ${index === activeIndex
+                            ? "w-10 sm:w-12 md:w-8 h-1.5 sm:h-2 bg-white"
+                            : "w-6 sm:w-8 md:w-5 h-1.5 sm:h-2 bg-white/30 hover:bg-white/50"
+                            }`}
+                    />
                 ))}
             </div>
 
-            {/* ── SLIDE COUNTER — Netflix style top-right ───────────────────────── */}
-            <div className="absolute top-6 right-8 md:right-14 z-20 text-white/40 text-xs tracking-widest font-medium">
-                {String(activeIndex + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
+            {/* SLIDE COUNTER - Clean design */}
+            <div className="absolute bottom-5 sm:bottom-6 right-4 sm:right-6 md:right-6 z-20 hidden md:flex items-center gap-1.5 text-white/50 text-sm font-mono bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                <span className="text-white font-semibold">{String(activeIndex + 1).padStart(2, '0')}</span>
+                <span className="text-white/40">/</span>
+                <span>{String(slides.length).padStart(2, '0')}</span>
             </div>
-
         </section>
-    );
+    )
 };
 
 export default memo(HomeGoodReadGrid);
