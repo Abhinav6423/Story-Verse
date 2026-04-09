@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Home, PlusCircle, Grid, User } from "lucide-react";
+import { Home, PlusCircle, Grid, User , Video } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const MobileBottomNav = ({ showBrowse, setShowBrowse, onCloseBrowse }) => {
@@ -11,6 +11,7 @@ const MobileBottomNav = ({ showBrowse, setShowBrowse, onCloseBrowse }) => {
         { label: "Write", icon: PlusCircle, path: "/create", action: "navigate" },
         { label: "Browse", icon: Grid, action: "browse" },
         { label: "Profile", icon: User, path: "/profile", action: "navigate" },
+        { label : "Trailers", icon: Video, path: "/reels", action: "navigate" },
     ], []);
 
     const handleNavClick = (item) => {
