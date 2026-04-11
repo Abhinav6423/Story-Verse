@@ -18,14 +18,6 @@ const HomeFeed = () => {
         <HomeGoodReadGrid />
       </section>
 
-      {/* SECTION 2: STORY REELS (VISIBLE JUST BELOW HERO 👀) */}
-      <section
-        id="reels-section"
-        aria-label="Story Previews"
-        className="px-4 md:px-6 mt-2"
-      >
-        <StoreelGrid />
-      </section>
 
       {/* MAIN CONTENT */}
       <main className="space-y-0 pb-32 md:pb-10">

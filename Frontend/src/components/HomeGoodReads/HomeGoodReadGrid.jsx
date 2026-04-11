@@ -79,13 +79,14 @@ const HomeGoodReadGrid = () => {
     return (
         <section className="relative w-full h-[100dvh] bg-black overflow-hidden">
 
+            {/* MAIN FLEX CONTAINER */}
+            <div className="relative z-10 flex w-full h-full lg:flex-row">
 
-
-            {/* MAIN FLEX CONTAINER - Left Image + Right Content */}
-            <div className="relative z-10 flex flex-col md:flex-row w-full h-full">
-
-                {/* LEFT SIDE - IMAGE (60% width on desktop) */}
-                <div className="relative w-full md:w-3/5 h-1/2 md:h-full overflow-hidden">
+                {/* BACKGROUND IMAGE 
+                    On Mobile/Tablet: Absolute positioning to cover 100% of the screen.
+                    On Desktop (lg): Switches to relative, taking up the left 60%.
+                */}
+                <div className="absolute inset-0 lg:relative w-full lg:w-3/5 h-full overflow-hidden z-0">
                     {slides.map((slide, index) => (
                         <img
                             key={slide._id}
@@ -96,52 +97,49 @@ const HomeGoodReadGrid = () => {
                         />
                     ))}
 
-                    {/* Gradient overlay for better text visibility on mobile */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:hidden" />
+                    {/* Mobile/Tablet Gradient (Bottom to Top) - Crucial for readable text! */}
+                    {/* Made it slightly taller (via-black/90) so text never touches the bright parts of the image */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/90 to-transparent/10 lg:hidden z-10" />
+
+                    {/* Desktop Gradient (Right to Left) */}
+                    <div className="hidden lg:block absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-black via-black/80 to-transparent z-10" />
                 </div>
 
-                {/* RIGHT SIDE - TEXT & BLUR EFFECT (40% width on desktop) */}
-                <div className="relative w-full md:w-2/5 h-1/2 md:h-full flex items-center justify-center px-6 sm:px-8 md:px-10 lg:px-12 py-8 md:py-0">
+                {/* TEXT CONTENT
+                    On Mobile/Tablet: Flex-col, pushed to the bottom (justify-end) with padding.
+                    On Desktop (lg): Centered vertically, taking the right 40%.
+                */}
+                <div className="relative z-20 w-full lg:w-2/5 h-full flex flex-col justify-end lg:justify-center px-6 sm:px-10 lg:px-12 pb-28 sm:pb-36 lg:pb-0 lg:bg-black/40 xl:bg-black pointer-events-none">
 
-                    {/* CINEMATIC FROSTED GLASS EFFECT */}
+                    {/* Desktop only glass effect */}
+                    <div className="hidden lg:block absolute inset-0 bg-black/50 backdrop-blur-2xl border-none shadow-[-30px_0_50px_rgba(0,0,0,0.8)] z-0" />
 
-                    <div className="absolute inset-0 bg-black/30 backdrop-blur-2xl md:backdrop-blur-[40px] border-l border-white/5 shadow-[-20px_0_30px_rgba(0,0,0,0.5)]" />
+                    {/* CONTENT BOX - Add pointer-events-auto so buttons still work! */}
+                    <div className="relative z-10 w-full max-w-lg lg:max-w-md mx-auto lg:mx-0 pointer-events-auto">
 
-                    {/* CONTENT BOX */}
-                    <div className="relative z-10 w-full max-w-md mx-auto md:mx-0">
-
-                        {/* GENRE BADGE */}
-                        <div className="mb-3 md:mb-4 flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]"></div>
-                            <span className="text-xs sm:text-sm font-semibold text-white/70 uppercase tracking-widest">
-                                {activeSlide?.category || "MOVIE"} • {activeSlide?.year || "2025"}
+                        {/* IMMERSIVE GENRE BADGE */}
+                        <div className="mb-3 lg:mb-4 flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]"></div>
+                            <span className="text-xs sm:text-sm font-semibold text-emerald-400/90 uppercase tracking-widest">
+                                {activeSlide?.category || "ARCHIVE SELECTION"} • {activeSlide?.year || "IMMERSIVE READ"}
                             </span>
                         </div>
 
                         {/* TITLE */}
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 leading-tight text-white drop-shadow-md">
+                        <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold mb-3 lg:mb-4 leading-tight text-white drop-shadow-lg">
                             {activeSlide?.title}
                         </h1>
 
-                        {/* GENRE TAGS */}
-                        <div className="flex flex-wrap gap-1 md:gap-2 mb-4 md:mb-5">
-                            {activeSlide?.genres?.map((genre, i) => (
-                                <span key={i} className="text-xs sm:text-sm px-3 py-1 rounded-full bg-white/10 border border-white/10 text-white/80">
-                                    {genre}
-                                </span>
-                            ))}
-                        </div>
-
                         {/* DESCRIPTION */}
-                        <p className="text-sm sm:text-base text-white/80 mb-6 md:mb-8 line-clamp-3 md:line-clamp-4 leading-relaxed font-light">
+                        <p className="text-sm sm:text-base text-gray-300 mb-6 lg:mb-8 line-clamp-3 lg:line-clamp-4 leading-relaxed font-light drop-shadow-md">
                             {activeSlide?.description || activeSlide?.synopsis}
                         </p>
 
                         {/* CTA BUTTONS */}
-                        <div className="flex flex-col sm:flex-row gap-4 mb-5">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-2 lg:mb-5">
                             <Link
                                 to={`/story/${activeSlide?._id}`}
-                                className="px-6 sm:px-8 py-3 sm:py-3.5 bg-white text-black font-semibold rounded-xl text-sm sm:text-base hover:scale-105 transition-transform duration-300 flex items-center justify-center gap-2 shadow-[0_8px_30px_rgba(255,255,255,0.15)]"
+                                className="px-6 sm:px-8 py-3.5 bg-white text-black font-bold rounded-xl text-sm sm:text-base hover:bg-gray-200 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
                             >
                                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M8 5v14l11-7z" />
@@ -149,8 +147,8 @@ const HomeGoodReadGrid = () => {
                                 Start Reading
                             </Link>
 
-                            <Link to={`/reels`}>
-                                <button className="px-6 sm:px-8 py-3 sm:py-3.5 bg-black/20 backdrop-blur-md text-white font-medium rounded-xl text-sm sm:text-base hover:bg-black/40 transition-colors duration-300 flex items-center justify-center gap-2 border border-white/20 w-full">
+                            <Link to={`/reels`} className="w-full sm:w-auto">
+                                <button className="w-full px-6 sm:px-8 py-3.5 bg-black/40 lg:bg-transparent backdrop-blur-md text-white font-medium rounded-xl text-sm sm:text-base hover:bg-white/10 transition-colors duration-300 flex items-center justify-center gap-2 border border-white/20">
                                     <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -163,49 +161,39 @@ const HomeGoodReadGrid = () => {
                 </div>
             </div>
 
-            {/* LARGER NAVIGATION BUTTONS - Better for mobile touch */}
-            <div className="absolute inset-y-0 left-0 right-0 z-20 flex items-center justify-between px-3 sm:px-4 md:px-6 pointer-events-none">
-
-                {/* PREV BUTTON - Larger on mobile */}
+            {/* LARGER NAVIGATION BUTTONS */}
+            <div className="absolute inset-y-0 left-0 right-0 z-20 flex items-center justify-between px-2 sm:px-4 lg:px-6 pointer-events-none">
                 <button
                     onClick={handlePrev}
-                    className="pointer-events-auto w-12 h-12 sm:w-14 sm:h-14 md:w-12 md:h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl border border-white/10"
+                    className="pointer-events-auto w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/80 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 border border-white/10"
                 >
-                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
 
-                {/* NEXT BUTTON - Larger on mobile */}
                 <button
                     onClick={handleNext}
-                    className="pointer-events-auto w-12 h-12 sm:w-14 sm:h-14 md:w-12 md:h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl border border-white/10"
+                    className="pointer-events-auto w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/80 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 border border-white/10"
                 >
-                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
             </div>
 
-            {/* LARGER DOTS PAGINATION - Easy to tap on mobile */}
-            <div className="absolute bottom-5 sm:bottom-6 md:bottom-6 left-0 right-0 z-20 flex justify-center gap-3 sm:gap-4 md:gap-3">
+            {/* LARGER DOTS PAGINATION */}
+            <div className="absolute bottom-20 sm:bottom-28 lg:bottom-6 left-0 right-0 z-20 flex justify-center gap-3">
                 {slides.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => setActiveIndex(index)}
                         className={`transition-all duration-300 rounded-full ${index === activeIndex
-                            ? "w-10 sm:w-12 md:w-8 h-1.5 sm:h-2 bg-white"
-                            : "w-6 sm:w-8 md:w-5 h-1.5 sm:h-2 bg-white/30 hover:bg-white/50"
+                            ? "w-10 h-1.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
+                            : "w-6 h-1.5 bg-white/30 hover:bg-white/50"
                             }`}
                     />
                 ))}
-            </div>
-
-            {/* SLIDE COUNTER - Clean design */}
-            <div className="absolute bottom-5 sm:bottom-6 right-4 sm:right-6 md:right-6 z-20 hidden md:flex items-center gap-1.5 text-white/50 text-sm font-mono bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                <span className="text-white font-semibold">{String(activeIndex + 1).padStart(2, '0')}</span>
-                <span className="text-white/40">/</span>
-                <span>{String(slides.length).padStart(2, '0')}</span>
             </div>
         </section>
     )

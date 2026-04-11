@@ -29,7 +29,7 @@ const MobileBottomNav = ({ showBrowse, setShowBrowse, onCloseBrowse }) => {
         <nav
             className="
                 fixed bottom-0 left-0 right-0
-                z-50 md:hidden
+                z-50 lg:hidden
                 bg-[#0b1412]
                 border-t border-[#1f3d36]
                 shadow-[0_-10px_30px_rgba(0,0,0,0.6)]
