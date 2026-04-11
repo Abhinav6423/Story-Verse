@@ -5,8 +5,8 @@ import { listAllStoreels } from '../../Api-calls/listAllStoreels.js';
 import { AlertCircle } from 'lucide-react';
 
 const StoreelGrid = () => {
-    
-   
+
+
 
     const { isLoading, data, error } = useQuery({
         queryKey: ["storeels"],
@@ -53,7 +53,7 @@ const StoreelGrid = () => {
                 <div className="flex items-center gap-3 md:gap-4">
 
                     {/* Badge */}
-                    <div className="relative flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-emerald-500/20 to-[#050505]  shadow-[0_0_15px_rgba(52,211,153,0.15)] backdrop-blur-md shrink-0">
+                    <div className="relative flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-emerald-500/20 to-[#050505] shadow-[0_0_15px_rgba(52,211,153,0.15)] backdrop-blur-md shrink-0 border border-emerald-500/20">
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 ml-0.5 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
                         </svg>
@@ -83,22 +83,28 @@ const StoreelGrid = () => {
             {/* Carousel Wrapper — fade edges like Netflix */}
             <div className="relative">
 
-                
+                {/* LEFT FADE MASK */}
+                <div className="absolute left-0 top-0 bottom-0 w-8 md:w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
 
                 {/* Scrollable Row */}
                 <div className="flex gap-3 md:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 pl-1 pr-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
-                    {storeels.length === 0 ? (
+                    {storeels?.length === 0 ? (
                         // Empty state
-                        <div className="flex items-center justify-center w-full py-16 text-gray-600 text-sm">
+                        <div className="flex items-center justify-center w-full py-16 text-gray-600 text-sm border border-dashed border-white/10 rounded-2xl">
                             No reels yet. Be the first to create one!
                         </div>
                     ) : (
-                        storeels.map((reel) => (
-                            <StoreelCard key={reel._id} reel={reel} />
+                        storeels?.map((reel) => (
+                            <div key={reel._id} className="snap-start shrink-0">
+                                <StoreelCard reel={reel} />
+                            </div>
                         ))
                     )}
                 </div>
+
+                {/* RIGHT FADE MASK */}
+                <div className="absolute right-0 top-0 bottom-0 w-8 md:w-16 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
             </div>
 
             {/* Bottom subtle divider */}
