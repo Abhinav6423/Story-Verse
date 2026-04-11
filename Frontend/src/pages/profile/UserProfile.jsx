@@ -65,93 +65,91 @@ const UserProfile = () => {
     return (
         <>
             {/* ================= PROFILE PAGE ================= */}
-            <div
-                className="min-h-screen bg-[#1A1A1A] text-white pb-20 md:pb-8"
-            >
+            <div className="min-h-screen bg-[#0A0A0C] text-white pb-20 md:pb-8">
+
                 {/* COVER IMAGE */}
-                <div className="relative h-40 sm:h-60 w-full bg-gray-800">
+                <div className="relative h-48 sm:h-64 md:h-80 w-full overflow-hidden">
                     <img
                         src={books}
                         alt="Cover"
-                        className="w-full h-full object-cover opacity-80"
+                        className="w-full h-full object-cover opacity-60 scale-105"
                     />
-                    {/* Gradient Overlay for text readability if you add cover text later */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
+                    {/* CRITICAL FIX: The blend gradient. h-32 ensures a long, smooth transition into the body */}
+                    <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0A0C] via-[#0A0A0C]/60 to-transparent" />
                 </div>
 
                 {/* PROFILE CONTENT */}
                 <div className="px-4 sm:px-10 max-w-7xl mx-auto relative z-10">
 
                     {/* PROFILE HEADER LAYOUT */}
-                    <div className="flex flex-col items-center lg:flex-row lg:items-end lg:justify-between -mt-20 mb-8">
+                    <div className="flex flex-col items-center lg:flex-row lg:items-end lg:justify-between -mt-20 lg:-mt-24 mb-8">
 
                         {/* LEFT: AVATAR + NAME */}
-                        <div className="flex flex-col items-center lg:flex-row lg:items-end gap-4 lg:gap-8">
+                        <div className="flex flex-col items-center lg:flex-row lg:items-end gap-6 lg:gap-8">
 
-                            {/* Avatar Circle */}
+                            {/* Avatar Circle with "Halo" Effect */}
                             <div className="relative group">
-                                <div className="w-36 h-36 sm:w-40 sm:h-40 rounded-full overflow-hidden border-[5px] border-[#1A1A1A] bg-[#2a2a2a] shadow-xl">
+                                <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full overflow-hidden border-[6px] border-[#0A0A0C] bg-[#121212] shadow-2xl ring-4 ring-emerald-500/10">
                                     <img
                                         src={userData?.profilePic}
                                         alt="Profile"
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                     />
                                 </div>
 
-                                {/* Edit Button (Desktop hover / Mobile always visible) */}
+                                {/* Edit Button - Polished with emerald glow */}
                                 <button
                                     onClick={() => setShowUpdateProfile(true)}
                                     className="
-                                        absolute bottom-2 right-2 
-                                        bg-emerald-600 text-white 
-                                        p-2.5 rounded-full shadow-lg border-4 border-[#1A1A1A]
-                                        hover:bg-emerald-500 hover:scale-110 transition-all
-                                        group-hover:opacity-100
+                                        absolute bottom-3 right-3 
+                                        bg-emerald-500 text-black 
+                                        p-2.5 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] border-[4px] border-[#0A0A0C]
+                                        hover:bg-emerald-400 hover:scale-110 transition-all duration-300
+                                        z-20
                                     "
                                     aria-label="Edit Profile"
                                 >
-                                    <Pencil size={16} />
+                                    <Pencil size={18} strokeWidth={2.5} />
                                 </button>
                             </div>
 
                             {/* Name & Tagline */}
-                            <div className="text-center lg:text-left mb-2 lg:mb-4">
-                                <h1 className="text-3xl font-bold text-white tracking-tight">
-                                    {userData?.username || "StoryFlix User"}
+                            <div className="text-center lg:text-left mb-2 lg:mb-6">
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight drop-shadow-md">
+                                    {userData?.username || "Abhinav"}
                                 </h1>
-                                <p className="text-emerald-400/80 font-medium text-sm flex items-center justify-center lg:justify-start gap-1.5 mt-1">
-                                    <User size={14} />
+                                <p className="text-emerald-400/90 font-bold text-xs uppercase tracking-[0.2em] flex items-center justify-center lg:justify-start gap-2 mt-2">
+                                    <User size={14} className="fill-emerald-400/20" />
                                     <span>Writer & Reader</span>
                                 </p>
                             </div>
                         </div>
 
-                        {/* RIGHT: STATS GRID */}
-                        {/* Optimized grid for mobile: 2 rows of 3, or flex wrap */}
+                        {/* RIGHT: STATS GRID - Upgraded to Glassmorphism */}
                         <div className="
-    mt-6 lg:mt-0 
-    bg-white/[0.02] border border-white/5 rounded-2xl 
-    p-5 sm:p-6 md:px-8
-    grid grid-cols-4 gap-y-6 gap-x-4
-    md:flex md:flex-row md:items-center md:justify-center lg:justify-start md:gap-6 lg:gap-8
-    backdrop-blur-md
-">
+                            mt-8 lg:mt-0 
+                            bg-black/40 backdrop-blur-xl 
+                            border border-white/10 rounded-2xl 
+                            p-6 px-8
+                            grid grid-cols-4 gap-y-6 gap-x-6
+                            md:flex md:flex-row md:items-center 
+                            shadow-[0_10px_40px_rgba(0,0,0,0.5)]
+                        ">
                             <Stat icon={BookOpen} label="Created" value={userStats?.totalShortStoriesCreated} />
                             <Divider />
                             <Stat icon={Layers} label="Reads" value={userStats?.totalShortStoriesRead} />
                             <Divider />
-                            <Stat icon={Trophy} label="Level" value={userStats?.level} />
+                            <Stat icon={Trophy} label="Level" value={userStats?.level} highlight />
                             <Divider />
-                            <Stat icon={Star} label="XP" value={userStats?.xp} />
+                            <Stat icon={Star} label="XP" value={userStats?.xp} highlight />
                         </div>
                     </div>
 
-                    {/* DIVIDER */}
-                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-8" />
+                    {/* DIVIDER - Refined fade effect */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-12" />
 
                     {/* STORIES SECTION */}
-                    {/* MyStories handles its own loading state */}
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
                         <MyStories />
                     </div>
                 </div>
@@ -167,29 +165,27 @@ const UserProfile = () => {
 
 /* ---------- SUB COMPONENTS ---------- */
 
-const Stat = ({ icon: Icon, label, value }) => (
-    <div className="flex flex-col items-center justify-center flex-1 min-w-[60px] group cursor-default">
-
-        {/* ICON: Now visible on all screens. Shifts to Emerald on hover for a premium interactive feel */}
-        <div className="text-zinc-500 mb-1.5 transition-colors duration-300 group-hover:text-emerald-400">
-            {Icon && <Icon size={16} strokeWidth={2} />}
+const Stat = ({ icon: Icon, label, value, highlight }) => (
+    <div className="flex flex-col items-center justify-center flex-1 min-w-[70px] group cursor-default">
+        {/* ICON */}
+        <div className={`mb-2 transition-all duration-300 ${highlight ? 'text-emerald-400' : 'text-zinc-500 group-hover:text-emerald-400'}`}>
+            {Icon && <Icon size={18} strokeWidth={2} className={highlight ? 'drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]' : ''} />}
         </div>
 
-        {/* NUMBER: Tighter tracking and crisp zinc color that brightens on hover */}
-        <p className="text-lg sm:text-2xl font-bold text-zinc-200 tracking-tight leading-none mb-1 transition-colors duration-300 group-hover:text-white">
+        {/* NUMBER */}
+        <p className={`text-xl sm:text-2xl font-black tracking-tighter leading-none mb-1.5 transition-all duration-300 ${highlight ? 'text-emerald-400' : 'text-zinc-100 group-hover:text-white'}`}>
             {value || 0}
         </p>
 
-        {/* LABEL: Extremely wide tracking (0.2em) and tiny font size for high-end editorial contrast */}
-        <p className="text-[9px] sm:text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.2em] transition-colors duration-300 group-hover:text-zinc-400">
+        {/* LABEL */}
+        <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.25em] group-hover:text-zinc-400 transition-colors">
             {label}
         </p>
-
     </div>
 );
 
 const Divider = () => (
-    <div className="hidden lg:block h-10 w-px bg-white/10" />
+    <div className="hidden md:block h-10 w-px bg-white/5 mx-2" />
 );
 
 export default UserProfile;
