@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { ThumbsUp, Bookmark, Flame , Heart } from "lucide-react";
+import { ThumbsUp, Bookmark, Flame, Heart } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 // 1. Import your optimization helper
@@ -9,20 +9,21 @@ const TopTrendStoryCard = ({ story, idx }) => {
     return (
         <div className="relative w-full group perspective-1000">
 
+
             {/* RANK — RESPONSIVE BACKGROUND NUMBER (Desktop) */}
             <div
                 className="
-                    absolute hidden sm:block 
-                    -bottom-4 -left-6 lg:-left-10 
-                    text-[7rem] lg:text-[9rem] font-black 
-                    text-transparent /* Make the fill transparent */
-                    [-webkit-text-stroke:2px_rgba(255,255,255,0.7)] /* Add a subtle white outline */
-                    group-hover:[-webkit-text-stroke:2px_rgba(16,185,129,0.3)] /* Glows emerald on hover */
-                    transition-all duration-500 ease-out 
-                    select-none pointer-events-none z-0 
-                    tracking-tighter 
-                    group-hover:-translate-y-2 group-hover:scale-105
-                "
+        absolute hidden sm:block 
+        bottom-0 -left-6 lg:-left-10 /* CHANGED: Was -bottom-4 */
+        text-[7rem] lg:text-[9rem] leading-none font-black /* CHANGED: Added leading-none */
+        text-transparent 
+        [-webkit-text-stroke:2px_rgba(255,255,255,0.7)] 
+        group-hover:[-webkit-text-stroke:2px_rgba(16,185,129,0.3)] 
+        transition-all duration-500 ease-out 
+        select-none pointer-events-none z-0 
+        tracking-tighter 
+        group-hover:-translate-y-2 group-hover:scale-105
+    "
             >
                 {idx + 1}
             </div>
@@ -59,7 +60,7 @@ const TopTrendStoryCard = ({ story, idx }) => {
                     ) : (
                         <div className="w-full h-full flex items-center justify-center bg-[#121212] text-gray-600 px-4 text-center">
                             <h3 className="text-sm font-semibold line-clamp-3 leading-snug">
-                                {story?.title}
+                                {story?.title || "Title not available"}
                             </h3>
                         </div>
                     )}
@@ -74,7 +75,7 @@ const TopTrendStoryCard = ({ story, idx }) => {
                     {/* Title & Likes */}
                     <div className="flex items-start justify-between gap-3">
                         <h3 className="text-[15px] font-bold text-white group-hover:text-emerald-400 transition-colors duration-300 line-clamp-2 leading-snug flex-1" title={story?.title}>
-                            {story?.title}
+                            {story?.title.length > 10 ? story.title.slice(0, 10) + "..." : story?.title}
                         </h3>
 
                         {/* Likes Badge */}

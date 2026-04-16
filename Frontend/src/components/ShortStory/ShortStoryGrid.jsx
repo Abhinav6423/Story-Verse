@@ -1,10 +1,10 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Compass, AlertCircle, FlameIcon } from "lucide-react";
+import { Compass, AlertCircle, FlameIcon, X, ArrowRight } from "lucide-react";
 import ShortStoryCard from "./ShortStoryCard.jsx";
 import { listFeedShortStory } from "../../Api-calls/homeFeedShortStoryList.js";
 import { Link } from "react-router-dom";
-
+import StoryDetsPopup from "../../utils/StoryDetsPopup.jsx";
 // 1. Skeleton Component to Prevent CLS
 const SkeletonGrid = () => (
     <div className="mt-0 sm:mt-15 bg-transparent animate-pulse">
@@ -15,10 +15,7 @@ const SkeletonGrid = () => (
         </div>
 
         {/* Grid Skeleton */}
-        <div className="
-      grid gap-4 
-      grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
-    ">
+        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {/* Show 12 skeleton cards */}
             {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="aspect-[2/3] bg-gray-800 rounded-xl" />
@@ -28,6 +25,9 @@ const SkeletonGrid = () => (
 );
 
 const ShortStoryGrid = () => {
+    // === STATE FOR QUICK VIEW MODAL ===
+    const [quickViewStory, setQuickViewStory] = useState(null);
+
     /* ================= DATA FETCH ================= */
     const { isLoading, data, error } = useQuery({
         queryKey: ["shortStories"],
@@ -93,17 +93,40 @@ const ShortStoryGrid = () => {
                 xl:grid-cols-5
             ">
                 {stories?.map((story) => (
-                    <Link
-                        to={`/story/${story?._id}`}
-                        key={story?._id}
-                        className="block outline-none transition-transform duration-300 hover:-translate-y-1.5 focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl"
-                    >
-                        {/* StoryCard handles its own hover states and glassmorphism */}
-                        <ShortStoryCard story={story} />
-                    </Link>
+                    <div key={story?._id} className="flex flex-col h-full gap-3 group/wrapper">
+
+                        {/* 1. The Main Clickable Card (Navigates to story) */}
+                        <Link
+                            to={`/story/${story?._id}`}
+                            className="block outline-none transition-transform duration-300 hover:-translate-y-1.5 focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl flex-1"
+                        >
+                            {/* StoryCard handles its own hover states and glassmorphism */}
+                            <ShortStoryCard story={story} />
+                        </Link>
+
+                        {/* 2. The Quick View Button (Opens Modal) */}
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setQuickViewStory(story);
+                            }}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 text-sm font-semibold rounded-xl text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                        >
+                            <span>Quick View</span>
+                        </button>
+
+                    </div>
                 ))}
             </div>
-        </div>
+
+            {/* ================= QUICK VIEW MODAL ================= */}
+            {quickViewStory && (
+
+                <StoryDetsPopup quickViewStory={quickViewStory} setQuickViewStory={setQuickViewStory} />
+            )
+            }
+
+        </div >
     );
 };
 

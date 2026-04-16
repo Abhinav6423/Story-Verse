@@ -98,8 +98,8 @@ const ShortStoryCard = ({ story }) => {
                             }}
                             disabled={loading || isLiked}
                             className={`flex items-center gap-1.5 text-xs font-bold px-2 py-1 rounded-lg border shrink-0 pt-0.5 transition-all duration-300 ${isLiked
-                                    ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]"
-                                    : "text-gray-400 bg-white/5 border-white/5 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:scale-105"
+                                ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]"
+                                : "text-gray-400 bg-white/5 border-white/5 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:scale-105"
                                 }`}
                         >
                             <Heart size={13} className={isLiked ? "fill-emerald-400 stroke-emerald-400" : "stroke-[2px]"} />

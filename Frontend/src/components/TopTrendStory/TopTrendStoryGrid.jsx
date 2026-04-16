@@ -1,10 +1,10 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import TopTrendStoryCard from "./TopTrendStoryCard.jsx";
 import { listTrendingShortStory } from "../../Api-calls/trendingShortStory.js";
 import { FlameIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import StoryDetsPopup from "../../utils/StoryDetsPopup.jsx";
 // 1. Skeleton Component prevents Layout Shift
 const SkeletonGrid = () => (
     <div className="mt-0 px-4 md:px-6 bg-transparent text-white animate-pulse">
@@ -33,6 +33,8 @@ function TopTrendStoryGrid() {
     });
 
     const stories = data?.shortStories || [];
+
+    const [quickViewStory, setQuickViewStory] = useState(null);
 
     /* ================= CONDITIONAL ================= */
     if (isLoading) return <SkeletonGrid />;
@@ -103,27 +105,42 @@ function TopTrendStoryGrid() {
 
                 {/* GRID */}
                 {/* Removed the misaligned padding classes. Relies on the parent container for perfect edges. */}
-                <div className="
-                    grid
-                    grid-cols-2
-                    sm:grid-cols-3
-                    lg:grid-cols-4
-                    xl:grid-cols-5
-                    gap-4
-                    sm:gap-6
-                    lg:gap-8
-                ">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
                     {stories.map((story, idx) => (
-                        <Link
-                            key={story._id}
-                            to={`/story/${story._id}`}
-                            className="block outline-none transition-transform duration-300 hover:-translate-y-2 focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl"
-                        >
-                            {/* The TopTrendStoryCard now handles its own internal layout perfectly */}
-                            <TopTrendStoryCard story={story} idx={idx} />
-                        </Link>
+                        <div key={story?._id} className="flex flex-col h-full gap-3 group/wrapper">
+
+                            {/* 1. The Main Clickable Card - FIX APPLIED HERE */}
+                            <Link
+                                to={`/story/${story?._id}`}
+                                className="relative block outline-none transition-transform duration-300 hover:-translate-y-1.5 focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-xl flex-1"
+                            >
+                                {/* If your TopTrendStoryCard relies on the index for the number, 
+                    make sure you are passing it down! (e.g., index={idx}) 
+                */}
+                                <TopTrendStoryCard story={story} idx={idx} />
+                            </Link>
+
+                            {/* 2. The Quick View Button */}
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setQuickViewStory(story);
+                                }}
+                                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 text-sm font-semibold rounded-xl text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                            >
+                                <span>Quick View</span>
+                            </button>
+
+                        </div>
                     ))}
                 </div>
+
+                {/* ================= QUICK VIEW MODAL ================= */}
+                {quickViewStory && (
+
+                    <StoryDetsPopup quickViewStory={quickViewStory} setQuickViewStory={setQuickViewStory} />
+                )
+                }
 
             </section>
         </div>
